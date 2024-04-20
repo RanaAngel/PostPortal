@@ -20,17 +20,9 @@ const SignupForm = () => {
   setFormData({ ...formData, [e.target.name]: e.target.value });  
   };
 
-const [showPassword, setShowPassword] = useState(false);
-
-const togglePasswordVisibility = () => {
-  setShowPassword(prevState => !prevState);
-};
-
-const navigate = useNavigate();
-
 const handleSubmit = async e => {
 
-    e.preventDefault();
+  e.preventDefault();
 
      // Check for null values in formData
   for (const key in formData) {
@@ -58,7 +50,13 @@ const handleSubmit = async e => {
       alert('Signup failed. Please try again.');
     }
   };
+const [showPassword, setShowPassword] = useState(false);
 
+const togglePasswordVisibility = () => {
+  setShowPassword(prevState => !prevState);
+};
+
+const navigate = useNavigate();
   const onLOGINTextClick = useCallback(() => {
     // Please sync "log in page" to the project
     navigate('/login');
