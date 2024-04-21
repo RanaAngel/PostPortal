@@ -1,0 +1,44 @@
+// const mongoose = require('mongoose');
+// const connectDB = async () => {
+//     try {
+//       const uri = "mongodb+srv://angelrana:<password>@cluster0.1zcpd1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Replace this with your actual connection URI
+//       await mongoose.connect(uri, {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//         // Add any additional options or configurations here
+//       });
+//       console.log('MongoDB connected successfully');
+//     } catch (error) {
+//       console.error('MongoDB connection failed:', error.message);
+//       process.exit(1); // Exit with failure
+//     }
+//   };
+  
+ 
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://angelrana:angel123@cluster0.1zcpd1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    useNewUrlParser: true,
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+const connectDB = async ()=> {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+};
+
+module.exports = connectDB;
