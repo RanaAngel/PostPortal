@@ -1,12 +1,15 @@
-// In your config/passport.js file
+
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
 
+
+
+// Facebook authentication strategy
 passport.use(new FacebookStrategy({
   clientID: '1163840038153381',
   clientSecret: '5941a2df751d1e3aae72e29dc3648674',
-  callbackURL: 'https://localhost:5000/api/auth/facebook/callback',
+  callbackURL: 'http://localhost:5000/auth/facebook/callback',
   profileFields: ['id', 'displayName', 'email'] // Specify the fields you want to retrieve from Facebook
 },
 async (accessToken, refreshToken, profile, done) => {
@@ -32,10 +35,12 @@ async (accessToken, refreshToken, profile, done) => {
   }
 }));
 
+// Serialize user into session
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
+// Deserialize user from session
 passport.deserializeUser(async (id, done) => {
   try {
     // Deserialize the user from the database

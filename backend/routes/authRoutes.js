@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
-
+const passport = require('passport');
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -66,6 +66,15 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
+// Route for initiating Facebook authentication
+router.get('/facebook', passport.authenticate('facebook'));
+
+// Route for handling callback from Facebook authentication
+router.get('/facebook/callback', passport.authenticate('facebook', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/'
+}));
 
 
 module.exports = router;
