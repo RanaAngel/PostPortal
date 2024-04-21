@@ -6,6 +6,8 @@ module.exports = {
         colors: {
           "black-main-background": "#16161a",
           "black-card": "#2a2a2f",
+          gray: "#2a2a2f",
+          "black-sub-text": "#84909f",
           "black-main-text": "#fffffe",
           button: "#7f5af0",
           lightslategray: {
@@ -13,7 +15,8 @@ module.exports = {
             "200": "rgba(148, 161, 178, 0.2)",
           },
           gainsboro: "rgba(217, 217, 217, 0)",
-          gray: "rgba(255, 255, 255, 0.2)",
+          silver: "rgba(191, 191, 191, 0)",
+        slategray: "#6b7885",
           mediumslateblue: "#9973ff",
         },
         spacing: {},
@@ -38,6 +41,15 @@ module.exports = {
         mq1225: {
           raw: "screen and (max-width: 1225px)",
         },
+        mq1725: {
+          raw: "screen and (max-width: 1725px)",
+        },
+        mq1325: {
+          raw: "screen and (max-width: 1325px)",
+        },
+        mq900: {
+          raw: "screen and (max-width: 900px)",
+        },
         mq850: {
           raw: "screen and (max-width: 850px)",
         },
@@ -50,4 +62,5 @@ module.exports = {
       preflight: false,
     },
   };
-  
+
+ 
