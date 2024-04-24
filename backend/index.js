@@ -13,6 +13,13 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000', // Replace with your frontend URL
+  methods: ['GET', 'POST'],
+  credentials: true // Allow cookies to be sent along with the request
+}));
+
 // Routes
 app.use('/auth', authRoutes);
 
