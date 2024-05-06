@@ -61,7 +61,7 @@ async function requestToken() {
 
 
 // VALIDATE the PIN => User requested action
-async function accessToken({ oauth_token, oauth_secret }, verifier) {
+async function accessToken({ oauth_token, oauth_token_secret }, verifier) {
     try {
         const url = `https://api.twitter.com/oauth/access_token?oauth_verifier=${verifier}&oauth_token=${oauth_token}`
         const authHeader = oauth.toHeader(oauth.authorize({
@@ -92,7 +92,7 @@ async function writeTweet({ oauth_token, oauth_token_secret }, tweet) {
         secret: oauth_token_secret
     }
 
-    const url = 'https://api.twitter.com/2/tweets';
+    const url = 'https://api.twitter.com/1.1/statuses/update.json';
 
     const headers = oauth.toHeader(oauth.authorize({
         url,
@@ -203,7 +203,25 @@ router.post('/tweet', async (req, res) => {
 
 
 //callback route
-
+// Route to handle the OAuth callback from Twitter
+router.get('/twitter/callback', async (req, res) => {
+    try {
+      const { oauth_token, oauth_verifier } = req.query;
+      if (!oauth_token ||!oauth_verifier) {
+        return res.status(400).send('Missing oauth_token or oauth_verifier');
+      }
+  
+      // Validate the PIN and get the access token
+      const oAuthAccessToken = await accessToken({ oauth_token }, oauth_verifier);
+  
+      // Send back the access token to frontend
+      res.json(oAuthAccessToken);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
+    }
+  });
+  
 
 
 

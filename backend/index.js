@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const twitterRoutes = require('./routes/twitterRoute'); // Import twitterRoute.js
+const {Authorization,Redirect}=require("./routes/linkedinRoute");
 
  
 const app = express();
@@ -23,7 +24,15 @@ app.use(cors({
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/twitter', twitterRoutes); // Use twitter routes
+//Twitter Routes:
+app.use('/twitter', twitterRoutes);
+//Linkedin Routes:
+app.get('/api/linkedin/authorize',(req,res)=>{
+  return res.redirect(Authorization());
+});
+app.get('/api/linkedin/redirect', async(req, res)=>{
+  return res.json(Redirect(req.query.code));
+});
 
 
 // Connect to MongoDB
