@@ -1,19 +1,22 @@
 // backend/index.js
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const twitterRoutes = require('./routes/twitterRoute'); // Import twitterRoute.js
-const {Authorization,Redirect}=require("./routes/linkedinRoute");
+const linkedinRoutes = require('./routes/linkedinRoute');
+const shareOnLinkedin = require('./routes/postLinkedin'); //share post on linkedin.....
 
  
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
 
 // CORS configuration
 app.use(cors({
@@ -27,12 +30,8 @@ app.use('/auth', authRoutes);
 //Twitter Routes:
 app.use('/twitter', twitterRoutes);
 //Linkedin Routes:
-app.get('/api/linkedin/authorize',(req,res)=>{
-  return res.redirect(Authorization());
-});
-app.get('/api/linkedin/redirect', async(req, res)=>{
-  return res.json(Redirect(req.query.code));
-});
+app.use('/linkedin', linkedinRoutes);
+app.use('/sharePost', shareOnLinkedin);
 
 
 // Connect to MongoDB
@@ -40,6 +39,7 @@ mongoose.connect('mongodb://localhost:27017/PostPortal', { useNewUrlParser: true
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // console.log('Routes registered');
   })
   .catch(error => console.error(error));
 

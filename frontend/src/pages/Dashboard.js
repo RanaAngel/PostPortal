@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
   const [tweetText, setTweetText] = useState('');
   const [pin, setPin] = useState('');
+ 
 
 
   const handleLogout = () => {
@@ -115,6 +116,57 @@ const Dashboard = () => {
   }, []);
 
 
+
+  //Linkedin
+  const handleLinkedInAuth = async () => {
+    try {
+      window.location.href = 'http://localhost:5000/linkedin/auth';
+    } catch (error) {
+      console.error('Error initiating LinkedIn authentication flow:', error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const handleCallback = async () => {
+  //     try {
+  //       const urlParams = new URLSearchParams(window.location.search);
+  //       const code = urlParams.get('code'); // Retrieve the authorization code instead of 'oauth_verifier'
+  //       if (code) {
+  //         // Send a POST request to your backend to post content on LinkedIn
+  //         const response = await axios.post('http://localhost:5000/sharePost/postContent', {
+  //           code: code, // Pass the authorization code
+  //           title: "Hello World!",
+  //           text: "Hello Coders!",
+  //           shareUrl: "https://www.example.com/content.html",
+  //           shareThumbnailUrl: "https://www.example.com/image.jpg"
+  //         });
+  //         console.log('Content shared successfully:', response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error handling LinkedIn callback:', error);
+  //     }
+  //   };
+
+  //   handleCallback();
+  // }, []);
+
+  // New function to post content on LinkedIn
+  const handleLinkedInPost = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/sharePost/postContent', {
+        title: "Hello World!",
+        text: "Hello Coders!",
+        shareUrl: "https://www.example.com/content.html",
+        shareThumbnailUrl: "https://www.example.com/image.jpg"
+      });
+      console.log('Content shared successfully on LinkedIn:', response.data);
+    } catch (error) {
+      console.error('Error posting content on LinkedIn:', error);
+    }
+  };
+
+
+
   return (
     <div>
       <h2>Dashboard</h2>
@@ -127,6 +179,10 @@ const Dashboard = () => {
       <button onClick={handleTweetSubmit}>Connect to Twitter</button>
       <input type="text" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="Enter PIN" />
       <button onClick={handlePinSubmit}>Submit PIN</button>
+
+      <button onClick={handleLinkedInAuth}>  Connect to LinkedIn  </button>
+      <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button>
+
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
