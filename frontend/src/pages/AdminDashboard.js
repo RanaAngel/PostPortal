@@ -2,10 +2,9 @@
 
 import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FacebookFlow from '../components/FacebookFlow';
 
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   
   const navigate = useNavigate();
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
@@ -59,14 +58,13 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>Dashsbord</h2>
-      <p>Welcome to your dashboard!</p>
+      <h2>Dashboard</h2>
+      <p>Welcome to your Admin dashboard!</p>
       <button onClick={handleLogout}>Logout</button>
-      <FacebookFlow /> {/* Include the FacebookLoginButton component */}
-      {/* <FlowFacebook /> */}
+     
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;
 
