@@ -36,7 +36,7 @@ const Dashboard = () => {
       if (token) {
         const currentTime = new Date();
         const timeDifference = currentTime - new Date(lastActivityTime);
-        const maxInactiveTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+        const maxInactiveTime = 1 * 60 * 1000; // 10 minutes in milliseconds
 
         if (timeDifference > maxInactiveTime) {
           // Token has expired due to inactivity

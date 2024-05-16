@@ -6,8 +6,7 @@ import { useNavigate} from 'react-router-dom';
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
 
-  const navigate = useNavigate();
-
+  const navigate = useNavigate(); // Initialize useHistory
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -25,14 +24,10 @@ const LoginForm = () => {
       if (!response.ok) {
         throw new Error('Login failed');
       }
-      const { token, redirectUrl } = await response.json();
-      console.log('Token:', token);
-      console.log('Redirect URL:', redirectUrl); // Log the redirectUrl
-      localStorage.setItem('token', token);
+      const { token } = await response.json();
+    localStorage.setItem('token', token);
       alert('Login successful');
-      // Redirect based on the received redirectUrl
-      navigate(redirectUrl ); // Redirect to the appropriate dashboard
-
+      navigate('/dashboard'); // Redirect or do something else after successful login
     } catch (error) {
       console.error('Login error:', error.message);
       alert('Login failed. Please try again.');
