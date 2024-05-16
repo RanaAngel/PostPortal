@@ -140,7 +140,7 @@ const FacebookFlow = () => {
       window.FB.AppEvents.logPageView();
       
       // Now that the SDK is initialized, check if the user is already logged in
-      // checkLoginStatus();
+      checkLoginStatus();
     };
   
     // Load the Facebook SDK asynchronously
@@ -153,10 +153,10 @@ const FacebookFlow = () => {
     }(document, 'script', 'facebook-jssdk'));
   }, []);
 
-  // // Include checkLoginStatus in the dependency array
-  // useEffect(() => {
-  //   checkLoginStatus();
-  // }, []);
+  // Include checkLoginStatus in the dependency array
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
 
   const doLogin = () => {
     window.FB.login(function (response) {
@@ -171,15 +171,15 @@ const FacebookFlow = () => {
     }, { scope: "email,public_profile,pages_show_list,instagram_basic,pages_read_engagement,read_insights,ads_read,instagram_manage_insights,pages_manage_engagement" });
   };
 
-  // const checkLoginStatus = () => {
-  //   window.FB.getLoginStatus(function(response) {
-  //     if (response.status === "connected") {
-  //       setIsLoggedIn(true);
-  //       sendAccessTokenToBackend(response.authResponse.accessToken);
-  //       fetchFacebookPages(response.authResponse.accessToken);
-  //     }
-  //   });
-  // };
+  const checkLoginStatus = () => {
+    window.FB.getLoginStatus(function(response) {
+      if (response.status === "connected") {
+        setIsLoggedIn(true);
+        sendAccessTokenToBackend(response.authResponse.accessToken);
+        fetchFacebookPages(response.authResponse.accessToken);
+      }
+    });
+  };
 
 
   const sendAccessTokenToBackend = async (accessToken) => {
