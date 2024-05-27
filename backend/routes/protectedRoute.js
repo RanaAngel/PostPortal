@@ -20,17 +20,5 @@ const protectRoute = (req, res, next) => {
 };
 
 module.exports = protectRoute;
-// backend/routes/protectedRoutes.js
-
-const express = require('express');
-const protectRoute = require('./protectedRoute');
-
-const router = express.Router();
-
-router.get('/protected', protectRoute, (req, res) => {
-  res.json({ message: 'Protected route accessed successfully' });
-});
-
-
 
 module.exports = router;

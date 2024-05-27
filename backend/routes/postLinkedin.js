@@ -2,7 +2,7 @@
 
 const express = require('express');
 const https = require('https');
-const accessToken = require('../linkdin_token.json').access_token;
+const accessToken = require('../linkedin_token.json').access_token;
 const router = express.Router();
 
 // POST route for posting content on LinkedIn
@@ -11,13 +11,20 @@ router.post('/postContent', async (req, res) => {
     try {
         const { title, text, shareUrl, shareThumbnailUrl } = req.body;
         const ownerId = await getLinkedinId(accessToken);
+        console.log(ownerId);
         const response = await postShare(accessToken, ownerId, title, text, shareUrl, shareThumbnailUrl);
         res.status(200).json(response);
     } catch (error) {
         console.error('Error posting content on LinkedIn:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        if (error.response && error.response.data.code === 'DUPLICATE_POST') {
+            // Handle duplicate post specifically
+            res.status(400).json({ error: 'Duplicate post detected. Please modify the content.' });
+        } else {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 });
+
 
 // Get LinkedIn ID of the user
 function getLinkedinId(accessToken) {
@@ -28,16 +35,15 @@ function getLinkedinId(accessToken) {
         const method = 'GET';
         const headers = {
             'Authorization': 'Bearer ' + accessToken,
-            'cache-control': 'no-cache',
-            'X-Restli-Protocol-Version': '2.0.0'
+            'Content-Type': 'application/json'
         };
         const body = '';
 
         _request(method, hostname, path, headers, body)
-            .then(response => {
+           .then(response => {
                 resolve(JSON.parse(response.body).id);
             })
-            .catch(error => {
+           .catch(error => {
                 console.error('Error getting LinkedIn ID:', error);
                 reject(error);
             });
@@ -72,18 +78,16 @@ function postShare(accessToken, ownerId, title, text, shareUrl, shareThumbnailUr
         };
         const headers = {
             'Authorization': 'Bearer ' + accessToken,
-            'cache-control': 'no-cache',
-            'X-Restli-Protocol-Version': '2.0.0',
             'Content-Type': 'application/json',
             'x-li-format': 'json',
             'Content-Length': Buffer.byteLength(JSON.stringify(body))
         };
 
         _request(method, hostname, path, headers, JSON.stringify(body))
-            .then(response => {
+           .then(response => {
                 resolve(response);
             })
-            .catch(error => {
+           .catch(error => {
                 console.error('Error posting content on LinkedIn:', error);
                 reject(error);
             });
@@ -118,7 +122,7 @@ function _request(method, hostname, path, headers, body) {
             console.error('Error in HTTP request:', e);
             reject(e);
         });
-        if (method !== 'GET') {
+        if (method!== 'GET') {
             req.write(body);
         }
         req.end();

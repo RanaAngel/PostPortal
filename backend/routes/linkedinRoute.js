@@ -5,6 +5,8 @@ const express = require('express');
 const https = require('https');
 const fs = require('fs');
 const url = require('url');
+const cors = require('cors'); // Import CORS middleware
+
 
 
 // Load environment variables
@@ -16,7 +18,7 @@ const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
 const response_type = 'code';
 const state = Math.random(); // WARNING: using weak random value for testing ONLY
-const scope = 'openid w_member_social profile';
+const scope = 'openid w_member_social r_basicprofile profile email';
 
 // const options = {
 //   key: fs.readFileSync('path/to/localhost.key'),
@@ -24,6 +26,9 @@ const scope = 'openid w_member_social profile';
 // };
 
 const router = express.Router();
+
+// Enable CORS for all routes
+router.use(cors());
 
 router.get('/auth', (req, res) => {
   let auth_url = auth_base_url + '?response_type=' + response_type + '&client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect_uri) + '&state=' + state + '&scope=' + encodeURIComponent(scope);
@@ -56,11 +61,22 @@ router.get('/callback', (req, res) => {
 
   _request(method, hostname, path, headers, body).then(r => {
     if (r.status === 200) {
-      const access_token = JSON.parse(r.body).access_token;
+      const access_token = JSON.parse(r.body).access_token; 
       const expires_in = Date.now() + (JSON.parse(r.body).expires_in * 1000); // token expiry in epoch format
-      const token_json = '{"access_token":"' + access_token + '","expires_in":"' + expires_in + '"}';
-      fs.writeFile("./linkdin_token.json", token_json, e => {if(e){console.log('ERROR - ' + e)}});
-      res.send('Access token retrieved. You can close this page');
+      token_json = '{"access_token":"' + access_token + '","expires_in":"' + expires_in + '"}';
+				fs.writeFile("./linkedin_token.json", token_json, e => {if(e){console.log('ERROR - ' + e)}});
+
+         // Redirect the user to the frontend dashboard with the access token
+         res.redirect('http://localhost:3000/dashboard?access_token=' + access_token);
+        //  console.log('accessToken'+ access_token);
+         console.log("redirected....");
+
+				// res.writeHead(200, {'content-type': 'text/html'});
+				// res.write('Access token retrieved. You can close this page');
+				// console.log('Access token retrieved. You can stop this app listening.');
+				res.end();
+     
+
     } else {
       console.log('ERROR - ' + r.status + JSON.stringify(r.body));
       res.status(r.status).send(r.status + ' Internal Server Error');
@@ -71,7 +87,7 @@ router.get('/callback', (req, res) => {
   });
 });
 
-// HTTPS request wrapper
+// HTTPS request wrapper  
 function _request(method, hostname, path, headers, body) {
   return new Promise((resolve, reject) => {
     let reqOpts = {
@@ -105,43 +121,4 @@ function _request(method, hostname, path, headers, body) {
 }
 
 
-
-// Publish content on LinkedIn
-function postShare(accessToken, ownerId, title, text, shareUrl, shareThumbnailUrl) {
-  return new Promise((res, rej) => {
-      let hostname = 'api.linkedin.com';
-      let path = '/v2/shares';
-      let method = 'POST';
-      let body = {
-          "owner": "urn:li:person:" + ownerId,
-          "subject": title,
-          "text": {
-              "text": text // max 1300 characters
-          },
-          "content": {
-              "contentEntities": [{
-                  "entityLocation": shareUrl,
-                  "thumbnails": [{
-                      "resolvedUrl": shareThumbnailUrl
-                  }]
-              }],
-              "title": title
-          },
-          "distribution": {
-              "linkedInDistributionTarget": {}
-          }
-      }
-      let headers = {
-          'Authorization': 'Bearer ' + accessToken,
-          'cache-control': 'no-cache',
-          'X-Restli-Protocol-Version': '2.0.0',
-          'Content-Type': 'application/json',
-          'x-li-format': 'json',
-          'Content-Length': Buffer.byteLength(JSON.stringify(body))
-      };
-      _request(method, hostname, path, headers, JSON.stringify(body)).then(r => {
-          res(r);
-      }).catch(e => rej(e))
-  })
-}
 module.exports = router;

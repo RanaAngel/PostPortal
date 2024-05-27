@@ -1,14 +1,19 @@
 // frontend/client/src/components/Dashboard.js
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, redirect } from 'react-router-dom';
 import axios from 'axios';
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
   const [tweetText, setTweetText] = useState('');
   const [pin, setPin] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+
  
 
 
@@ -117,53 +122,79 @@ const Dashboard = () => {
 
 
 
-  //Linkedin
+
+
+
+  // HANDLE LINKEDIN 
   const handleLinkedInAuth = async () => {
     try {
+      // const response = await axios.get('http://localhost:5000/linkedin/auth');
       window.location.href = 'http://localhost:5000/linkedin/auth';
+      // const { accessToken } = response.data;
+      //       setAccessToken(accessToken);
+      //       console.log(accessToken);
     } catch (error) {
       console.error('Error initiating LinkedIn authentication flow:', error);
     }
   };
 
-  // useEffect(() => {
-  //   const handleCallback = async () => {
-  //     try {
-  //       const urlParams = new URLSearchParams(window.location.search);
-  //       const code = urlParams.get('code'); // Retrieve the authorization code instead of 'oauth_verifier'
-  //       if (code) {
-  //         // Send a POST request to your backend to post content on LinkedIn
-  //         const response = await axios.post('http://localhost:5000/sharePost/postContent', {
-  //           code: code, // Pass the authorization code
-  //           title: "Hello World!",
-  //           text: "Hello Coders!",
-  //           shareUrl: "https://www.example.com/content.html",
-  //           shareThumbnailUrl: "https://www.example.com/image.jpg"
-  //         });
-  //         console.log('Content shared successfully:', response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error handling LinkedIn callback:', error);
-  //     }
-  //   };
+// get the access_token form backend and save it to localstorage
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const accessToken = searchParams.get('access_token');
 
-  //   handleCallback();
-  // }, []);
+    if (accessToken) {
+      // Access token is retrieved from the query parameters
+      console.log('Access token:', accessToken);
 
-  // New function to post content on LinkedIn
+      // Example: Store the access token in localStorage
+      localStorage.setItem('access_token', accessToken);
+      // console.log('localStorageItem  : '+ accessToken);
+    } else {
+      // Handle error or redirect to login page if access token is not present
+      console.error('Access token not found.');
+      redirect('/login');
+    }
+  }, [location]);
+
+
+  // function to post content on LinkedIn
   const handleLinkedInPost = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/sharePost/postContent', {
-        title: "Hello World!",
-        text: "Hello Coders!",
-        shareUrl: "https://www.example.com/content.html",
-        shareThumbnailUrl: "https://www.example.com/image.jpg"
-      });
+      // Retrieve the access token from local storage
+      const accessToken = localStorage.getItem('access_token');
+      // console.log('localStorateGETItme: ' + accessToken)
+  
+      // Check if the access token exists
+      if (!accessToken) {
+        console.error('Access token not found.');
+        return;
+      }
+
+      // Call the LinkedIn API to post content
+      const response = await axios.post(
+        'http://localhost:5000/sharePost/postContent',
+        {
+          title: 'Hello World!',
+          text: 'Hello MERNApp!',
+          shareUrl: 'https://www.example.com/content.html',
+          shareThumbnailUrl: 'https://www.example.com/image.jpg',
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+  
       console.log('Content shared successfully on LinkedIn:', response.data);
     } catch (error) {
       console.error('Error posting content on LinkedIn:', error);
     }
   };
+  
+
+
 
 
 
@@ -176,14 +207,14 @@ const Dashboard = () => {
         value={tweetText}
         onChange={(e) => setTweetText(e.target.value)}
       />
-      <button onClick={handleTweetSubmit}>Connect to Twitter</button>
+      <button onClick={handleTweetSubmit}>  Connect to Twitter  </button>
       <input type="text" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="Enter PIN" />
-      <button onClick={handlePinSubmit}>Submit PIN</button>
+      <button onClick={handlePinSubmit}>  Submit PIN  </button>
 
       <button onClick={handleLinkedInAuth}>  Connect to LinkedIn  </button>
-      <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button>
+       <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button>
 
-      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleLogout}>  Logout  </button>
     </div>
   );
 };
