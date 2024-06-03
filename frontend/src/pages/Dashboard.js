@@ -10,13 +10,15 @@ const Dashboard = () => {
   const location = useLocation();
 
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
-  const [tweetText, setTweetText] = useState('');
-  const [pin, setPin] = useState('');
-  const [accessToken, setAccessToken] = useState('');
+  const [tweetText, setTweetText] = useState('');//twitter
+  const [pin, setPin] = useState('');//twitter
+  // const [accessToken, setAccessToken] = useState(''); //linkedin
+  // const [AccessToken, setaccessToken] = useState('');//twitter
+  // const [oauthTokenSecret, setOauthTokenSecret] = useState('');//twitter
 
  
 
-
+//LOGIN SIGNIN
   const handleLogout = () => {
     localStorage.removeItem('token'); // Clear token from local storage
 
@@ -62,70 +64,104 @@ const Dashboard = () => {
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [lastActivityTime, navigate]);
+//
 
 
 
 
 
-  const handleTweetSubmit = async () => {
-    try {
-      // Make a request to backend to initiate OAuth flow and obtain request token
-      const response = await axios.post('http://localhost:5000/twitter/initiate_oauth');
-      const { oauth_token, authorize_url } = response.data;
-
-      // Store the oauth_token in local storage
-      localStorage.setItem('oauth_token', oauth_token);
-
-      // Open the authorization URL in a new window or popup
-      window.open(authorize_url, '_blank');
-    } catch (error) {
-      console.error('Error initiating OAuth flow:', error);
-    }
-  };
-
-  const handlePinSubmit = async () => {
-    try {
-      // Make a request to backend to validate PIN and obtain access token
-      const response = await axios.post('http://localhost:5000/twitter/validate_pin', { oauth_token: localStorage.getItem('oauth_token'), pin });
-
-      // Extract the access token from the response
-      const { access_token } = response.data;
-
-      localStorage.setItem('access_token', access_token);
-
-      // Once validated, post the tweet using the obtained access token
-      const tweetResponse = await axios.post('http://localhost:5000/twitter/tweet', {
-        text: tweetText,
-        access_token: access_token
-      });
-
-      console.log(tweetResponse.data);
-    } catch (error) {
-      console.error('Error posting tweet:', error);
-    }
-  };
 
 
-   // After initiating OAuth flow, handle the redirect back from Twitter's authorization page
-   const handleCallback = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const pin = urlParams.get('oauth_verifier');
-    if (pin) {
-      setPin(pin);
-      handlePinSubmit();
-    }
-  };
+
+
+
+//TWITTER
+const handleTweetSubmit = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/twitter/initiate_oauth');
+    const { oauth_token, oauth_token_secret , authorize_url } = response.data;
   
-  useEffect(() => {
-    handleCallback();
-  }, []);
+
+    localStorage.setItem('oauth_token', oauth_token);
+    localStorage.setItem('oauth_token_secret', oauth_token_secret);
+    console.log(oauth_token);
+    console.log(oauth_token_secret);
+    window.open(authorize_url, '_blank');  } catch (error) {
+    console.error('Error initiating OAuth flow:', error);
+  }
+};
+
+
+
+const handlePinSubmit = async () => {
+  try {
+    const oauthToken = localStorage.getItem('oauth_token');
+    const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
+    console.log(oauthToken);
+    console.log(pin);
+
+
+    // Send the PIN and oauth_token to your backend
+    const response = await axios.post('http://localhost:5000/twitter/callbacks', {
+      oauth_token: oauthToken,
+      oauth_token_secret: oauthTokenSecret,
+      pin: pin
+    });
+
+    // Handle the response (e.g., store tokens, show success message)
+    const { oauth_token: AccessToken } = response.data;
+     const { oauth_token_secret: AccessTokenSecret} = response.data;
+     localStorage.setItem('twitter_access_token', AccessToken);
+     localStorage.setItem('twitter_oauth_token_secret', oauthTokenSecret);
+    console.log(AccessToken);
+   console.log(AccessTokenSecret);
+
+   console.log(response.data);
+  } catch (error) {
+    console.error('Error submitting PIN:', error);
+  }
+};
+
+
+
+
+const handlePostTweet = async () => {
+  try {
+    const AccessToken = localStorage.getItem('twitter_access_token');
+    const AccessTokenSecret = localStorage.getItem('twitter_oauth_token_secret');
+    console.log(AccessToken);
+   console.log(AccessTokenSecret);
+
+
+    const response = await axios.post('http://localhost:5000/twitter/tweet', {
+      text: tweetText,
+      oauth_token: AccessToken,
+      oauth_token_secret: AccessTokenSecret,
+    });
+    console.log("content shared successfully!!");
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error posting tweet:', error);
+  }
+};
+//
 
 
 
 
 
 
-  // HANDLE LINKEDIN 
+
+
+
+
+
+
+
+
+
+
+  // LINKEDIN 
   const handleLinkedInAuth = async () => {
     try {
       // const response = await axios.get('http://localhost:5000/linkedin/auth');
@@ -175,7 +211,7 @@ const Dashboard = () => {
       const response = await axios.post(
         'http://localhost:5000/sharePost/postContent',
         {
-          title: 'Hello World!',
+          title: 'linkedin api test!',
           text: 'Hello MERNApp!',
           shareUrl: 'https://www.example.com/content.html',
           shareThumbnailUrl: 'https://www.example.com/image.jpg',
@@ -192,31 +228,49 @@ const Dashboard = () => {
       console.error('Error posting content on LinkedIn:', error);
     }
   };
-  
+ // 
 
 
 
 
 
+
+
+
+
+
+//DASHBOARD
   return (
     <div>
       <h2>Dashboard</h2>
       <p>Welcome to your dashboard!</p>
+
+      <button onClick={handleTweetSubmit}>Connect to Twitter</button><br />
+      <input
+      type="text"
+      placeholder="Enter the PIN code here"
+      value={pin}
+      onChange={(e) => setPin(e.target.value)}
+      />
+      <button onClick={handlePinSubmit}>Submit PIN</button><br />
+
+
       <textarea
         placeholder="Enter your tweet"
         value={tweetText}
         onChange={(e) => setTweetText(e.target.value)}
       />
-      <button onClick={handleTweetSubmit}>  Connect to Twitter  </button>
-      <input type="text" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="Enter PIN" />
-      <button onClick={handlePinSubmit}>  Submit PIN  </button>
+      <button onClick={handlePostTweet}>  Post on Twitter  </button><br />
 
-      <button onClick={handleLinkedInAuth}>  Connect to LinkedIn  </button>
-       <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button>
+      
+      <button onClick={handleLinkedInAuth}>  Connect to LinkedIn  </button><br />
+       <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button><br />
 
       <button onClick={handleLogout}>  Logout  </button>
     </div>
   );
 };
+//
+
 
 export default Dashboard;
