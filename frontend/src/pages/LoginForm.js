@@ -1,9 +1,11 @@
 // frontend/client/src/components/LoginForm.js
-
+import { useCallback } from "react";
 import React, { useState } from 'react';
 import { useNavigate} from 'react-router-dom';
 
 const LoginForm = () => {
+
+
   const [formData, setFormData] = useState({ email: '', password: '' });
 
   const navigate = useNavigate(); // Initialize useHistory
@@ -34,8 +36,19 @@ const LoginForm = () => {
     }
   };
 
+  const onCancelContainerClick = useCallback(() => {
+    // Please sync "Landing Page" to the project
+    navigate('/')
+  }, [navigate]); 
+
+  const onSIGNUPTextClick = useCallback(() => {   //Navigated to Signup page
+    // Please sync "log in page" to the project
+    navigate('/signup');
+  }, [navigate]);
+
 return (
-  <div className="w-full relative bg-black-main-background overflow-hidden flex flex-col items-end justify-start pt-[98px] px-[127px] pb-[265px] box-border gap-[114px] tracking-[normal] leading-[normal] mq1325:gap-[57px] mq1325:pl-[63px] mq1325:pr-[63px] mq1325:box-border mq900:gap-[28px] mq900:pl-[31px] mq900:pr-[31px] mq900:box-border">
+  <div className="w-full relative bg-black-main-background overflow-hidden flex flex-col items-end justify-start pt-[80px] px-[127px] pb-[265px] box-border gap-[80px] tracking-[normal] leading-[normal] mq1325:gap-[57px] pr-[170px] pl-[154px] box-border mq900:gap-[28px] mq900:pl-[31px] mq900:pr-[31px] mq900:box-border">
+    {/* // <div className="w-full relative bg-black-main-background flex flex-row flex-wrap items-start justify-start py-[65px] px-[90px] box-border leading-[normal] tracking-[normal] mq750:pl-[22px] mq750:pr-[22px] mq750:box-border mq1050:pl-[45px] mq1050:pr-[45px] mq1050:box-border"> */}
     <header className="self-stretch flex flex-row items-start justify-end py-0 pr-1 pl-3 box-border max-w-full">
       <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px]">
         <img
@@ -44,7 +57,7 @@ return (
           alt=""
           src="/95ba66434f85ea111bc97dcb33d85d72-1@2x.png"
         />
-        <div className="flex flex-col items-start justify-start pt-px px-0 pb-0">
+        <div className="flex flex-col items-start justify-start pt-px px-0 pb-0" onClick={onCancelContainerClick}>
           <img
             className="w-10 h-10 relative cursor-pointer"
             loading="lazy"
@@ -68,16 +81,16 @@ return (
           </div>
         </div>
         <div className="w-[330px] flex flex-row items-start justify-start py-0 px-1 box-border max-w-full text-xl">
-          <div className="flex-1 rounded-11xl bg-lightslategray overflow-hidden flex flex-row items-start justify-start py-0 pr-1 pl-[38px] box-border gap-[11px] max-w-full z-[1] mq450:flex-wrap">
+          <div className="flex-1 rounded-11xl bg-lightslategray overflow-hidden flex flex-row items-start justify-start py-0 pr-0 pl-[38px] box-border gap-[11px] max-w-full z-[1] mq450:flex-wrap">
             <div className="w-[100px] flex flex-col items-start justify-start pt-[25px] px-0 pb-0 box-border">
               <div
                 className="self-stretch h-[37px] relative font-semibold inline-block shrink-0 whitespace-nowrap cursor-pointer mq450:text-base"
-                // onClick={onSIGNUPTextClick}
+                onClick={onSIGNUPTextClick}
               >
                 SIGN UP
               </div>
             </div>
-            <button className="cursor-pointer [border:none] pt-[27px] px-[33px] pb-[13px] bg-button flex-1 rounded-11xl overflow-hidden flex flex-row items-start justify-end box-border min-w-[83px] whitespace-nowrap hover:bg-mediumslateblue">
+            <button className="cursor-pointer [border:none] pt-[27px] px-[32px] pb-[13px] bg-button flex-1 rounded-11xl overflow-hidden flex flex-row items-end justify-end box-border min-w-[85px] whitespace-nowrap hover:bg-mediumslateblue">
               <div className="h-[37px] w-[83px] relative text-xl font-semibold font-inter text-black-main-text text-left inline-block shrink-0">
                 LOG IN
               </div>
@@ -90,9 +103,9 @@ return (
           <div className="self-stretch h-[115.1px] flex flex-row items-start justify-center py-0 pr-[23px] pl-5 box-border">
           <div className="self-stretch w-[114.9px] flex flex-row items-start justify-start relative gap-[10px] shrink-0 [debug_commit:1de1738] z-[1]">
       <div className="self-stretch flex-1 relative rounded-[50%] bg-black-main-background" />
-      <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-gray z-[1]" />
+      <div className="h-[9px] w-[calc(%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-gray z-[1]" />
       <img
-        className="h-[37px] w-[42px] absolute !m-[0] top-[39px] left-[36px] overflow-hidden shrink-0 z-[2]"
+        className="h-[6px] w-[6px] absolute !m-[0] top-[39px] left-[36px] overflow-hidden shrink-0 z-[2]"
         loading="lazy"
         alt=""
         src="/clarityaddline.svg"
