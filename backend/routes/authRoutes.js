@@ -8,6 +8,7 @@ const User = require('../models/User');
 const router = express.Router();
 
 
+
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
@@ -59,8 +60,15 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, 'secretkey', { expiresIn: '1h' });
+    // Redirect based on user role
 
-    res.json({ token });
+    if (user.role === 'admin') {
+      redirectUrl = '/admindashboard'; // Redirect to admin dashboard for admin users
+    }else{
+      redirectUrl = '/dashboard'; 
+    }
+
+    res.json({ token, redirectUrl });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

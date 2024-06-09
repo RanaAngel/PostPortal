@@ -20,11 +20,11 @@ app.use(express.json());
 
 
 // CORS configuration
-app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your frontend URL
-  methods: ['GET', 'POST'],
-  credentials: true // Allow cookies to be sent along with the request
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3000', // Replace with your frontend URL
+//   methods: ['GET', 'POST'],
+//   credentials: true // Allow cookies to be sent along with the request
+// }));
 
 // Routes
 app.use('/auth', authRoutes);
@@ -33,7 +33,7 @@ app.use('/twitter', twitterRoutes);
 //Linkedin Routes:
 app.use('/linkedin', linkedinRoutes);
 app.use('/sharePost', shareOnLinkedin);
-app.use('./admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 
 // Connect to MongoDB

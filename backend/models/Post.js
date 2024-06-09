@@ -11,7 +11,10 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  imageURL: String, // Assuming it's optional
+  imageURL:{
+    type: String,
+
+  }, // Assuming it's optional
   dateTime: {
     type: Date,
     default: Date.now

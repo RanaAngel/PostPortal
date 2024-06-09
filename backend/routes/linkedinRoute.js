@@ -6,6 +6,11 @@ const https = require('https');
 const fs = require('fs');
 const url = require('url');
 const cors = require('cors'); // Import CORS middleware
+const mongoose = require('mongoose');
+const linkedin = require('../models/Linkedin'); // Import the Linkedin model
+const User = require('../models/User');
+const jwt = require('jsonwebtoken'); 
+const { constants } = require('buffer');
 
 
 
@@ -25,13 +30,27 @@ const scope = 'openid w_member_social r_basicprofile profile email';
 //   cert: fs.readFileSync('path/to/localhost.crt')
 // };
 
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const router = express.Router();
 
 // Enable CORS for all routes
 router.use(cors());
 
 router.get('/auth', (req, res) => {
-  let auth_url = auth_base_url + '?response_type=' + response_type + '&client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect_uri) + '&state=' + state + '&scope=' + encodeURIComponent(scope);
+  const token = req.query.token;
+  if (!token) {
+    return res.status(401).send('No JWT token provided');
+  }
+   // Include the token in the state parameter
+   const stateWithToken = `${state}:${token}`;
+
+   const auth_url = `${auth_base_url}?response_type=${response_type}&client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&state=${stateWithToken}&scope=${encodeURIComponent(scope)}`;
   
   res.redirect(auth_url);
   console.log('auth hit');
@@ -39,8 +58,21 @@ router.get('/auth', (req, res) => {
 
 router.get('/callback', (req, res) => {
   console.log('callback hit');
-  const req_code = req.query.code;
-  const req_state = req.query.state;
+ // Extract the JWT token from the query parameters
+ const req_code = req.query.code;
+ const req_state = req.query.state;
+  // Split the state to get the original state and the token
+  const [returnedState, token] = req_state.split(':');
+
+  // if (returnedState !== state) {
+  //   return res.status(401).send('Invalid state parameter');
+  // }
+
+  if (!token) {
+    return res.status(401).send('No JWT token provided');
+  }
+
+
 
   // WARNING: test req_state == state to prevent CSRF attacks
 
@@ -59,24 +91,38 @@ router.get('/callback', (req, res) => {
   };
   const body = '';
 
-  _request(method, hostname, path, headers, body).then(r => {
+  _request(method, hostname, path, headers, body).then(async (r) => {
     if (r.status === 200) {
-      const access_token = JSON.parse(r.body).access_token; 
+      const access_token = JSON.parse(r.body).access_token;
       const expires_in = Date.now() + (JSON.parse(r.body).expires_in * 1000); // token expiry in epoch format
-      token_json = '{"access_token":"' + access_token + '","expires_in":"' + expires_in + '"}';
-				fs.writeFile("./linkedin_token.json", token_json, e => {if(e){console.log('ERROR - ' + e)}});
 
-         // Redirect the user to the frontend dashboard with the access token
-         res.redirect('http://localhost:3000/dashboard?access_token=' + access_token);
-        //  console.log('accessToken'+ access_token);
-         console.log("redirected....");
+      try {
+         // Decode the JWT token
+    const decoded = jwt.verify(token, 'secretkey');
+    const userId = decoded.userId;
+    
+    // Find the user in your database
+    const user = await User.findById(userId);
 
-				// res.writeHead(200, {'content-type': 'text/html'});
-				// res.write('Access token retrieved. You can close this page');
-				// console.log('Access token retrieved. You can stop this app listening.');
-				res.end();
-     
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+       // Save the LinkedIn access token to the database, associated with the user
+       const linkedinToken = new linkedin({
+        accessToken: access_token,
+        userId: user._id, // Associate the token with the user
+        expiresAt: expires_in,
+      });
+    await linkedinToken.save();
+    console.log(`LinkedIn token saved for user ID: ${user._id}`);
 
+        // Redirect the user to the frontend dashboard with the access token
+        res.redirect(`http://localhost:3000/dashboard?access_token=${access_token}`);
+        console.log("redirected....");
+      } catch (error) {
+        console.error('Error saving LinkedIn token:', error);
+        res.status(500).send('Internal Server Error');
+      }
     } else {
       console.log('ERROR - ' + r.status + JSON.stringify(r.body));
       res.status(r.status).send(r.status + ' Internal Server Error');
@@ -86,6 +132,7 @@ router.get('/callback', (req, res) => {
     res.status(500).send('500 Internal Server Error');
   });
 });
+
 
 // HTTPS request wrapper  
 function _request(method, hostname, path, headers, body) {

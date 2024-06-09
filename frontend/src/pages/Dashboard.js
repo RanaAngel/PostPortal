@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
 import axios from 'axios';
+import FacebookFlow from '../components/FacebookFlow';
 
 
 const Dashboard = () => {
@@ -164,11 +165,16 @@ const handlePostTweet = async () => {
   // LINKEDIN 
   const handleLinkedInAuth = async () => {
     try {
-      // const response = await axios.get('http://localhost:5000/linkedin/auth');
-      window.location.href = 'http://localhost:5000/linkedin/auth';
-      // const { accessToken } = response.data;
-      //       setAccessToken(accessToken);
-      //       console.log(accessToken);
+      // Retrieve the JWT token from localStorage
+      const token = localStorage.getItem('token'); // Ensure this matches the key used to store the token
+      console.log(token);
+      if (!token) {
+        throw new Error('JWT token not found');
+      }
+  
+      // Append the JWT token to the callback URL
+      const authURL = `http://localhost:5000/linkedin/auth?token=${encodeURIComponent(token)}`;
+      window.location.href = authURL;
     } catch (error) {
       console.error('Error initiating LinkedIn authentication flow:', error);
     }
@@ -267,6 +273,7 @@ const handlePostTweet = async () => {
        <button onClick={handleLinkedInPost}>  Post on LinkedIn  </button><br />
 
       <button onClick={handleLogout}>  Logout  </button>
+      <FacebookFlow />
     </div>
   );
 };
