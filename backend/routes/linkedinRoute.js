@@ -117,7 +117,7 @@ router.get('/callback', (req, res) => {
     console.log(`LinkedIn token saved for user ID: ${user._id}`);
 
         // Redirect the user to the frontend dashboard with the access token
-        res.redirect(`http://localhost:3000/dashboard?access_token=${access_token}`);
+        res.redirect(`http://localhost:3000/dashboard?access_token=${access_token}&userId=${user._id}`);
         console.log("redirected....");
       } catch (error) {
         console.error('Error saving LinkedIn token:', error);

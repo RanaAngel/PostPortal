@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema({
     type: String,
 
   }, // Assuming it's optional
-  dateTime: {
+  postedAt: {
     type: Date,
     default: Date.now
   }
