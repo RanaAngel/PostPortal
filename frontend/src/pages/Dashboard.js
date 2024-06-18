@@ -4,7 +4,9 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 import axios from 'axios';
 import FacebookFlow from '../components/FacebookFlow';
-import CreatePost from '../postComponents/CreatePost';
+// import CreatePost from '../components/CreatePost';
+import CreatePostPage from '../pages/DashboardPage/CreatePostPage';
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ const Dashboard = () => {
   const [tweetText, setTweetText] = useState('');
   const [pin, setPin] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const [showCreatePost, setShowCreatePost] = useState(false);
 
@@ -56,12 +60,14 @@ const Dashboard = () => {
 
 
 //CREATE POST
-  const handlePostClick = () => {
-    setShowCreatePost(true);
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
-  const handleClose = () => {
-    setShowCreatePost(false);
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
 
@@ -205,35 +211,45 @@ const Dashboard = () => {
       />
       <button onClick={handlePostTweet}>Post on Twitter</button><br />
 
+{/* Create Post */}
+<button onClick={openModal}>Post</button><br />
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Create Post"
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          },
+          content: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            maxWidth: '90%', // Optional: Set maximum width
+            maxHeight: '90%', // Optional: Set maximum height
+            minWidth: '80%', // Optional: Set minimum width
+            minHeight: '80%', // Optional: Set minimum height
+            margin: 'auto', // Centers the modal content
+            padding: '20px',
+            background: '#fff',
+            outline: 'none',
+            borderRadius: '4px',
+          },
+        }}
+      >
+        <CreatePostPage />
+        <button onClick={closeModal} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Close</button>
+        </Modal>
+
       <button onClick={handleLinkedInAuth}>Connect to LinkedIn</button><br />
       <input type="file" accept="image/*" onChange={handleImageUpload} /><br />
       <button onClick={handleLinkedInPost}>Post on LinkedIn</button><br />
-      
-
-      <div>
-      <button
-        className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        onClick={handlePostClick}
-      >
-        Post
-      </button>
-      <Modal show={showCreatePost} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create Post</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <CreatePost />
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            onClick={handleClose}
-          >
-            Close
-          </button>
-        </Modal.Footer>
-      </Modal>
-    </div>
 
 
 

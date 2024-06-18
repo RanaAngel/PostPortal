@@ -1,3 +1,5 @@
+
+
 'use-strict';
 
 const express = require('express');
@@ -36,27 +38,24 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
         // Register the image upload
         const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.buffer);
         console.log(JSON.stringify(uploadDetails, null, 2))
-        const imageUrl = uploadDetails.asset;
-        console.log('image registered:  ',imageUrl);
-
-        const uploadUrl = uploadDetails.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
-
+        console.log('image registered:  ',uploadDetails.image);
+        const uploadUrl = uploadDetails.uploadUrl;
         console.log("Upload URL:", uploadUrl);
-
         const imageBuffer = imageFile.buffer;
         
         // Upload the image to LinkedIn
         await uploadImageToLinkedIn(uploadUrl, imageBuffer); // Implement this function
         console.log('image uploaded: ',uploadImageToLinkedIn);
 
-        const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrl, uploadUrl);
+        const response = await postShareWithImage(accessToken, ownerId, title, text, uploadDetails.image);
         console.log(response);
 
         // Save the post information to the database
         const newPost = new Post({
             userID: userId,
             content: text,
-            imageURL: imageUrl,
+            imageURL: uploadDetails.asset,
+            uploadUrl: uploadUrl,
             postedAt: Date.now(),
         });
 
@@ -83,8 +82,8 @@ function getLinkedinId(accessToken) {
         const headers = {
             'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json',
-            'LinkedIn-Version': '202306' // Add the LinkedIn-Version header
-
+            'X-Restli-Protocol-Version': '2.0.0', // Added X-Restli-Protocol-Version header
+            'LinkedIn-Version': '202306'
         };
         const body = '';
 
@@ -99,18 +98,18 @@ function getLinkedinId(accessToken) {
     });
 }
 
-// Register image upload
 const registerImageUpload = async (accessToken, ownerId, imageBuffer) => {
     console.log('Registering image upload');
     return new Promise((resolve, reject) => {
         const options = {
             method: 'POST',
             hostname: 'api.linkedin.com',
-            path: '/v2/assets?action=registerUpload',
+            path: '/rest/images?action=initializeUpload',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
-                'LinkedIn-Version': '202306' // Update LinkedIn-Version to the latest
+                'X-Restli-Protocol-Version': '2.0.0',
+                'LinkedIn-Version': '202306'
             },
         };
 
@@ -133,13 +132,8 @@ const registerImageUpload = async (accessToken, ownerId, imageBuffer) => {
         });
 
         req.write(JSON.stringify({
-            "registerUploadRequest": {
-                "recipes": ["urn:li:digitalmediaRecipe:feedshare-image"],
-                "owner": `urn:li:person:${ownerId}`,
-                "serviceRelationships": [{
-                    "relationshipType": "OWNER",
-                    "identifier": "urn:li:userGeneratedContent"
-                }]
+            "initializeUploadRequest": {
+                "owner": `urn:li:person:${ownerId}`
             }
         }));
 
@@ -148,14 +142,13 @@ const registerImageUpload = async (accessToken, ownerId, imageBuffer) => {
 };
 
 
-// Upload image to LinkedIn
 const uploadImageToLinkedIn = async (uploadUrl, imageBuffer) => {
     console.log('Uploading image to LinkedIn');
     return new Promise((resolve, reject) => {
         const req = https.request(uploadUrl, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'image/jpeg', // Change this if your image is of a different type
+                'Content-Type': 'image/jpeg', // Adjust this based on your image type
                 'Content-Length': imageBuffer.length,
             },
         }, (res) => {
@@ -177,20 +170,20 @@ const uploadImageToLinkedIn = async (uploadUrl, imageBuffer) => {
     });
 };
 
+
 // Post content on LinkedIn with image
-// Post content on LinkedIn with image using UGC API
-const postShareWithImage = async (accessToken, ownerId, title, text, imageUrl) => {
-    console.log('Posting image content on LinkedIn using UGC API');
+const postShareWithImage = async (accessToken, ownerId, title, text, assetId) => {
+    console.log('Posting image content on LinkedIn');
     return new Promise((resolve, reject) => {
         const options = {
             method: 'POST',
             hostname: 'api.linkedin.com',
-            path: '/v2/ugcPosts',
+            path: '/rest/posts', // Adjusted path based on the LinkedIn documentation
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
-                'X-Restli-Protocol-Version': '2.0.0',
-                'LinkedIn-Version': '202306' // Update LinkedIn-Version to the latest
+                'X-Restli-Protocol-Version': '2.0.0', // Added X-Restli-Protocol-Version header
+                'LinkedIn-Version': '202306' // Add the LinkedIn-Version header
             },
         };
 
@@ -213,35 +206,28 @@ const postShareWithImage = async (accessToken, ownerId, title, text, imageUrl) =
         });
 
         const requestBody = JSON.stringify({
-            "author": `urn:li:person:${ownerId}`,
-            "lifecycleState": "PUBLISHED",
-            "specificContent": {
-                "com.linkedin.ugc.ShareContent": {
-                    "shareCommentary": {
-                        "text": text
-                    },
-                    "shareMediaCategory": "IMAGE",
-                    "media": [
-                        {
-                            "status": "READY",
-                            "description": {
-                                "text": "Description of the image"
-                            },
-                            "media": imageUrl
-                        }
-                    ]
+            "author": `urn:li:person:${ownerId}`, // Adjusted author field based on the LinkedIn documentation
+            "commentary": text,
+            "visibility": "PUBLIC",
+            "distribution": {
+                "feedDistribution": "MAIN_FEED",
+                "targetEntities": [],
+                "thirdPartyDistributionChannels": []
+            },
+            "content": {
+                "media": {
+                    "altText": title, // You may want to set this dynamically
+                    "id": assetId
                 }
             },
-            "visibility": {
-                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
-            }
+            "lifecycleState": "PUBLISHED",
+            "isReshareDisabledByAuthor": false
         });
 
         req.write(requestBody);
         req.end();
     });
-}
-
+};
 
 
 

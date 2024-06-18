@@ -14,7 +14,11 @@ const postSchema = new mongoose.Schema({
   imageURL:{
     type: String,
 
-  }, // Assuming it's optional
+  },
+  uploadUrl:{
+    type: String,
+    
+  },
   postedAt: {
     type: Date,
     default: Date.now
