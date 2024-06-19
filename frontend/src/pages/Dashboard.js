@@ -4,9 +4,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 import axios from 'axios';
 import FacebookFlow from '../components/FacebookFlow';
-// import CreatePost from '../components/CreatePost';
-import CreatePostPage from '../pages/DashboardPage/CreatePostPage';
-
+import CreatePost from '../components/CreatePost';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -145,49 +143,49 @@ const Dashboard = () => {
     }
   }, [location]);
 
-  const handleImageUpload = (event) => {
-    setSelectedImage(event.target.files[0]);
-  };
+  // const handleImageUpload = (event) => {
+  //   setSelectedImage(event.target.files[0]);
+  // };
 
-  const handleLinkedInPost = async () => {
-    try {
-      const accessToken = localStorage.getItem('access_token');
-      const userId = localStorage.getItem('user_id');
+  // const handleLinkedInPost = async () => {
+  //   try {
+  //     const accessToken = localStorage.getItem('access_token');
+  //     const userId = localStorage.getItem('user_id');
   
-      if (!accessToken || !userId) {
-        console.error('Access token or User ID not found.');
-        return;
-      }
+  //     if (!accessToken || !userId) {
+  //       console.error('Access token or User ID not found.');
+  //       return;
+  //     }
   
-      const formData = new FormData();
-      formData.append('title', 'LinkedIn API Test!');
-      formData.append('text', 'Hello MERNApp!');
-      formData.append('shareUrl', 'https://www.example.com/content.html');
-      formData.append('shareThumbnailUrl', 'https://www.example.com/image.jpg');
-      formData.append('userId', userId);
-      if (selectedImage) {
-        formData.append('image', selectedImage);
-      } else {
-        console.error('No image selected');
-        return;
-      }
+  //     const formData = new FormData();
+  //     formData.append('title', 'LinkedIn API Test!');
+  //     formData.append('text', 'Hello MERNApp!');
+  //     formData.append('shareUrl', 'https://www.example.com/content.html');
+  //     formData.append('shareThumbnailUrl', 'https://www.example.com/image.jpg');
+  //     formData.append('userId', userId);
+  //     if (selectedImage) {
+  //       formData.append('image', selectedImage);
+  //     } else {
+  //       console.error('No image selected');
+  //       return;
+  //     }
   
-      const response = await axios.post(
-        'http://localhost:5000/sharePost/postContent',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      alert('Content Shared on linkedin:)');
-      console.log('Content shared successfully on LinkedIn:', response.data);
-    } catch (error) {
-      console.error('Error posting content on LinkedIn:', error);
-    }
-  };
+  //     const response = await axios.post(
+  //       'http://localhost:5000/sharePost/postContent',
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //           'Content-Type': 'multipart/form-data',
+  //         },
+  //       }
+  //     );
+  //     alert('Content Shared on linkedin:)');
+  //     console.log('Content shared successfully on LinkedIn:', response.data);
+  //   } catch (error) {
+  //     console.error('Error posting content on LinkedIn:', error);
+  //   }
+  // };
   
 
   return (
@@ -211,45 +209,21 @@ const Dashboard = () => {
       />
       <button onClick={handlePostTweet}>Post on Twitter</button><br />
 
+      
+      <button onClick={handleLinkedInAuth}>Connect to LinkedIn</button><br />
 {/* Create Post */}
-<button onClick={openModal}>Post</button><br />
+<button onClick={openModal}> Create Post</button><br />
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Create Post"
-        style={{
-          overlay: {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          },
-          content: {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            maxWidth: '90%', // Optional: Set maximum width
-            maxHeight: '90%', // Optional: Set maximum height
-            minWidth: '80%', // Optional: Set minimum width
-            minHeight: '80%', // Optional: Set minimum height
-            margin: 'auto', // Centers the modal content
-            padding: '20px',
-            background: '#fff',
-            outline: 'none',
-            borderRadius: '4px',
-          },
-        }}
       >
-        <CreatePostPage />
-        <button onClick={closeModal} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Close</button>
+        <CreatePost closeModal={closeModal} />
         </Modal>
 
-      <button onClick={handleLinkedInAuth}>Connect to LinkedIn</button><br />
-      <input type="file" accept="image/*" onChange={handleImageUpload} /><br />
-      <button onClick={handleLinkedInPost}>Post on LinkedIn</button><br />
+    
+      {/* <input type="file" accept="image/*" onChange={handleImageUpload} /><br />
+      <button onClick={handleLinkedInPost}>Post on LinkedIn</button><br /> */}
 
 
 
