@@ -4,8 +4,10 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
 const router = express.Router();
-const passport = require('passport');
+
+
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -58,7 +60,6 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, 'secretkey', { expiresIn: '1h' });
-
     // Redirect based on user role
 
     if (user.role === 'admin') {
@@ -66,12 +67,14 @@ router.post('/login', async (req, res) => {
     }else{
       redirectUrl = '/dashboard'; 
     }
+
     res.json({ token, redirectUrl });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 module.exports = router;

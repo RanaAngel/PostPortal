@@ -62,9 +62,10 @@ const navigate = useNavigate();
     navigate('/login');
   }, [navigate]);
 
-  // const onCancelContainerClick = useCallback(() => {
-  //   // Please sync "Landing Page" to the project
-  // }, []);
+  const onCancelContainerClick = useCallback(() => {
+    // Please sync "Landing Page" to the project
+    navigate('/')
+  }, [navigate]);
 
   // const onRectangleClick = useCallback(() => {
   //   // Please sync "Landing Page" to the project
@@ -80,9 +81,9 @@ const navigate = useNavigate();
 
   return (
 <div className="w-full relative bg-black-main-background overflow-hidden flex flex-row items-start justify-start pt-20 pb-[142px] pr-[170px] pl-[154px] box-border gap-[121px] tracking-[normal] leading-[normal] text-left text-[40px] text-black-main-text font-inter mq450:gap-[15px] mq450:pr-5 mq450:box-border mq1225:gap-[60px] mq1225:pl-[77px] mq1225:pr-[85px] mq1225:box-border mq850:gap-[30px] mq850:pl-[38px] mq850:pr-[42px] mq850:box-border mq1525:flex-wrap">
-<div className="flex-1 flex flex-col items-start justify-start gap-[294px] min-w-[515px] max-w-full mq450:gap-[73px] mq1225:min-w-full mq850:gap-[147px]">
+<div className="flex-1 flex flex-col items-start justify-start gap-[195px] min-w-[515px] max-w-full mq450:gap-[73px] mq1225:min-w-full mq850:gap-[147px]">
   <div className="self-stretch flex flex-col items-start justify-start gap-[79px] max-w-full mq450:gap-[20px] mq850:gap-[39px]">
-    <div className="h-[87px] flex flex-row items-start justify-start py-2.5 pr-0 pl-2.5 box-border">
+    <div className="h-[87px] flex flex-row items-start justify-start py-0 pr-0 pl-2.5 box-border">
       <img
         className="h-20 w-20 relative object-cover"
         loading="lazy"
@@ -96,7 +97,7 @@ const navigate = useNavigate();
           CARE TO EXPLORE OUR SERVICES? GET TO MANAGE POSTS IN SINGLE
           CLICK
         </h1>
-        <div className="w-[743px] relative text-xl font-medium text-lightslategray-100 inline-block max-w-full mq450:text-base">
+        <div className="w-[743px] relative text-xl font-medium text-black-sub-text inline-block max-w-full mq450:text-base">
           Gain access to powerful tools and features designed to
           streamline your social media workflow and boost your online
           presence.
@@ -105,7 +106,7 @@ const navigate = useNavigate();
     </div>
   </div>
   <div className="w-[358px] flex flex-row items-start justify-start py-0 px-[18px] box-border sticky top-[0] z-[99] max-w-full text-xl">
-    <div className="flex-1 rounded-11xl bg-lightslategray-200 overflow-hidden flex flex-row items-start justify-start py-0 pr-[33px] pl-0 box-border gap-[37px] max-w-full mq450:gap-[18px]">
+    <div className="flex-1 rounded-11xl bg-lightslategray overflow-hidden flex flex-row items-start justify-start py-0 pr-[33px] pl-0 box-border gap-[37px] max-w-full mq450:gap-[18px]">
       <button className="cursor-pointer [border:none] pt-[25px] px-[27px] pb-[15px] bg-button flex-1 rounded-11xl overflow-hidden flex flex-row items-start justify-end whitespace-nowrap hover:bg-mediumslateblue">
         <div className="h-[37px] w-[100px] relative text-xl font-semibold font-inter text-black-main-text text-left inline-block shrink-0">
           SIGN UP
@@ -122,12 +123,12 @@ const navigate = useNavigate();
     </div>
   </div>
 </div>
-<div className="w-[682px] flex flex-col items-start justify-start pt-2.5 px-0 pb-0 box-border min-w-[682px] max-w-full mq1225:min-w-full mq1525:flex-1">
-  <div className="self-stretch flex flex-col items-end justify-start gap-[24px] max-w-full">
+<div className="w-[682px] flex flex-col items-start justify-start pt-0 px-0 pb-0 box-border min-w-[682px] max-w-full mq1225:min-w-full mq1525:flex-1">
+  <div className="self-stretch flex flex-col items-end justify-start gap-[1px] max-w-full">
     <div className="flex flex-row items-start justify-end py-0 px-[7px]">
       <div
         className="overflow-hidden flex flex-row items-center justify-center relative gap-[10px] cursor-pointer"
-      //   onClick={onCancelContainerClick}
+        onClick={onCancelContainerClick}
       >
         <div className="h-10 w-10 relative rounded-[50%] bg-gray box-border border-[0px] border-solid border-black-main-text" />
         <img
@@ -139,7 +140,7 @@ const navigate = useNavigate();
       </div>
     </div>
     <div className="self-stretch h-[784px] relative max-w-full mq850:h-auto mq850:min-h-[784]">
-      <form onSubmit={handleSubmit} className="m-0 absolute top-[58px] left-[0px] rounded-xl bg-black-card w-full flex flex-col items-end justify-start pt-[139px] pb-[72px] pr-[70px] pl-14 box-border gap-[44px] max-w-full mq850:gap-[22px] mq850:pl-7 mq850:pr-[35px] mq850:box-border">
+      <form onSubmit={handleSubmit} className="m-0 absolute top-[58px] left-[0px] rounded-xl bg-black-card w-full flex flex-col items-end justify-start pt-[139px] pb-[72px] pr-[70px] pl-14 box-border gap-[30px] max-w-full mq850:gap-[22px] mq850:pl-7 mq850:pr-[35px] mq850:box-border">
         <img
           className="w-[682px] h-[726px] relative rounded-xl hidden max-w-full"
           alt=""
