@@ -3,6 +3,8 @@ import { useNavigate, useLocation, redirect } from 'react-router-dom';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 import FacebookFlow from '../components/FacebookFlow';
 import CreatePost from '../components/CreatePost';
 
@@ -13,8 +15,9 @@ const Dashboard = () => {
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
   const [tweetText, setTweetText] = useState('');
   const [pin, setPin] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
+  // const [selectedImage, setSelectedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+const [pkceData, setPkceData] = useState({ codeVerifier: '', codeChallenge: '' });
 
 
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -70,50 +73,134 @@ const Dashboard = () => {
 
 
 
-  // Twitter
+  // // Twitter
   const handleTweetSubmit = async () => {
+  // Send the code challenge to your backend to initiate the OAuth flow
     try {
-      const response = await axios.post('http://localhost:5000/twitter/initiate_oauth');
-      const { oauth_token, oauth_token_secret, authorize_url } = response.data;
+      const response = await axios.post(`http://localhost:5000/twitter/initiate_oauth`);
+      const { oauth_token, oauth_token_secret , authorize_url } = response.data;
       localStorage.setItem('oauth_token', oauth_token);
-      localStorage.setItem('oauth_token_secret', oauth_token_secret);
-      window.open(authorize_url, '_blank');
+    localStorage.setItem('oauth_token_secret', oauth_token_secret);
+    window.open(authorize_url, '_blank'); 
     } catch (error) {
       console.error('Error initiating OAuth flow:', error);
     }
   };
 
-  const handlePinSubmit = async () => {
-    try {
-      const oauthToken = localStorage.getItem('oauth_token');
-      const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
-      const response = await axios.post('http://localhost:5000/twitter/callbacks', {
-        oauth_token: oauthToken,
-        oauth_token_secret: oauthTokenSecret,
-        pin: pin
-      });
-      const { oauth_token: AccessToken, oauth_token_secret: AccessTokenSecret } = response.data;
-      localStorage.setItem('twitter_access_token', AccessToken);
-      localStorage.setItem('twitter_oauth_token_secret', oauthTokenSecret);
-    } catch (error) {
-      console.error('Error submitting PIN:', error);
-    }
-  };
 
-  const handlePostTweet = async () => {
-    try {
-      const AccessToken = localStorage.getItem('twitter_access_token');
-      const AccessTokenSecret = localStorage.getItem('twitter_oauth_token_secret');
-      const response = await axios.post('http://localhost:5000/twitter/tweet', {
-        text: tweetText,
-        oauth_token: AccessToken,
-        oauth_token_secret: AccessTokenSecret,
-      });
-      console.log('Content shared successfully:', response.data);
-    } catch (error) {
-      console.error('Error posting tweet:', error);
-    }
-  };
+  
+const handlePinSubmit = async () => {
+  try {
+    const oauthToken = localStorage.getItem('oauth_token');
+    const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
+    console.log(oauthToken);
+    console.log(pin);
+
+
+    // Send the PIN and oauth_token to your backend
+    const response = await axios.post('http://localhost:5000/twitter/callback', {
+      oauth_token: oauthToken,
+      oauth_token_secret: oauthTokenSecret,
+      pin: pin
+    });
+
+    // Handle the response (e.g., store tokens, show success message)
+    const AccessToken = response.data;
+    localStorage.setItem('access_token', JSON.stringify(AccessToken));
+
+  //    const { oauth_token_secret: AccessTokenSecret} = response.data;
+  //    localStorage.setItem('twitter_access_token', AccessToken);
+  //    localStorage.setItem('twitter_oauth_token_secret', oauthTokenSecret);
+  //   console.log(AccessToken);
+  //  console.log(AccessTokenSecret);
+
+   console.log(response.data);
+  } catch (error) {
+    console.error('Error submitting PIN:', error);
+  }
+};
+
+const handlePostTweet = async () => {
+  try {
+  //   const AccessToken = localStorage.getItem('twitter_access_token');
+  //   const AccessTokenSecret = localStorage.getItem('twitter_oauth_token_secret');
+  //   console.log(AccessToken);
+  //  console.log(AccessTokenSecret);
+
+  const storedAccessToken = localStorage.getItem('access_token');
+if (storedAccessToken) {
+    const accessToken = JSON.parse(storedAccessToken);
+    console.log('Retrieved Access Token:', accessToken);
+    // Use accessToken.oauth_token and accessToken.oauth_token_secret as needed
+
+
+
+    const response = await axios.post('http://localhost:5000/twitter/tweet', {
+      text: tweetText,
+      access_token: accessToken,
+    });
+ 
+    alert("content shared successfully");
+    console.log(JSON.stringify(response.data, undefined, 2));
+  }
+  } catch (error) {
+    console.error('Error posting tweet:', error);
+  }
+};
+
+  // // Effect hook to handle the callback from Twitter
+  // useEffect(() => {
+  //   const searchParams = new URLSearchParams(location.search);
+  //   const code = searchParams.get('code'); // Extract the authorization code from the URL
+  
+  //   if (code) {
+  //     // Send the code to your backend to exchange for an access token
+  //     axios.post('http://localhost:5000/callback', { code })
+  //      .then(response => {
+  //         // Handle the response, e.g., save the access token locally
+  //         localStorage.setItem('access_token', response.data.access_token);
+  //         localStorage.setItem('refresh_token', response.data.refresh_token); // Assuming your backend returns a refresh token
+  //       })
+  //      .catch(error => {
+  //         console.error('Error exchanging code for token:', error);
+  //       });
+  //   }
+  // }, [location]);
+
+
+
+
+  // const handlePinSubmit = async () => {
+  //   try {
+  //     const oauthToken = localStorage.getItem('oauth_token');
+  //     const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
+  //     const response = await axios.post('http://localhost:5000/twitter/callbacks', {
+  //       oauth_token: oauthToken,
+  //       oauth_token_secret: oauthTokenSecret,
+  //       pin: pin
+  //     });
+  //     const { oauth_token: AccessToken, oauth_token_secret: AccessTokenSecret } = response.data;
+  //     localStorage.setItem('twitter_access_token', AccessToken);
+  //     localStorage.setItem('twitter_oauth_token_secret', oauthTokenSecret);
+  //   } catch (error) {
+  //     console.error('Error submitting PIN:', error);
+  //   }
+  // };
+
+  // const handlePostTweet = async () => {
+  //   try {
+  //     const AccessToken = localStorage.getItem('twitter_access_token');
+  //     const AccessTokenSecret = localStorage.getItem('twitter_oauth_token_secret');
+  //     const response = await axios.post('http://localhost:5000/twitter/tweet', {
+  //       text: tweetText,
+  //       oauth_token: AccessToken,
+  //       oauth_token_secret: AccessTokenSecret,
+  //     });
+  //     console.log('Content shared successfully:', response.data);
+  //   } catch (error) {
+  //     console.error('Error posting tweet:', error);
+  //   }
+  // };
 
   // LinkedIn
   const handleLinkedInAuth = async () => {
@@ -143,49 +230,6 @@ const Dashboard = () => {
     }
   }, [location]);
 
-  // const handleImageUpload = (event) => {
-  //   setSelectedImage(event.target.files[0]);
-  // };
-
-  // const handleLinkedInPost = async () => {
-  //   try {
-  //     const accessToken = localStorage.getItem('access_token');
-  //     const userId = localStorage.getItem('user_id');
-  
-  //     if (!accessToken || !userId) {
-  //       console.error('Access token or User ID not found.');
-  //       return;
-  //     }
-  
-  //     const formData = new FormData();
-  //     formData.append('title', 'LinkedIn API Test!');
-  //     formData.append('text', 'Hello MERNApp!');
-  //     formData.append('shareUrl', 'https://www.example.com/content.html');
-  //     formData.append('shareThumbnailUrl', 'https://www.example.com/image.jpg');
-  //     formData.append('userId', userId);
-  //     if (selectedImage) {
-  //       formData.append('image', selectedImage);
-  //     } else {
-  //       console.error('No image selected');
-  //       return;
-  //     }
-  
-  //     const response = await axios.post(
-  //       'http://localhost:5000/sharePost/postContent',
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //           'Content-Type': 'multipart/form-data',
-  //         },
-  //       }
-  //     );
-  //     alert('Content Shared on linkedin:)');
-  //     console.log('Content shared successfully on LinkedIn:', response.data);
-  //   } catch (error) {
-  //     console.error('Error posting content on LinkedIn:', error);
-  //   }
-  // };
   
 
   return (
@@ -195,13 +239,12 @@ const Dashboard = () => {
 
       <button onClick={handleTweetSubmit}>Connect to Twitter</button><br />
       <input
-        type="text"
-        placeholder="Enter the PIN code here"
-        value={pin}
-        onChange={(e) => setPin(e.target.value)}
+      type="text"
+      placeholder="Enter the PIN code here"
+      value={pin}
+      onChange={(e) => setPin(e.target.value)}
       />
       <button onClick={handlePinSubmit}>Submit PIN</button><br />
-
       <textarea
         placeholder="Enter your tweet"
         value={tweetText}
@@ -220,10 +263,6 @@ const Dashboard = () => {
       >
         <CreatePost closeModal={closeModal} />
         </Modal>
-
-    
-      {/* <input type="file" accept="image/*" onChange={handleImageUpload} /><br />
-      <button onClick={handleLinkedInPost}>Post on LinkedIn</button><br /> */}
 
 
 
