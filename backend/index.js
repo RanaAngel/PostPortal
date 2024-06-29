@@ -5,10 +5,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-const twitterRoutes = require('./routes/twitterRoute'); // Import twitterRoute.js
-const linkedinRoutes = require('./routes/linkedinRoute');
+const twitterRoutes = require('./routes/twitterRoute'); // Share on twitter + oauth
+const linkedinRoutes = require('./routes/linkedinRoute');//oauth for linkedin
 const shareOnLinkedin = require('./routes/postLinkedin'); //share post on linkedin.....
-const adminRoutes = require('./routes/adminRoute');//admin panel
+const adminRoutes = require('./routes/adminRoute');//route for admin panel
+const dashboardRoutes = require('./routes/dashboardRoute');//route for dashboard
+
 
  
 const app = express();
@@ -34,6 +36,7 @@ app.use('/twitter', twitterRoutes);
 app.use('/linkedin', linkedinRoutes);
 app.use('/sharePost', shareOnLinkedin);
 app.use('/admin', adminRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 
 // Connect to MongoDB

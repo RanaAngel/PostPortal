@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import FacebookFlow from '../components/FacebookFlow';
 import CreatePost from '../components/CreatePost';
+import ViewPost from '../components/ViewPost';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,12 +15,10 @@ const Dashboard = () => {
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
   const [tweetText, setTweetText] = useState('');//twitter
   const [pin, setPin] = useState('');//twitter
-  const [TwitterselectedImage, setTwitterSelectedImage] = useState(null); //twitter
-
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [isViewPostModalOpen, setIsViewPostModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-  // const [showCreatePost, setShowCreatePost] = useState(false);
 
   // Login/Logout
   const handleLogout = () => {
@@ -27,7 +26,6 @@ const Dashboard = () => {
     navigate('/');
     window.location.reload(true);
   };
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -50,7 +48,6 @@ const Dashboard = () => {
         }
       }
     };
-
     checkTokenExpiration();
     const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
 
@@ -59,15 +56,22 @@ const Dashboard = () => {
 
 
 
-  //CREATE POST
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
+   //CREATE POST
+   const openCreatePostModal = () => {
+    setIsCreatePostModalOpen(true);
   };
 
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeCreatePostModal = () => {
+    setIsCreatePostModalOpen(false);
+  };
+
+  //VIEW POST
+  const openViewPostModal = () => {
+    setIsViewPostModalOpen(true);
+  };
+
+  const closeViewPostModal = () => {
+    setIsViewPostModalOpen(false);
   };
 
 
@@ -80,7 +84,6 @@ const Dashboard = () => {
       if (!token) {
         throw new Error('JWT token not found');
       }
-
       const response = await axios.post(`http://localhost:5000/twitter/initiate_oauth?token=${encodeURIComponent(token)}`);
       const { oauth_token, oauth_token_secret, authorize_url } = response.data;
       localStorage.setItem('oauth_token', oauth_token);
@@ -90,9 +93,6 @@ const Dashboard = () => {
       console.error('Error initiating OAuth flow:', error);
     }
   };
-
-
-
   const handlePinSubmit = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -103,8 +103,6 @@ const Dashboard = () => {
       const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
       console.log(oauthToken);
       console.log(pin);
-
-
       // Send the PIN and oauth_token to your backend
       const response = await axios.post(`http://localhost:5000/twitter/callback?token=${encodeURIComponent(token)}`, {
         oauth_token: oauthToken,
@@ -116,8 +114,6 @@ const Dashboard = () => {
       const { AccessToken, userId } = response.data;
       localStorage.setItem('access_token', JSON.stringify(AccessToken));
       localStorage.setItem('twitter_user_id', userId);
-
-
       console.log(response.data);
     } catch (error) {
       console.error('Error submitting PIN:', error);
@@ -125,39 +121,6 @@ const Dashboard = () => {
   };
 
 
-
-
-
-
-  const handleFileChangeTwitter = (event) => {
-    setTwitterSelectedImage(event.target.files[0]);
-  };
-  const handlePostTweet = async () => {
-    try {
-      const userId = localStorage.getItem('twitter_user_id');
-
-      const formData = new FormData();
-      formData.append('text', tweetText);
-      formData.append('userId', userId);
-      if (TwitterselectedImage) {
-          formData.append('image', TwitterselectedImage);
-      } else {
-          console.error('No image selected');
-          return;
-      }
-      const response = await axios.post('http://localhost:5000/twitter/tweet', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      alert("content shared successfully");
-      console.log(JSON.stringify(response.data, undefined, 2));
-      // }
-    } catch (error) {
-      console.error('Error posting tweet:', error);
-    }
-  };
 
 
 
@@ -175,12 +138,10 @@ const Dashboard = () => {
       console.error('Error initiating LinkedIn authentication flow:', error);
     }
   };
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const accessToken = searchParams.get('access_token');
     const userId = searchParams.get('userId');
-
     if (accessToken && userId) {
       localStorage.setItem('access_token', accessToken);
       localStorage.setItem('user_id', userId);
@@ -192,49 +153,42 @@ const Dashboard = () => {
 
 
 
+
+
   return (
     <div>
-      <h2>Dashboard</h2>
-      <p>Welcome to your dashboard!</p>
-
-      <button onClick={handleTweetSubmit}>Connect to Twitter</button><br />
-      <input
-        type="text"
-        placeholder="Enter the PIN code here"
-        value={pin}
-        onChange={(e) => setPin(e.target.value)}
-      />
-      <button onClick={handlePinSubmit}>Submit PIN</button><br />
-      <textarea
-        placeholder="Enter your tweet"
-        value={tweetText}
-        onChange={(e) => setTweetText(e.target.value)}
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileChangeTwitter}
-      />
-      <button onClick={handlePostTweet}>Post on Twitter</button><br />
-
-
-      <button onClick={handleLinkedInAuth}>Connect to LinkedIn</button><br />
-      {/* Create Post */}
-      <button onClick={openModal}> Create Post</button><br />
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="Create Post"
-      >
-        <CreatePost closeModal={closeModal} />
-      </Modal>
-
-
-
-
-      <button onClick={handleLogout}>Logout</button>
-      <FacebookFlow />
-    </div>
+            <h2>Dashboard</h2>
+            <p>Welcome to your dashboard!</p>
+            <button onClick={handleTweetSubmit}>Connect to Twitter</button><br />
+            <input
+                type="text"
+                placeholder="Enter the PIN code here"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+            />
+            <button onClick={handlePinSubmit}>Submit PIN</button><br />
+            <button onClick={handleLinkedInAuth}>Connect to LinkedIn</button><br />
+            {/* Create Post */}
+            <button onClick={openCreatePostModal}>Create Post</button><br />
+            <Modal
+                isOpen={isCreatePostModalOpen}
+                onRequestClose={closeCreatePostModal}
+                contentLabel="Create Post"
+            >
+                <CreatePost closeCreatePostModal={closeCreatePostModal} />
+            </Modal>
+            {/* View Post */}
+            <button onClick={openViewPostModal}>View Post</button><br />
+            <Modal
+                isOpen={isViewPostModalOpen}
+                onRequestClose={closeViewPostModal}
+                contentLabel="View Post"
+            >
+                <ViewPost closeViewPostModal={closeViewPostModal} />
+            </Modal>
+            <button onClick={handleLogout}>Logout</button>
+            <FacebookFlow />
+        </div>
   );
 };
 
