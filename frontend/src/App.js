@@ -7,6 +7,10 @@ import SignupForm from './pages/SignUpForm';
 import LoginForm from './pages/LoginForm';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import Library from './pages/Library';
+import PostAnalytics from './pages/PostAnalytics';
+
+
 const App = () => {
   
   return (
@@ -18,6 +22,8 @@ const App = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
+        <Route path="/library" element={<Library />} /> {/* New Library Route */}
+        <Route path="/post-analytics/:postId" element={<PostAnalytics />} /> {/* New PostAnalytics Route */}
        
       </Routes>
     </Router>

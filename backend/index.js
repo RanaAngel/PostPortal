@@ -5,11 +5,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-const twitterRoutes = require('./routes/twitterRoute'); // Import twitterRoute.js
-const linkedinRoutes = require('./routes/linkedinRoute');
+const twitterRoutes = require('./routes/twitterRoute'); // Share on twitter + oauth
+const linkedinRoutes = require('./routes/linkedinRoute');//oauth for linkedin
 const shareOnLinkedin = require('./routes/postLinkedin'); //share post on linkedin.....
-const adminRoutes = require('./routes/adminRoute');//admin panel
+const adminRoutes = require('./routes/adminRoute');//route for admin panel
+const dashboardRoutes = require('./routes/dashboardRoute');//route for dashboard
 const facebookRoute = require('./routes/facebookRoute');
+const instaRoute = require('./routes/instaRoute');
+// const analyticsRoute=require('./routes/analyticsRoute');
 
  
 const app = express();
@@ -20,13 +23,6 @@ app.use(cors());
 app.use(express.json());
 
 
-// CORS configuration
-// app.use(cors({
-//   origin: 'http://localhost:3000', // Replace with your frontend URL
-//   methods: ['GET', 'POST'],
-//   credentials: true // Allow cookies to be sent along with the request
-// }));
-
 // Routes
 app.use('/auth', authRoutes);
 //Twitter Routes:
@@ -35,16 +31,16 @@ app.use('/twitter', twitterRoutes);
 app.use('/linkedin', linkedinRoutes);
 app.use('/sharePost', shareOnLinkedin);
 app.use('/admin', adminRoutes);
+app.use('/dashboard', dashboardRoutes);
 //Facebook Route
 app.use('/api/facebook', facebookRoute);
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+//Instagram Route
+app.use('/api/instagram', instaRoute);
+//Analytics Route
+// app.use('/analytics',analyticsRoute);
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/PostPortal', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,77 +1,172 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, redirect } from 'react-router-dom';
+// import { useNavigate, useLocation, redirect } from 'react-router-dom';
 import axios from 'axios';
 
-export default function CreatePost({ closeModal }) {
+
+export default function CreatePost({ closeCreatePostModal }) {
     const [selectedImage, setSelectedImage] = useState(null); //linkedin
     const [title, setTitle] = useState(''); //linkedin
     const [text, setText] = useState(''); //linkedin
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [isSinglePlatform, setIsSinglePlatform] = useState(false);
 
-
-    
+    let postTitle = ''; //an empty string for the post title
     const handlePost = async () => {
         if (isSinglePlatform && selectedPlatforms.length === 0) {
             console.error('Please select a platform.');
             return;
         }
-
         for (const platform of selectedPlatforms) {
             switch (platform) {
                 case 'linkedin':
-                    await handleLinkedInPost();
+                    postTitle = 'linkedin'; 
+                    await handleLinkedInPost(postTitle);
                     break;
                 case 'twitter':
-                    await handleTwitterPost();
+                    postTitle = 'twitter';
+                    await handlePostTweet(postTitle);
                     break;
                 case 'facebook':
-                    await handleFacebookPost();
+                    postTitle = 'facebook'; 
+                    await handleFacebookPost(postTitle);
+                    break;
+                case 'instagram':
+                    postTitle = 'instagram'; 
+                    await handleInstagramPost(postTitle);
                     break;
                 default:
                     console.error(`Unsupported platform: ${platform}`);
             }
         }
     };
+
     const handleCheckboxChange = (e, platform) => {
         if (e.target.checked) {
             setSelectedPlatforms(prevPlatforms => [...prevPlatforms, platform]);
         } else {
-            setSelectedPlatforms(prevPlatforms => prevPlatforms.filter(p => p!== platform));
+            setSelectedPlatforms(prevPlatforms => prevPlatforms.filter(p => p !== platform));
         }
     };
-
     const handleSinglePlatformChange = (e) => {
         setIsSinglePlatform(e.target.checked);
     };
 
+
+
+
     // Twitter
-    const handleTwitterPost = async () => {
-        // Twitter post logic
-        console.log('Posting to Twitter...');
-        // Replace with actual API call to Twitter
+    const handlePostTweet = async (postTitle) => {
+        try {
+            const userId = localStorage.getItem('twitter_user_id');
+            const formData = new FormData();
+            formData.append('title', postTitle);
+            formData.append('text', text);
+            formData.append('userId', userId);
+            if (selectedImage) {
+                formData.append('image', selectedImage);
+            } else {
+                console.error('No image selected');
+                return;
+            }
+            const response = await axios.post('http://localhost:5000/twitter/tweet', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log("content shared successfully");
+            console.log(JSON.stringify(response.data, undefined, 2));
+            // }
+        } catch (error) {
+            console.error('Error posting tweet:', error);
+        }
     };
 
 
-//Facebook
-const handleFacebookPost = async () => {
-    // Facebook post logic
-    console.log('Posting to Facebook...');
-    // Replace with actual API call to Facebook
-};
+
+
+    //Facebook
+    const handleFacebookPost = async (postTitle) => {
+  
+        try {
+            const jwtToken = localStorage.getItem('token');
+           
+            const formData = new FormData();
+            formData.append('title', postTitle);
+            formData.append('text', text);
+            formData.append('token', jwtToken);
+            if (selectedImage) {
+              formData.append('image', selectedImage);
+            }
+        
+            // Upload image to ImageBB
+            const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
+            const imageBBFormData = new FormData();
+            imageBBFormData.append('image', selectedImage);
+            
+            const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
+            const imageUrl = imageBBResponse.data.data.url;
+        
+            // Add image URL to your main form data
+            formData.append('imageUrl', imageUrl);
+
+            const response = await axios.post('http://localhost:5000/api/facebook/post', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+      
+            console.log('Post successful:', response.data);
+          } catch (error) {
+            console.error('Error posting content:', error.response ? error.response.data : error.message);
+          }
+        };
+
+    //Instagram
+    const handleInstagramPost = async (postTitle) => {
+  
+        try {
+            const jwtToken = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('text', text);
+            formData.append('token', jwtToken);
+            if (selectedImage) {
+              formData.append('image', selectedImage);
+            }
+        
+            // Upload image to ImageBB
+            const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
+            const imageBBFormData = new FormData();
+            imageBBFormData.append('image', selectedImage);
+            
+            const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
+            const imageUrl = imageBBResponse.data.data.url;
+        
+            // Add image URL to your main form data
+            formData.append('imageUrl', imageUrl);
+
+            const response = await axios.post('http://localhost:5000/api/instagram/post', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+      
+            console.log('Post successful:', response.data);
+          } catch (error) {
+            console.error('Error posting content:', error.response ? error.response.data : error.message);
+          }
+        };
 
 
     // LinkedIn
     const handleImageUpload = (event) => {
         setSelectedImage(event.target.files[0]);
     };
-
-    const handleLinkedInPost = async () => {
+    const handleLinkedInPost = async (postTitle) => {
         if (!selectedPlatforms.includes('linkedin')) {
             console.error('Selected platform is not LinkedIn.');
             return;
         }
-
         try {
             const accessToken = localStorage.getItem('access_token');
             const userId = localStorage.getItem('user_id');
@@ -80,10 +175,9 @@ const handleFacebookPost = async () => {
                 console.error('Access token or User ID not found.');
                 return;
             }
-
             const formData = new FormData();
-            formData.append('title', text);
-            formData.append('text', title);
+            formData.append('title', postTitle);
+            formData.append('text', text);
             formData.append('userId', userId);
             if (selectedImage) {
                 formData.append('image', selectedImage);
@@ -91,7 +185,6 @@ const handleFacebookPost = async () => {
                 console.error('No image selected');
                 return;
             }
-
             const response = await axios.post(
                 'http://localhost:5000/sharePost/postContent',
                 formData,
@@ -102,14 +195,14 @@ const handleFacebookPost = async () => {
                     },
                 }
             );
-            alert('Content Shared on linkedin:)');
+            // alert('Content Shared on linkedin:)');
             console.log('Content shared successfully on LinkedIn:', response.data);
         } catch (error) {
             console.error('Error posting content on LinkedIn:', error);
         }
     };
-
     //
+
 
 
     return (
@@ -163,15 +256,15 @@ const handleFacebookPost = async () => {
                             </div>
                             <div className="col-span-1">
                                 <label htmlFor="post-description" className="block text-sm font-medium text-gray-700">
-                                    Post Description
+                                    Post Title
                                 </label>
-                                <textarea id="post-description" name="post-description" rows="3" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Write a description for your post..." onChange={(e) => setText(e.target.value)}></textarea>
+                                <textarea id="post-description" name="post-description" rows="3" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Write a description for your post..." onChange={(e) => setTitle(e.target.value)}></textarea>
                             </div>
                             <div className="col-span-1">
                                 <label htmlFor="post-name" className="block text-sm font-medium text-gray-700">
-                                    Post title
+                                    Post Description
                                 </label>
-                                <input type="text" name="post-name" id="post-name" autocomplete="post-name" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Give your post a name..." onChange={(e) => setTitle(e.target.value)} />
+                                <input type="text" name="post-name" id="post-name" autocomplete="post-name" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Give your post a name..." onChange={(e) => setText(e.target.value)} />
                             </div>
                             <div className="col-span-1">
                                 <label htmlFor="date-picker" className="block text-sm font-medium text-gray-700">
@@ -208,15 +301,21 @@ const handleFacebookPost = async () => {
                                         Twitter
                                     </label>
                                 </div>
+                                <div className="mt-1 flex items-center">
+                                    <input type="checkbox" id="twitter" value="twitter" className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked={selectedPlatforms.includes('instagram')} onChange={(e) => handleCheckboxChange(e, 'instagram')} />
+                                    <label htmlFor="twitter" className="ml-3 block text-sm font-medium text-gray-700">
+                                        Instagram
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:py-4">
                         <div className="flex justify-between">
-                        <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm" onClick={handlePost}>
+                            <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm" onClick={handlePost}>
                                 Post
                             </button>
-                            <button type="button" onClick={closeModal} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+                            <button type="button" onClick={closeCreatePostModal} className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
                                 Cancel
                             </button>
                         </div>

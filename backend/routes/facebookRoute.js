@@ -1,8 +1,14 @@
 // routes/facebookRoute.js
+require('dotenv').config();
+const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const Facebook = require('../models/Facebook');
 const atob = require('atob');
+const multer = require('multer');
+const Post = require('../models/Post');
+
+
 
 // Middleware to extract user ID from JWT token
 const getUserIdFromToken = (token) => {
@@ -95,6 +101,120 @@ router.get('/tokens', async (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve access token' });
   }
 });
+
+
+const upload = multer();
+
+router.post('/post', upload.single('image'), async (req, res) => {
+  try {
+    const { title, text , imageUrl , token } = req.body;
+    const userID = getUserIdFromToken(token);
+    const image = req.file; // Multer will populate this if 'image' field is in FormData
+    const ayrshareApiKey = process.env.AYRSHARE_API_KEY;
+
+    if (!ayrshareApiKey) {
+      throw new Error('AYRSHARE_API_KEY is not set in the environment variables.');
+    }
+
+    if (!title || !text) {
+      throw new Error('Title and text fields are required.');
+    }
+    // Example of logging the received data
+    console.log('Received title:', title);
+    console.log('Received text:', text);
+    console.log('Received text:', userID);
+    // console.log('Received text:', imageUrl);
+     
+    const postData = {
+      post:text,
+      platforms: ['facebook'],
+      mediaUrls: imageUrl ? [imageUrl] : [],
+      // Add more fields as needed
+    };
+
+    const response = await axios.post('https://app.ayrshare.com/api/post', postData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ayrshareApiKey}`,
+      },
+    });
+    const ayrsharePostId = response.data.id;
+
+    // Save post details to MongoDB
+    const newPost = new Post({
+      userID,
+      title,
+      content: text,
+      imageURL: imageUrl,
+      platforms: 'facebook',
+      ayrsharePostId
+    });
+
+    await newPost.save();
+    
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error posting content:', error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'Error posting content', details: error.response ? error.response.data : error.message });
+  }
+});
+
+
+// Get all posts
+router.get('/posts', async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching posts', error });
+  }
+});
+
+// Function to fetch post analytics from Ayrshare
+const getPostAnalytics = async (postId) => {
+  const ayrshareApiKey = process.env.AYRSHARE_API_KEY;
+
+  try {
+    const response = await axios.get(`https://app.ayrshare.com/api/analytics?postId=${postId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ayrshareApiKey}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching analytics:', error.response ? error.response.data : error.message);
+    throw new Error('Failed to fetch analytics from Ayrshare');
+  }
+};
+
+// Route to fetch and save post analytics
+router.get('/analytics/:postId', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const analyticsData = await getPostAnalytics(postId);
+
+    const userId = getUserIdFromToken(req.headers.authorization.split(' ')[1]);
+
+    const analytics = new Analytics({
+      userID: userId,
+      postId: postId,
+      platform: 'facebook', // Update this with the actual platform if different
+      analytics: analyticsData,
+    });
+
+    await analytics.save();
+
+    res.json({ message: 'Analytics saved successfully', data: analytics });
+  } catch (error) {
+    console.error('Error saving analytics:', error);
+    res.status(500).json({ error: 'Error saving analytics', message: error.message });
+  }
+});
+
+
 
 module.exports = router;
 

@@ -7,9 +7,7 @@ const Posts = require('../models/Post');
 
 
 //get all users form database
-
 router.get('/get_users', async (req, res) => {
-  console.log('get_users hit');
   try {
     // Find all users except those with the role 'admin'
     const users = await Users.find({ role: { $ne: 'admin' } }); // $ne means 'not equal'
@@ -20,6 +18,7 @@ router.get('/get_users', async (req, res) => {
   }
 });
 
+
   //GET ALL CONTACTS
   router.get('/get_contacts', async(req,res)=>{
     try {
@@ -29,6 +28,8 @@ router.get('/get_users', async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve contacts' }); 
     }
   })
+
+
   // Delete a user by ID
 router.delete('/delete_user/:id', async (req, res) => {
   try {
@@ -42,6 +43,8 @@ router.delete('/delete_user/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });
+
+
 // Update a user by ID
 router.put('/update_user/:id', async (req, res) => {
   try {
@@ -55,6 +58,8 @@ router.put('/update_user/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update user' });
   }
 });
+
+
 // Create a new user
 router.post('/create_user', async (req, res) => {
   const { firstName, lastName, organizationName, email, phone, password, usertype } = req.body;
@@ -74,7 +79,6 @@ router.post('/create_user', async (req, res) => {
       password,
       usertype,
     });
-
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error) {
@@ -94,8 +98,6 @@ router.post('/create_user', async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve Post' }); 
     }
   })
-
-
 
 
 

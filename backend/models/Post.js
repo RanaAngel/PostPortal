@@ -7,6 +7,10 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  title: {
+    type: String,
+    required: true
+  },
   content: {
     type: String,
     required: true
@@ -18,6 +22,14 @@ const postSchema = new mongoose.Schema({
   uploadUrl:{
     type: String,
     
+  },
+  platforms: {
+    type: [String],
+    required: false
+  },
+  ayrsharePostId: {
+    type: String,
+    required: true
   },
   postedAt: {
     type: Date,
