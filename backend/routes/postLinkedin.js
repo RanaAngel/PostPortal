@@ -19,6 +19,8 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
         const { title, text, userId, scheduleDate } = req.body;
         const imageFile = req.file; // Get the uploaded file
         console.log(title, text, userId, scheduleDate);
+        const parsedScheduleDate = new Date(scheduleDate);
+
         // Retrieve the LinkedIn access token for the user from the database
         const linkedinToken = await linkedin.findOne({ userId });
         if (!linkedinToken) {
@@ -32,7 +34,7 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
             title,
             imageURL: '',
             uploadUrl: '',
-            scheduledAt: scheduleDate ? new Date(scheduleDate) : null,
+            scheduledAt: parsedScheduleDate,
             postedAt: null,
             status: scheduleDate ? 'scheduled' : 'draft'
         });
@@ -44,7 +46,8 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
         //     throw new Error('Invalid date format');
         // }
 
-        if (scheduleDate) {
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition');
             const cronTime = moment(scheduleDate).format('m H D M *');
             cron.schedule(cronTime, async () => {
                 const ownerId = await getLinkedinId(accessToken);
@@ -59,7 +62,7 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
                 NewPost.imageURL = imageUrn;
                 NewPost.uploadUrl = uploadUrl;
                 NewPost.postedAt = Date.now();
-                NewPost.status = 'posted';
+                NewPost.status = 'published';
                 await NewPost.save();
                 console.log('Content posted and saved to the database.');
             });
@@ -77,7 +80,7 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
             NewPost.imageURL = imageUrn;
             NewPost.uploadUrl = uploadUrl;
             NewPost.postedAt = Date.now();
-            NewPost.status = 'posted';
+            NewPost.status = 'published';
             await NewPost.save();
             console.log('Content posted and saved to the database.');
             res.status(200).json(response);

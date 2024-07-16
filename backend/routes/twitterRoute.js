@@ -267,77 +267,65 @@ router.post('/callback', async (req, res) => {
 router.post('/tweet', upload.single('image'), async (req, res) => {
     try {
         const { title, text, userId, scheduleDate } = req.body;
-        const imageFile = req.file; // Get the uploaded file
-        console.log(text, title, userId);
-        console.log(imageFile);
-        // Retrieve the Twitter access token for the user from the database
+        const imageFile = req.file;
+        const parsedScheduleDate = new Date(scheduleDate);
         const twitterToken = await twitter.findOne({ userId });
         if (!twitterToken) {
             return res.status(404).send('Twitter token not found for user');
         }
         const access_token = JSON.parse(twitterToken.accessToken);
-
         const NewPost = new Post({
             userID: userId,
             content: text,
             title,
             imageURL: '',
             uploadUrl: '',
-            scheduledAt: scheduleDate ? new Date(scheduleDate) : null,
+            scheduledAt: parsedScheduleDate,
             postedAt: null,
             status: scheduleDate ? 'scheduled' : 'draft'
         });
-
         await NewPost.save();
-
-        let formattedDate = moment(scheduleDate, 'MMM DD, YYYY HH:mm:ss', true).format();
-        // if (!formattedDate) {
-        //     throw new Error('Invalid date format');
-        // }
-
-        // Call the uploadImage function to get the media ID
         const mediaId = await uploadImage(access_token, imageFile);
         const mediaIdArray = [mediaId];
         console.log("Image uploaded successfully: ", mediaIdArray);
+        console.log('scheduleDate:', scheduleDate);
 
-        if (scheduleDate) {
+        // Check if scheduleDate is provided and in the future
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition');
             const cronTime = moment(scheduleDate).format('m H D M *');
             cron.schedule(cronTime, async () => {
-                // Post the tweet with the image
                 const messageResponse = await writeTweet(access_token, text, mediaIdArray);
                 const tweetId = messageResponse.data.id;
                 console.log('tweet id: ', tweetId);
                 const tweetData = messageResponse.data.text;
-                onsole.log('tweet data: ', tweetData);
-
+                console.log('tweet data: ', tweetData);
                 NewPost.imageURL = tweetData;
                 NewPost.uploadUrl = null;
                 NewPost.postedAt = Date.now();
-                NewPost.status = 'posted';
+                NewPost.status = 'published';
+                console.log('if condition');
                 await NewPost.save();
-                console.log('Content posted and saved to the database.');
+                console.log('Content posted and scheduled to the database.');
             });
             res.status(200).json({ message: 'Post scheduled successfully' });
-        }
-
-
-        else {
-            // Post the tweet with the image
+        } else {
+            console.log( 'else condition');
             const messageResponse = await writeTweet(access_token, text, mediaIdArray);
             const tweetId = messageResponse.data.id;
             console.log('tweet id: ', tweetId);
             const tweetData = messageResponse.data.text;
-            onsole.log('tweet data: ', tweetData);
+            console.log('tweet data: ', tweetData);
             NewPost.imageURL = tweetData;
             NewPost.uploadUrl = null;
             NewPost.postedAt = Date.now();
-            NewPost.status = 'posted';
+            NewPost.status = 'published';
             await NewPost.save();
+            console.log('else condition');
+
             console.log('Content posted and saved to the database.');
-            res.status(200).json(response);
+            res.status(200).json({ message: 'Post Shared successfully' });
         }
-
-
     } catch (error) {
         console.error('Error posting tweet:', error);
         res.status(500).json({ error: 'Failed to post tweet' });
