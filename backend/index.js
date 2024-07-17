@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/adminRoute');//route for admin panel
 const dashboardRoutes = require('./routes/dashboardRoute');//route for dashboard
 const facebookRoute = require('./routes/facebookRoute');
 const instaRoute = require('./routes/instaRoute');
+const stripeRoutes = require('./routes/stripeRoute');
 // const analyticsRoute=require('./routes/analyticsRoute');
 
  
@@ -38,6 +39,9 @@ app.use('/api/facebook', facebookRoute);
 app.use('/api/instagram', instaRoute);
 //Analytics Route
 // app.use('/analytics',analyticsRoute);
+
+//stripe Route
+app.use('/stripe', stripeRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

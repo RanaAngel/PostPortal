@@ -166,8 +166,8 @@ export default function CreatePost({ closeCreatePostModal }) {
             return;
         }
         try {
-            const accessToken = localStorage.getItem('token');
-            const userId = getUserIdFromToken(accessToken);
+                const accessToken = localStorage.getItem('token');
+                const userId = getUserIdFromToken(accessToken);
 
             if (!userId) {
                 console.error('Access token or User ID not found.');
