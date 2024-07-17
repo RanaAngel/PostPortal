@@ -4,8 +4,10 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
 const router = express.Router();
-const passport = require('passport');
+
+
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -58,23 +60,21 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, 'secretkey', { expiresIn: '1h' });
+    // Redirect based on user role
 
-    res.json({ token });
+    if (user.role === 'admin') {
+      redirectUrl = '/admindashboard'; // Redirect to admin dashboard for admin users
+    }else{
+      redirectUrl = '/dashboard'; 
+    }
+
+    res.json({ token, redirectUrl });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-
-// Route for initiating Facebook authentication
-router.get('/facebook', passport.authenticate('facebook'));
-
-// Route for handling callback from Facebook authentication
-router.get('/facebook/callback', passport.authenticate('facebook', {
-  successRedirect: '/dashboard',
-  failureRedirect: '/'
-}));
 
 
 module.exports = router;
