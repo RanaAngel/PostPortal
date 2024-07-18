@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
-import { Modal } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import axios from 'axios';
 
 import FacebookFlow from '../components/FacebookFlow';
 import CreatePost from '../components/CreatePost';
 import ViewPost from '../components/ViewPost';
+
+import UpgradePlan from '../components/UpgradePlan';
+
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -18,7 +22,9 @@ const Dashboard = () => {
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [isViewPostModalOpen, setIsViewPostModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false); // State for UpgradePlan modal
 
+ 
 
   // Login/Logout
   const handleLogout = () => {
@@ -72,6 +78,13 @@ const Dashboard = () => {
 
   const closeViewPostModal = () => {
     setIsViewPostModalOpen(false);
+  };
+  const openUpgradePlanModal = () => {
+    setIsUpgradePlanModalOpen(true);
+  };
+
+  const closeUpgradePlanModal = () => {
+    setIsUpgradePlanModalOpen(false);
   };
 
 
@@ -191,6 +204,30 @@ const Dashboard = () => {
             <button onClick={handleLogout}>Logout</button>
             <FacebookFlow />
             <button onClick={goToLibrary}>Go to Library</button> {/* New Button to Navigate to Library */}
+        
+            <button onClick={openUpgradePlanModal}>Upgrade plan</button>
+    <Modal
+      isOpen={isUpgradePlanModalOpen}
+      toggle={closeUpgradePlanModal}
+      centered
+      size="lg"
+      style={{ maxWidth: '80%', maxHeight: '70%' }}
+    >
+      <ModalHeader toggle={closeUpgradePlanModal}>
+        Upgrade Plan
+        <button type="button" onClick={closeUpgradePlanModal} className="bg-red-500 absolute top-0 right-12 m-12 text-xl p-2">
+  &times;
+</button>
+      </ModalHeader>
+      <ModalBody style={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center', overflowY: 'auto' }}>
+      <div className="max-w-md mx-auto">
+          <UpgradePlan />
+        </div>
+      </ModalBody>
+    </Modal>
+<br />
+            <button onClick={handleLogout}>Logout</button>
+
         </div>
   );
 };

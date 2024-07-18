@@ -65,7 +65,7 @@ router.post('/login', async (req, res) => {
     if (user.role === 'admin') {
       redirectUrl = '/admindashboard'; // Redirect to admin dashboard for admin users
     }else{
-      redirectUrl = '/dashboard'; 
+      redirectUrl = '/getting-started'; 
     }
 
     res.json({ token, redirectUrl });
