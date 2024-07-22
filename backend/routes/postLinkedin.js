@@ -7,18 +7,41 @@ const linkedin = require('../models/Linkedin');
 const Post = require('../models/Post');
 const multer = require('multer');
 const cron = require('node-cron');
+<<<<<<< Updated upstream
+=======
+const path = require('path');
+const fs = require('fs');
 
-// Define storage engine for multer
-const storage = multer.memoryStorage();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Directory to store uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+    }
+});
+>>>>>>> Stashed changes
+
 const upload = multer({ storage: storage });
 
+
 // POST route for posting content on LinkedIn
-router.post('/postContent', upload.single('image'), async (req, res) => {
+router.post('/postContent', upload.single('imageFile'), async (req, res) => {
     console.log('postContent route hit');
     try {
         const { title, text, userId, scheduleDate } = req.body;
+<<<<<<< Updated upstream
         const imageFile = req.file; // Get the uploaded file
         console.log(title, text, userId, scheduleDate);
+=======
+        const imageFile = req.file;
+        const imageURL = req.body.imageURL;
+        console.log(title, text, userId, scheduleDate);
+        const parsedScheduleDate = new Date(scheduleDate);
+
+>>>>>>> Stashed changes
         // Retrieve the LinkedIn access token for the user from the database
         const linkedinToken = await linkedin.findOne({ userId });
         if (!linkedinToken) {
@@ -30,9 +53,16 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
             userID: userId,
             content: text,
             title,
+<<<<<<< Updated upstream
             imageURL: '',
             uploadUrl: '',
             scheduledAt: scheduleDate ? new Date(scheduleDate) : null,
+=======
+            platforms: ['linkedin'],
+            imageURL: imageURL,
+            uploadUrl: '',
+            scheduledAt: parsedScheduleDate,
+>>>>>>> Stashed changes
             postedAt: null,
             status: scheduleDate ? 'scheduled' : 'draft'
         });
@@ -44,6 +74,7 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
         //     throw new Error('Invalid date format');
         // }
 
+<<<<<<< Updated upstream
         if (scheduleDate) {
             const cronTime = moment(scheduleDate).format('m H D M *');
             cron.schedule(cronTime, async () => {
@@ -60,11 +91,30 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
                 NewPost.uploadUrl = uploadUrl;
                 NewPost.postedAt = Date.now();
                 NewPost.status = 'posted';
+=======
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition');
+            const cronTime = moment(scheduleDate).format('m H D M *');
+            cron.schedule(cronTime, async () => {
+                const ownerId = await getLinkedinId(accessToken);
+                const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+                console.log(JSON.stringify(uploadDetails, null, 2));
+                const imageUrn = uploadDetails.image;
+                const uploadUrl = uploadDetails.uploadUrl;
+                const imageBuffer = imageFile.path;
+                await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+                console.log('image uploaded: ', uploadImageToLinkedIn);
+                const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+                NewPost.uploadUrl = uploadUrl;
+                NewPost.postedAt = Date.now();
+                NewPost.status = 'published';
+>>>>>>> Stashed changes
                 await NewPost.save();
                 console.log('Content posted and saved to the database.');
             });
             res.status(200).json({ message: 'Post scheduled successfully' });
         } else {
+<<<<<<< Updated upstream
             const ownerId = await getLinkedinId(accessToken);
             const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.buffer);
             console.log(JSON.stringify(uploadDetails, null, 2));
@@ -78,6 +128,21 @@ router.post('/postContent', upload.single('image'), async (req, res) => {
             NewPost.uploadUrl = uploadUrl;
             NewPost.postedAt = Date.now();
             NewPost.status = 'posted';
+=======
+            console.log('else condition');
+            const ownerId = await getLinkedinId(accessToken);
+            const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+            console.log(JSON.stringify(uploadDetails, null, 2));
+            const imageUrn = uploadDetails.image;
+            const uploadUrl = uploadDetails.uploadUrl;
+            const imageBuffer = imageFile.path;
+            await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+            console.log('image uploaded: ', uploadImageToLinkedIn);
+            const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+            NewPost.uploadUrl = uploadUrl;
+            NewPost.postedAt = Date.now();
+            NewPost.status = 'published';
+>>>>>>> Stashed changes
             await NewPost.save();
             console.log('Content posted and saved to the database.');
             res.status(200).json(response);
@@ -280,6 +345,7 @@ function _request(method, hostname, path, headers, body) {
 
 
 
+<<<<<<< Updated upstream
 // Get image from LinkedIn
 router.get('/getImage', async (req, res) => {
     console.log('getImage route hit');
@@ -346,6 +412,8 @@ router.get('/getImage', async (req, res) => {
 
 
 
+=======
+>>>>>>> Stashed changes
 
 
 module.exports = router;

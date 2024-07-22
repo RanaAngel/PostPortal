@@ -7,6 +7,11 @@ const Facebook = require('../models/Facebook');
 const atob = require('atob');
 const multer = require('multer');
 const Post = require('../models/Post');
+const moment = require('moment');
+const cron = require('node-cron');
+
+
+
 
 
 
@@ -107,10 +112,12 @@ const upload = multer();
 
 router.post('/post', upload.single('image'), async (req, res) => {
   try {
-    const { title, text , imageUrl , token } = req.body;
+    const { title, name, text , imageUrl , token, scheduleDate } = req.body;
     const userID = getUserIdFromToken(token);
     const image = req.file; // Multer will populate this if 'image' field is in FormData
     const ayrshareApiKey = process.env.AYRSHARE_API_KEY;
+    const parsedScheduleDate = new Date(scheduleDate);
+
 
     if (!ayrshareApiKey) {
       throw new Error('AYRSHARE_API_KEY is not set in the environment variables.');
@@ -121,9 +128,24 @@ router.post('/post', upload.single('image'), async (req, res) => {
     }
     // Example of logging the received data
     console.log('Received title:', title);
+    console.log('Received name:', name);
     console.log('Received text:', text);
     console.log('Received text:', userID);
     // console.log('Received text:', imageUrl);
+
+    const NewPost = new Post({
+      userID: userID,
+      content: text,
+      name,
+      title,
+      imageURL: imageUrl,
+      uploadUrl: '',
+      scheduledAt: parsedScheduleDate,
+      postedAt: null,
+      status: scheduleDate ? 'scheduled' : 'draft'
+  });
+
+  await NewPost.save();
      
     const postData = {
       post:text,
@@ -131,7 +153,10 @@ router.post('/post', upload.single('image'), async (req, res) => {
       mediaUrls: imageUrl ? [imageUrl] : [],
       // Add more fields as needed
     };
-
+    if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+      console.log('if condition');
+      const cronTime = moment(scheduleDate).format('m H D M *');
+      cron.schedule(cronTime, async () => {
     const response = await axios.post('https://app.ayrshare.com/api/post', postData, {
       headers: {
         'Content-Type': 'application/json',
@@ -139,20 +164,51 @@ router.post('/post', upload.single('image'), async (req, res) => {
       },
     });
     const ayrsharePostId = response.data.id;
+      // Save post details to MongoDB
+      const newPost = new Post({
+        userID,
+        name,
+        title,
+        content: text,
+        imageURL: imageUrl,
+        platforms: 'facebook',
+        ayrsharePostId,
+        status : 'published',
+        postedAt : Date.now()
+      });
+  
+      await newPost.save();
+    console.log('Content posted and saved to the database.');
+    res.json(response.data);
 
+});
+} else {
+  console.log('else condition');
+  const response = await axios.post('https://app.ayrshare.com/api/post', postData, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${ayrshareApiKey}`,
+    },
+  });
+  const ayrsharePostId = response.data.id;
     // Save post details to MongoDB
     const newPost = new Post({
       userID,
       title,
+      name,
       content: text,
       imageURL: imageUrl,
       platforms: 'facebook',
-      ayrsharePostId
+      ayrsharePostId,
+      status : 'published',
+      postedAt : Date.now()
+
     });
 
     await newPost.save();
-    
-    res.json(response.data);
+  console.log('Content posted and saved to the database.');
+}
+res.status(200).json({ message: 'Post scheduled successfully' });
   } catch (error) {
     console.error('Error posting content:', error.response ? error.response.data : error.message);
     res.status(500).json({ error: 'Error posting content', details: error.response ? error.response.data : error.message });

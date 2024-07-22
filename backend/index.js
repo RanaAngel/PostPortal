@@ -13,6 +13,10 @@ const dashboardRoutes = require('./routes/dashboardRoute');//route for dashboard
 const facebookRoute = require('./routes/facebookRoute');
 const instaRoute = require('./routes/instaRoute');
 // const analyticsRoute=require('./routes/analyticsRoute');
+<<<<<<< Updated upstream
+=======
+const stripeRoutes = require('./routes/stripeRoute');
+>>>>>>> Stashed changes
 const path = require('path'); // Import path module
 
  
@@ -41,9 +45,14 @@ app.use('/api/instagram', instaRoute);
 // app.use('/analytics',analyticsRoute);
 // Serve static files from the 'uploads' directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+<<<<<<< Updated upstream
+=======
+//stripe Route
+app.use('/stripe', stripeRoutes);
+>>>>>>> Stashed changes
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,tlsAllowInvalidCertificates: true, })
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

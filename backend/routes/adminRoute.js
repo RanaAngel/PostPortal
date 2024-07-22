@@ -2,7 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
 const Users = require('../models/User');
-const Contacts = require('../models/Contact');
+// const Contacts = require('../models/Contact');
 const Posts = require('../models/Post');
 
 
@@ -18,16 +18,6 @@ router.get('/get_users', async (req, res) => {
   }
 });
 
-
-  //GET ALL CONTACTS
-  router.get('/get_contacts', async(req,res)=>{
-    try {
-      const contacts = await Contacts.find();
-      res.json(contacts);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to retrieve contacts' }); 
-    }
-  })
 
 
   // Delete a user by ID
