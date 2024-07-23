@@ -14,28 +14,13 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import GetStarted from './pages/GetStarted';
 import CreatePost from './pages/CreatePost';
+import Pricing from './pages/Pricing';
+import PostDetails from './pages/PostDetails'; 
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Simple authentication check
-  const location = useLocation();
-
-  // Define the paths where Navbar and Sidebar should be displayed
-  const pathsWithNavAndSidebar = [
-    '/getting-started',
-    '/dashboard',
-    '/create-post',
-    '/library',
-    '/channels',
-  ];
-
-  const shouldShowNavAndSidebar = pathsWithNavAndSidebar.includes(location.pathname);
-
-  return (
-    <div className="flex flex-col h-screen">
-      {isAuthenticated && shouldShowNavAndSidebar && <Navbar />}
-      <div className="flex flex-1">
-        {isAuthenticated && shouldShowNavAndSidebar && <Sidebar />}
-        <div className={`flex-1 p-4 ${isAuthenticated && shouldShowNavAndSidebar ? 'ml-64' : ''}`}>
+  
+  return(
+  <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/signup" element={<SignupForm />} />
@@ -44,21 +29,16 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/library" element={<Library />} />
+            <Route path="/post/:id" element={<PostDetails />}/>
             <Route path="/channels" element={<Channels />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/admindashboard" element={<AdminDashboard />} />
             <Route path="/post-analytics/:postId" element={<PostAnalytics />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
-        </div>
-      </div>
-    </div>
+          </Router>
   );
 };
 
-const AppWrapper = () => (
-  <Router>
-    <App />
-  </Router>
-);
 
-export default AppWrapper;
+export default App;

@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    required: true
+    required: false
   },
   content: {
     type: String,
@@ -19,8 +19,9 @@ const postSchema = new mongoose.Schema({
     type: String,
 
   },
-  uploadUrl:{
+  name:{
     type: String,
+    required: true
     
   },
   platforms: {
@@ -29,11 +30,16 @@ const postSchema = new mongoose.Schema({
   },
   ayrsharePostId: {
     type: String,
-    required: true
+    required: false
   },
   postedAt: {
     type: Date,
     default: Date.now
+  },
+  status: {
+    type: String,
+    enum: ['draft', 'scheduled', 'published'],
+    default: 'draft'
   }
 });
 

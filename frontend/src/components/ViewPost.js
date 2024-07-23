@@ -68,7 +68,7 @@ const ViewPost = ({ closeViewPostModal }) => {
                             {filteredPosts.map((post) => (
                                 <div key={post.userID} className="bg-white p-4 rounded-lg shadow-md">
                                     <img
-                                        src={post.image || "/path-to-your-image.jpg"}
+                                        src={post.imageURL || "/path-to-your-image.jpg"}
                                         alt={post.title}
                                         className="w-full h-40 object-cover rounded-md mb-2"
                                     />

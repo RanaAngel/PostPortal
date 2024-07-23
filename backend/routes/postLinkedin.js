@@ -1,67 +1,113 @@
-'use-strict';
-
+'use strict';
+const moment = require('moment');
 const express = require('express');
 const https = require('https');
 const router = express.Router();
-const linkedin = require('../models/Linkedin'); // Import the Linkedin model
-const Post = require('../models/Post'); // Import the Post model
+const linkedin = require('../models/Linkedin');
+const Post = require('../models/Post');
 const multer = require('multer');
+const cron = require('node-cron');
+const path = require('path');
+const fs = require('fs');
 
-// Define storage engine for multer
-const storage = multer.memoryStorage();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Directory to store uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+    }
+});
+
 const upload = multer({ storage: storage });
 
+
 // POST route for posting content on LinkedIn
-router.post('/postContent', upload.single('image'), async (req, res) => {
+router.post('/postContent', upload.single('imageFile'), async (req, res) => {
     console.log('postContent route hit');
     try {
-        const { title, text, shareUrl, shareThumbnailUrl, userId } = req.body;
-        const imageFile = req.file; // Get the uploaded file
-        console.log(title, text, shareUrl, shareThumbnailUrl, userId);
-        console.log(imageFile);
+        const { title, text, userId, scheduleDate } = req.body;
+        const imageFile = req.file;
+        const imageURL = req.body.imageURL;
+        console.log(title, text, userId, scheduleDate);
+        const parsedScheduleDate = new Date(scheduleDate);
+
         // Retrieve the LinkedIn access token for the user from the database
         const linkedinToken = await linkedin.findOne({ userId });
         if (!linkedinToken) {
             return res.status(404).send('LinkedIn token not found for user');
         }
         const accessToken = linkedinToken.accessToken;
-        console.log(accessToken);
-        //Get ownerId
-        const ownerId = await getLinkedinId(accessToken);
-        console.log(ownerId);
-        // Register the image upload
-        const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.buffer);
-        console.log(JSON.stringify(uploadDetails, null, 2))
-        console.log('image registered:  ', uploadDetails.image);
-        const uploadUrl = uploadDetails.uploadUrl;
-        console.log("Upload URL:", uploadUrl);
-        const imageBuffer = imageFile.buffer;
-        // Upload the image to LinkedIn
-        await uploadImageToLinkedIn(uploadUrl, imageBuffer); // Implement this function
-        console.log('image uploaded: ', uploadImageToLinkedIn);
-        const response = await postShareWithImage(accessToken, ownerId, title, text, uploadDetails.image);
-        // Save the post information to the database
-        const newPost = new Post({
+
+        const NewPost = new Post({
             userID: userId,
-            title: title,
             content: text,
-            imageURL: uploadDetails.asset,
-            uploadUrl: uploadUrl,
-            postedAt: Date.now(),
+            title,
+            platforms: ['linkedin'],
+            imageURL: imageURL,
+            uploadUrl: '',
+            scheduledAt: parsedScheduleDate,
+            postedAt: null,
+            status: scheduleDate ? 'scheduled' : 'draft'
         });
-        await newPost.save(); // Save the post to the database
-        console.log('Content posted and saved to the database.');
-        res.status(200).json(response);
+
+        await NewPost.save();
+
+        let formattedDate = moment(scheduleDate, 'MMM DD, YYYY HH:mm:ss', true).format();
+        // if (!formattedDate) {
+        //     throw new Error('Invalid date format');
+        // }
+
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition');
+            const cronTime = moment(scheduleDate).format('m H D M *');
+            cron.schedule(cronTime, async () => {
+                const ownerId = await getLinkedinId(accessToken);
+                const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+                console.log(JSON.stringify(uploadDetails, null, 2));
+                const imageUrn = uploadDetails.image;
+                const uploadUrl = uploadDetails.uploadUrl;
+                const imageBuffer = imageFile.path;
+                await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+                console.log('image uploaded: ', uploadImageToLinkedIn);
+                const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+                NewPost.uploadUrl = uploadUrl;
+                NewPost.postedAt = Date.now();
+                NewPost.status = 'published';
+                await NewPost.save();
+                console.log('Content posted and saved to the database.');
+            });
+            res.status(200).json({ message: 'Post scheduled successfully' });
+        } else {
+            console.log('else condition');
+            const ownerId = await getLinkedinId(accessToken);
+            const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+            console.log(JSON.stringify(uploadDetails, null, 2));
+            const imageUrn = uploadDetails.image;
+            const uploadUrl = uploadDetails.uploadUrl;
+            const imageBuffer = imageFile.path;
+            await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+            console.log('image uploaded: ', uploadImageToLinkedIn);
+            const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+            NewPost.uploadUrl = uploadUrl;
+            NewPost.postedAt = Date.now();
+            NewPost.status = 'published';
+            await NewPost.save();
+            console.log('Content posted and saved to the database.');
+            res.status(200).json(response);
+        }
     } catch (error) {
         console.error('Error posting content on LinkedIn:', error);
         if (error.response && error.response.data.code === 'DUPLICATE_POST') {
-            // Handle duplicate post specifically
             res.status(400).json({ error: 'Duplicate post detected. Please modify the content.' });
         } else {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 });
+
 
 
 
@@ -159,7 +205,7 @@ const uploadImageToLinkedIn = async (uploadUrl, imageBuffer) => {
 
 
 // Post content on LinkedIn with image
-const postShareWithImage = async (accessToken, ownerId, title, text, assetId) => {
+const postShareWithImage = async (accessToken, ownerId, title, text, imageUrn) => {
     console.log('Posting image content on LinkedIn');
     return new Promise((resolve, reject) => {
         const options = {
@@ -199,7 +245,7 @@ const postShareWithImage = async (accessToken, ownerId, title, text, assetId) =>
             "content": {
                 "media": {
                     "altText": title, // You may want to set this dynamically
-                    "id": assetId
+                    "id": imageUrn
                 }
             },
             "lifecycleState": "PUBLISHED",
@@ -245,6 +291,9 @@ function _request(method, hostname, path, headers, body) {
         req.end();
     });
 }
+
+
+
 
 
 

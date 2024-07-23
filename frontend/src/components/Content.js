@@ -21,7 +21,7 @@ const Content = ({ className = "" }) => {
       <div className="flex flex-col items-center justify-center text-mid text-dimgray-200">
         <div className="relative">First, let's connect a social account.</div>
         <div className="w-[233px] bg-gray-300 flex flex-col items-center justify-center py-3 px-0 box-border gap-[4px] text-lg text-white">
-          <div className="self-stretch rounded-[3.75px] bg-button flex flex-row items-center justify-between py-[18px] pr-3.5 pl-5 whitespace-nowrap gap-[0px] [row-gap:20px]">
+          <div className="self-stretch rounded-[3.75px] bg-button flex flex-row items-center justify-between py-[18px] pr-3.5 pl-5 whitespace-nowrap gap-[0px] [row-gap:20px] text-white">
             <div className="h-[25px] relative flex items-center">
               Connect an Account
             </div>

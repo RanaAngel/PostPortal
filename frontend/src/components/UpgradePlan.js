@@ -85,31 +85,8 @@ const createCheckoutSession = async () => {
     <section
     className={`w-full sm:w-[80%] md:w-[90%] lg:w-[95%] flex flex-row items-start justify-start pt-0 px-2.5 pb-[51px] box-border max-w-full text-left text-lg text-gray-100 font-body-body1-regular mq900:pb-[33px] mq900:box-border ${className}`}
     >
-      <div className="flex-1 flex flex-col items-start justify-start gap-[74px] max-w-full mq450:gap-[18px] mq900:gap-[37px]">
-        <div className="self-stretch flex flex-col items-start justify-start gap-[17.5px] max-w-full">
-          <div className="flex flex-row items-start justify-start py-0 px-1">
-            <div className="relative font-medium">SERVICE PRICING</div>
-          </div>
-          <div className="self-stretch h-px relative box-border border-t-[1px] border-solid border-black" />
-          <div className="w-[1666px] flex flex-row items-start justify-start py-0 px-1 box-border max-w-full text-11xl text-black-main-background">
-            <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px] mq1650:flex-wrap">
-              <div className="w-[565px] flex flex-col items-start justify-start pt-[7px] px-0 pb-0 box-border max-w-full">
-                <h2
-                  className="m-0 self-stretch relative text-inherit tracking-[0.04em] font-extrabold font-inherit mq450:text-lg mq900:text-5xl"
-                  data-scroll-to="cHOOSEAPLAN"
-                >
-                  {`CHOOSE A PLAN. WE OFFER OUR SERVICE IN AFFORDABLE PRICE `}
-                </h2>
-              </div>
-              <div className="w-[1009px] relative text-xl font-medium text-gray-100 inline-block shrink-0 max-w-full mq450:text-base">
-                Choose a plan that suits your needs and budget. we offer our
-                services at affordable prices, ensuring that you get the best
-                value for your money. Whether you're a small business or a large
-                corporation, we have plans designed to fit your requirements
-              </div>
-            </div>
-          </div>
-        </div>
+      
+        
         <div className="w-[1608.4px] flex flex-row items-start justify-center py-0 px-5 box-border max-w-full text-41xl text-gray-300">
           <div className="w-[1106.4px] flex flex-row items-start justify-between max-w-full gap-[20px] mq1300:flex-wrap">
           {plans.map((plan, index) => (
@@ -159,7 +136,7 @@ const createCheckoutSession = async () => {
             ))}
           </div>
         </div>
-      </div>
+     
     </section>
   );
 };

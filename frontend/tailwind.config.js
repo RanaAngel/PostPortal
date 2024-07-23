@@ -363,3 +363,132 @@ module.exports = {
 //     preflight: false,
 //   },
 // };
+// /** @type {import('tailwindcss').Config} */
+// module.exports = {
+//   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+//   theme: {
+//     extend: {
+//       colors: {
+//         // Colors from both configs
+//         white: "#fff",
+//         gray: {
+//           "100": "#282828",
+//           "200": "#0b0b0b",
+//           "300": "rgba(0, 0, 0, 0)",
+//           "400": "rgba(255, 255, 255, 0.6)", // from second config
+//         },
+//         slategray: {
+//           "100": "#5f6178",
+//           "200": "#5a5b74",
+//         },
+//         button: "#7f5af0",
+//         dimgray: {
+//           "100": "#5e5e74",
+//           "200": "#4e556d",
+//           "300": "#4d536b",
+//         },
+//         darkslategray: "#2d405d",
+//         gainsboro: {
+//           "100": "#eae6e6",
+//           "200": "#d9d9d9",
+//         },
+//         sandybrown: "#ee9b3a",
+
+//         "neutral-main-50": "#fbfbfb",
+//         "black-main-background": "#16161a",
+//         black: "#000",
+//         whitesmoke: {
+//           "100": "#ededed",
+//           "200": "#eaeaea",
+//         },
+//         slateblue: "#6446c0",
+//         mediumslateblue: {
+//           "100": "#9973ff",
+//           "200": "#8a6be6",
+//           "300": "rgba(127, 90, 240, 0.8)",
+//         },
+//         "black-main-text": "#fffffe",
+//         palevioletred: "#ee79a3",
+//         lightslategray: "rgba(148, 161, 178, 0.2)",
+//       },
+//       spacing: {},
+//       fontFamily: {
+//         // Font families from both configs
+//         inter: "Inter",
+//         poppins: "Poppins",
+//         roboto: "Roboto",
+//         "body-body1-regular": "Inter",
+//       },
+//       borderRadius: {
+//         // Border radii from both configs
+//         "9xs-8": "3.8px",
+//         mid: "17px",
+//         "7xl": "26px",
+//         "116xl-3": "135.3px",
+//         "16xl": "35px",
+//         "11xl": "30px",
+//         xl: "20px",
+//         "8xs": "5px",
+//       },
+//       fontSize: {
+//         // Font sizes from both configs
+//         "2xs-5": "10.5px",
+//         lg: "18px",
+//         mid: "17px",
+//         "6xl": "25px",
+//         xl: "20px",
+//         base: "16px",
+//         "13xl": "32px",
+//         "mini-5": "14.5px",
+//         inherit: "inherit",
+
+//         "11xl": "30px",
+//         "5xl": "24px",
+//         "41xl": "60px",
+//         "17xl": "36px",
+//         "29xl": "48px",
+//         lgi: "19px",
+//         "45xl": "64px",
+//         "19xl": "38px",
+//         "32xl": "51px",
+//         "21xl": "40px",
+//       },
+//     },
+//     screens: {
+//       // Screens from both configs
+//       mq1050: {
+//         raw: "screen and (max-width: 1050px)",
+//       },
+//       mq1000: {
+//         raw: "screen and (max-width: 1000px)",
+//       },
+//       mq725: {
+//         raw: "screen and (max-width: 725px)",
+//       },
+//       mq450: {
+//         raw: "screen and (max-width: 450px)",
+//       },
+//       mq1650: {
+//         raw: "screen and (max-width: 1650px)",
+//       },
+//       mq1500: {
+//         raw: "screen and (max-width: 1500px)",
+//       },
+//       mq1300: {
+//         raw: "screen and (max-width: 1300px)",
+//       },
+//       mq1225: {
+//         raw: "screen and (max-width: 1225px)",
+//       },
+//       mq900: {
+//         raw: "screen and (max-width: 900px)",
+//       },
+//       mq850: {
+//         raw: "screen and (max-width: 850px)",
+//       },
+//     },
+//   },
+//   corePlugins: {
+//     preflight: false,
+//   },
+// };

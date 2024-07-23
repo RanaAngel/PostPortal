@@ -55,35 +55,57 @@ router.post('/checkout', async (req, res) => {
 
 // Route to handle successful payments
 router.get('/complete', async (req, res) => {
-  try {
-    const userId = req.body.userId;
+    try {
+      const userId = req.body.userId;
       const session = await stripe.checkout.sessions.retrieve(req.query.session_id, {
-          expand: ['payment_intent.payment_method']
+        expand: ['payment_intent.payment_method']
       });
-
+  
       // Find the payment record by session ID
       const paymentRecord = await Payment.findOne({ sessionID: req.query.session_id });
       if (!paymentRecord) {
-          return res.status(404).send('Payment record not found');
+        return res.status(404).send('Payment record not found');
       }
-
+  
       // Update the payment status based on the session outcome
+      let paymentStatus = 'failed'; // Default status
       if (session.payment_status === 'paid') {
-          paymentRecord.status = 'completed';
+        paymentRecord.status = 'completed';
+        paymentStatus = 'completed';
       } else {
-          paymentRecord.status = 'failed'; // Or 'pending' if you want to keep it pending until manual review
+        paymentRecord.status = 'failed'; // Or 'pending' if you want to keep it pending until manual review
       }
       await paymentRecord.save();
-      res.redirect(`https://localhost:3000/dashboard?&userId=${userId}`);
-
-
-      // Send a success message along with the session ID
-      // res.json({ success: true, session_id: req.query.session_id });
-  } catch (error) {
+  
+      res.redirect(`https://localhost:3000/dashboard?userId=${userId}&status=${paymentStatus}`);
+    } catch (error) {
       console.error('Error retrieving session:', error);
       res.status(500).send('An error occurred during payment completion.');
+    }
+  });
+  // Route to verify payment status
+
+router.get('/verify', async (req, res) => {
+  try {
+      const userId = req.query.userId; // Get userId from query parameters
+      if (!userId) {
+          return res.status(400).json({ error: 'User ID is required' });
+      }
+
+      // Find the most recent payment record for the user
+      const paymentRecord = await Payment.findOne({ userID: userId }).sort({ createdAt: -1 });
+      if (!paymentRecord) {
+          return res.status(404).json({ status: 'No payment record found' });
+      }
+
+      // Send the payment status as response
+      res.json({ status: paymentRecord.status });
+  } catch (error) {
+      console.error('Error verifying payment status:', error);
+      res.status(500).send('An error occurred while verifying payment status.');
   }
 });
+
 
 
 // Route to handle cancellations

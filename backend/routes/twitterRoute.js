@@ -1,4 +1,5 @@
 // Import required modules
+const moment = require('moment');
 require('dotenv').config(); // Load environment variables
 const express = require('express');
 const crypto = require('crypto'); // Cryptographic library
@@ -9,6 +10,8 @@ const router = express.Router();
 const multer = require('multer');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
+const cron = require('node-cron');
+
 
 
 const mongoose = require('mongoose');
@@ -16,12 +19,26 @@ const twitter = require('../models/Twitter'); // Import the Linkedin model
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
+const { userInfo } = require('os');
+const path = require('path');
+const fs = require('fs');
 
 
 
-// Define storage engine for multer
-const storage = multer.memoryStorage();
+
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Directory to store uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+    }
+});
+
 const upload = multer({ storage: storage });
+
 
 
 // Connect to MongoDB
@@ -137,18 +154,20 @@ async function writeTweet({ oauth_token, oauth_token_secret }, tweetText, mediaI
 
 
 
-async function uploadImage({ oauth_token, oauth_token_secret }, media) {
+async function uploadImage({ oauth_token, oauth_token_secret }, imagePath) {
     const token = {
         key: oauth_token,
         secret: oauth_token_secret
     };
+       // Read the image file from disk
+
+       const media = fs.createReadStream(imagePath);
+
+       // Create a FormData instance
+       const formData = new FormData();
+       formData.append('media', media);
     const url = 'https://upload.twitter.com/1.1/media/upload.json';
-    // Create a FormData instance to hold the media file
-    const formData = new FormData();
-    formData.append('media', media.buffer, {
-        filename: 'media',
-        contentType: media.mimetype
-    });
+  
     // Upload the image to get the media ID
     const uploadResponse = await fetch(url, {
         method: 'POST',
@@ -164,6 +183,38 @@ async function uploadImage({ oauth_token, oauth_token_secret }, media) {
     return mediaId;
 }
 
+
+
+//get user ID of twitter
+async function getUserId({ oauth_token, oauth_token_secret }) {
+    const token = {
+        key: oauth_token,
+        secret: oauth_token_secret
+    };
+
+    const url = 'https://api.twitter.com/1.1/account/verify_credentials.json';
+    const headers = oauth.toHeader(oauth.authorize({
+        url,
+        method: 'GET'
+    }, token));
+
+    try {
+        const request = await fetch(url, {
+            method: 'GET',
+            headers: {
+                Authorization: headers['Authorization'],
+                'user-agent': 'v1VerifyCredentialsJS',
+                'accept': 'application/json'
+            }
+        });
+
+        const body = await request.json();
+        return body.id_str; // Returns the user ID as a string
+    } catch (error) {
+        console.error('Error getting user ID:', error);
+        return null;
+    }
+}
 
 
 
@@ -228,42 +279,77 @@ router.post('/callback', async (req, res) => {
 
 
 
-router.post('/tweet', upload.single('image'), async (req, res) => {
+router.post('/tweet', upload.single('imageFile'), async (req, res) => {
     try {
-        const { title, text, userId } = req.body;
-        const imageFile = req.file; // Get the uploaded file
-        console.log(text,title, userId);
-        console.log(imageFile);
-        // Retrieve the Twitter access token for the user from the database
+        const { title, text, userId, scheduleDate} = req.body;
+        const imageFile = req.file;
+        const imageURL = req.body.imageURL; // image URL from the 'imageURL' field
+        console.log('image url: ',imageFile);
+        console.log('imageUrl: ',imageURL);
+        const parsedScheduleDate = new Date(scheduleDate);
         const twitterToken = await twitter.findOne({ userId });
         if (!twitterToken) {
             return res.status(404).send('Twitter token not found for user');
         }
         const access_token = JSON.parse(twitterToken.accessToken);
-        // Call the uploadImage function to get the media ID
-        const mediaId = await uploadImage(access_token, imageFile);
+        const NewPost = new Post({
+            userID: userId,
+            content: text,
+            title,
+            platforms: ['twitter'],
+            imageURL: imageURL,
+            uploadUrl: '',
+            scheduledAt: parsedScheduleDate,
+            postedAt: null,
+            status: scheduleDate ? 'scheduled' : 'draft'
+        });
+        await NewPost.save();
+        const mediaId = await uploadImage(access_token, imageFile.path);
         const mediaIdArray = [mediaId];
         console.log("Image uploaded successfully: ", mediaIdArray);
-        // Post the tweet with the image
-        const messageResponse = await writeTweet(access_token, text, mediaIdArray);
-        const newPost = new Post({
-            userID: userId,
-            title: title,
-            content: text,
-            imageURL: imageFile ? imageFile.path : null,
-            uploadUrl: mediaId,
-            postedAt: new Date()
-        });
-        // Save the new Post document to the database
-        await newPost.save();
-        console.log(`Content posted and saved to the database ID: ${userId}.`);
-        console.log(messageResponse);
-        res.status(200).json({ message: 'Tweet posted successfully', response: messageResponse });
+        console.log('scheduleDate:', scheduleDate);
+
+        // Check if scheduleDate is provided and in the future
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition running');
+            const cronTime = moment(scheduleDate).format('m H D M *');
+            cron.schedule(cronTime, async () => {
+                const messageResponse = await writeTweet(access_token, text, mediaIdArray);
+                const tweetId = messageResponse.data.id;
+                console.log('tweet id: ', tweetId);
+                const tweetData = messageResponse.data.text;
+                console.log('tweet data: ', tweetData);
+                NewPost.uploadUrl = mediaId;
+                NewPost.postedAt = Date.now();
+                NewPost.status = 'published';
+                console.log('if condition');
+                await NewPost.save();
+                console.log('Content posted and scheduled to the database.');
+            });
+            res.status(200).json({ message: 'Post scheduled successfully' });
+        } else {
+            console.log( 'else condition');
+            const messageResponse = await writeTweet(access_token, text, mediaIdArray);
+            const tweetId = messageResponse.data.id;
+            console.log('tweet id: ', tweetId);
+            const tweetData = messageResponse.data.text;
+            console.log('tweet data: ', tweetData);
+            NewPost.uploadUrl = mediaId;
+            NewPost.postedAt = Date.now();
+            NewPost.status = 'published';
+            await NewPost.save();
+            console.log('else condition');
+
+            console.log('Content posted and saved to the database.');
+            res.status(200).json({ message: 'Post Shared successfully' });
+        }
     } catch (error) {
         console.error('Error posting tweet:', error);
         res.status(500).json({ error: 'Failed to post tweet' });
     }
 });
+
+
 
 
 
