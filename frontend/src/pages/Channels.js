@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
-import FacebookFlow from '../components/FacebookFlow';
+
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
@@ -9,23 +9,60 @@ const Channels = () => {
   const [isFacebookConnected, setIsFacebookConnected] = useState(false);
   const [pin, setPin] = useState('');
   const [isTwitterConnected, setIsTwitterConnected] = useState(false);
+  const [isLinkedInConnected, setIsLinkedInConnected] = useState(false);
   const [pinSubmitted, setPinSubmitted] = useState(false);
   
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
+  const getUserIdFromToken = (token) => {
+    if (!token) {
+        console.error('JWT token is missing');
+        return null;
+    }
+
+    try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const { userId } = JSON.parse(decodedPayload);
+        return userId;
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return null;
+    }
+};
 
   useEffect(() => {
-    
-    // Check if facebookAccessToken is present in local storage
-    const token = localStorage.getItem('facebookAccessToken');
-    if (token) {
-      setIsFacebookConnected(true);
+    // Function to fetch user connection status
+    const fetchConnectionStatus = async () => {
+      try {
+        const userId = getUserIdFromToken(token);
+        
+        // Check Facebook connection
+        const facebookResponse = await axios.get(`http://localhost:5000/api/facebook/check/${userId}`);
+        if (facebookResponse.data.isConnected) {
+          setIsFacebookConnected(true);
+        }
 
-    }
-    const twitterUserId = localStorage.getItem('twitter_user_id');
-    if (twitterUserId) {
-      setIsTwitterConnected(true);
-      setPinSubmitted(true); // Ensure we show "Connected" if already connected
-    }
+        // Check Twitter connection
+        const twitterResponse = await axios.get(`http://localhost:5000/twitter/check/${userId}`);
+        if (twitterResponse.data.isConnected) {
+          setIsTwitterConnected(true);
+          setPinSubmitted(true); // Ensure we show "Connected" if already connected
+        }
+         // Check LinkedIn connection
+         const linkedInResponse = await axios.get(`http://localhost:5000/linkedin/check/${userId}`);
+         console.log('LinkedIn response:', linkedInResponse.data); // Debugging statement
+         if (linkedInResponse.data.isConnected) {
+         
+           setIsLinkedInConnected(true);
+         }
+      } catch (error) {
+        console.error('Error fetching connection status:', error);
+      }
+    };
+
+    fetchConnectionStatus();
   }, []);
   
 
@@ -155,10 +192,10 @@ const checkFacebookConnection = async () => {
       }
     } else {
       const data = await response.json();
-      console.log('Response data:', data);
+      
 
       if (data.facebookAccessToken) {
-        console.log('Facebook access token found:', data.facebookAccessToken);
+       
         localStorage.setItem('facebookAccessToken', data.facebookAccessToken);
         setIsLoggedIn(true);
       } else {
@@ -423,13 +460,18 @@ const handleTwitterLogout = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-start pt-[3px] px-0 pb-0">
-          <button onClick={handleLinkedInAuth} className="cursor-pointer [border:none] py-2 px-7 bg-button rounded flex flex-row items-start justify-start hover:bg-mediumslateblue">
-            <div className="relative text-sm leading-[20px] font-medium font-roboto text-white text-center inline-block min-w-[53px]">
-              Connect
-            </div>
-          </button>
+        <div className="flex flex-col items-start justify-start pt-[7px] px-0 pb-0">
+      <button
+        onClick={handleLinkedInAuth}
+        className={`cursor-pointer border-none py-2 px-7 ${
+          isLinkedInConnected ? 'bg-green-500' : 'bg-button'
+        } rounded flex flex-row items-start justify-start hover:bg-mediumslateblue`}
+      >
+        <div className="relative text-sm leading-[20px] font-medium font-roboto text-white text-center inline-block min-w-[53px]">
+          {isLinkedInConnected ? 'Connected' : 'Connect'}
         </div>
+      </button>
+    </div>
       </div>
     </div>
     </div>

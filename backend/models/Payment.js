@@ -24,6 +24,10 @@ const PaymentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  sessionID: {
+    type: String, // Add this field to store Stripe session ID
+    required: true,
+  },
   updatedAt: {
     type: Date,
     default: Date.now,

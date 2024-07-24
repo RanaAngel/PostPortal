@@ -48,6 +48,10 @@ const LoginForm = () => {
     navigate('/signup');
   }, [navigate]);
 
+  const onForgetPasswordClick = useCallback(() => {
+    navigate('/forget-password'); // Ensure '/forget-password' is the correct path to your ForgetPassword page
+  }, [navigate]);
+
 
 return (
   <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px] pb-[263px] pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
@@ -114,7 +118,7 @@ return (
               />
             </div>
           </div>
-          <form onSubmit={handleSubmit}  className="m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
+          <form   className="m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
             <img
               className="w-[664px] h-[461px] relative rounded-xl hidden max-w-full"
               alt=""
@@ -142,13 +146,14 @@ return (
                 </div>
               </div>
               <div className="self-stretch flex flex-row items-start justify-end py-0 px-2.5">
-                <button className="cursor-pointer [border:none] p-0 bg-[transparent] relative text-[15px] font-medium font-body-body1-regular text-gray-200 text-left inline-block z-[1]">
-                  FORGOT PASSWORD ?
-                </button>
+              <button className="cursor-pointer [border:none] p-0 bg-[transparent] relative text-[15px] font-medium font-body-body1-regular text-gray-200 text-left inline-block z-[1]" onClick={onForgetPasswordClick}>
+          FORGET PASSWORD?
+        </button>
+
               </div>
             </div>
             <div className="self-stretch flex flex-row items-start justify-end py-0 pr-2.5 pl-3 box-border max-w-full">
-              <button className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue-100">
+              <button onClick={handleSubmit} className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue-100">
                 <div className="relative text-xl font-medium font-body-body1-regular text-black-main-text text-left inline-block min-w-[78px] mq450:text-base">
                   SUBMIT
                 </div>

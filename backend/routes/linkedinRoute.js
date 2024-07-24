@@ -167,5 +167,18 @@ function _request(method, hostname, path, headers, body) {
   });
 }
 
+router.get('/check/:userId', async (req, res) => {
+  try {
+    const linkedinData = await linkedin.findOne({ userId: req.params.userId });
+    if (linkedinData && linkedinData.accessToken) {
+      return res.json({ isConnected: true });
+    }
+    res.json({ isConnected: false });
+  } catch (error) {
+    console.error('Error checking Twitter connection:', error);
+    res.status(500).send('Server Error');
+  }
+});
+
 
 module.exports = router;

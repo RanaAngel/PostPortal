@@ -25,8 +25,12 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
         return "Pricing";
         case "/post":
         return "ViewPost";
-      default:
+        case "/profile":
+        return "Profile";
+        case "/getting-started":
         return "Get Started";
+      default:
+        return "";
     }
   };
 

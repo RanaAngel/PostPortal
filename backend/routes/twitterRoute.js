@@ -281,7 +281,7 @@ router.post('/callback', async (req, res) => {
 
 router.post('/tweet', upload.single('imageFile'), async (req, res) => {
     try {
-        const { title, text, userId, scheduleDate} = req.body;
+        const { title, postTitle, text, userId, scheduleDate} = req.body;
         const imageFile = req.file;
         const imageURL = req.body.imageURL; // image URL from the 'imageURL' field
         console.log('image url: ',imageFile);
@@ -292,10 +292,18 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
             return res.status(404).send('Twitter token not found for user');
         }
         const access_token = JSON.parse(twitterToken.accessToken);
+        // Logging received data for debugging
+   console.log('Received title:', title);
+   console.log('Received text:', text);
+   console.log('Received userID:', userId);
+   console.log('Received postTitle:', postTitle);
+   console.log('Received scheduleDate:', scheduleDate);
+
         const NewPost = new Post({
             userID: userId,
             content: text,
             title,
+            name: postTitle,
             platforms: ['twitter'],
             imageURL: imageURL,
             uploadUrl: '',
@@ -349,7 +357,19 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
     }
 });
 
-
+// Endpoint to check Twitter connection status
+router.get('/check/:userId', async (req, res) => {
+    try {
+      const twitterData = await twitter.findOne({ userId: req.params.userId });
+      if (twitterData && twitterData.accessToken) {
+        return res.json({ isConnected: true });
+      }
+      res.json({ isConnected: false });
+    } catch (error) {
+      console.error('Error checking Twitter connection:', error);
+      res.status(500).send('Server Error');
+    }
+  });
 
 
 

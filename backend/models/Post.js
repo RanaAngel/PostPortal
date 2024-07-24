@@ -21,7 +21,7 @@ const postSchema = new mongoose.Schema({
   },
   name:{
     type: String,
-    required: true
+    required: false
     
   },
   platforms: {
@@ -35,6 +35,10 @@ const postSchema = new mongoose.Schema({
   postedAt: {
     type: Date,
     default: Date.now
+  },
+ scheduledAt: {
+  type: String,
+    required: false
   },
   status: {
     type: String,

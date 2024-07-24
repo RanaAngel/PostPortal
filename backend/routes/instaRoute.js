@@ -30,7 +30,7 @@ const getUserIdFromToken = (token) => {
 // POST /api/instagram/post endpoint handler
 router.post('/post', upload.single('image'), async (req, res) => {
   try {
-    const { title, postTitle, text , imageUrl , token ,scheduleDate} = req.body;
+    const { title,postTitle, text , imageUrl , token ,scheduleDate} = req.body;
     const userID = getUserIdFromToken(token);
     const image = req.file; // Multer will populate this if 'image' field is in FormData
     const ayrshareApiKey = process.env.AYRSHARE_API_KEY;
@@ -43,22 +43,23 @@ router.post('/post', upload.single('image'), async (req, res) => {
     if (!title || !text) {
       throw new Error('Title and text fields are required.');
     }
-    // Example of logging the received data
-    console.log('Received title:', title);
-    console.log('Received text:', text);
-    console.log('Received text:', userID);
-    console.log('Received posttitle:', postTitle);
-    console.log('Received date:', scheduleDate);
-    // console.log('Received text:', imageUrl);
+
+   // Logging received data for debugging
+   console.log('Received title:', title);
+   console.log('Received text:', text);
+   console.log('Received userID:', userID);
+   console.log('Received postTitle:', postTitle);
+   console.log('Received scheduleDate:', scheduleDate);
+
 
     const NewPost = new Post({
       userID: userID,
       content: text,
       title,
-      name: postTitle,
       imageURL: imageUrl,
       uploadUrl: '',
       scheduledAt: parsedScheduleDate,
+      name: postTitle,
       postedAt: null,
       status: scheduleDate ? 'scheduled' : 'draft'
   });
@@ -83,20 +84,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
     });
     const ayrsharePostId = response.data.id;
 
-    // Save post details to MongoDB
-    const newPost = new Post({
-      userID,
-      title,
-      name: postTitle,
-      content: text,
-      imageURL: imageUrl,
-      platforms: 'instagram',
-      ayrsharePostId,
-      status : 'published',
-      postedAt : Date.now()
-    });
-
-    await newPost.save();
+    
   console.log('Content posted and saved to the database.');
   res.json(response.data);
 
@@ -116,8 +104,8 @@ router.post('/post', upload.single('image'), async (req, res) => {
       userID,
       title,
       content: text,
-      name: postTitle,
       imageURL: imageUrl,
+      name: postTitle,
       platforms: 'instagram',
       ayrsharePostId,
       status : 'published',
@@ -137,3 +125,4 @@ router.post('/post', upload.single('image'), async (req, res) => {
 });
 
 module.exports = router;
+

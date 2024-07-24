@@ -1,280 +1,126 @@
-import PropTypes from "prop-types";
-
-const FilterContent = ({ className = "" }) => {
-  return (
-    <div
-      className={`w-[1448px] flex flex-col items-start justify-start gap-[44.9px] max-w-full text-left text-xl text-black-main-background font-body-body1-regular mq750:gap-[22px] ${className}`}
-    >
-      <div className="w-[283px] flex flex-row items-start justify-start py-0 px-[35px] box-border">
-        <a className="[text-decoration:none] flex-1 relative tracking-[0.04em] font-medium text-[inherit] mq450:text-base">
-          View All Posts
-        </a>
-      </div>
-      <div className="self-stretch flex flex-row items-start justify-start gap-[27.7px] max-w-full text-base text-gray-900 lg:flex-wrap">
-        <div className="flex-1 flex flex-col items-start justify-start gap-[69px] min-w-[512px] max-w-full mq450:gap-[17px] mq750:min-w-full mq1050:gap-[34px]">
-          <div className="self-stretch flex flex-col items-start justify-start gap-[37.3px] max-w-full mq450:gap-[19px]">
-            <div className="self-stretch flex flex-row items-start justify-start py-0 pr-0 pl-px box-border max-w-full">
-              <div className="flex-1 flex flex-row items-start justify-start gap-[77.1px] max-w-full mq450:gap-[19px] mq750:flex-wrap mq1050:gap-[39px]">
-                <div className="flex-1 flex flex-row items-start justify-between pt-[16.6px] pb-[13.7px] pr-[30px] pl-[43px] box-border relative max-w-full gap-[20px] mq450:flex-wrap mq750:pl-[21px] mq750:box-border">
-                  <input
-                    className="w-[256.4px] [border:none] [outline:none] bg-[transparent] h-[29px] flex flex-col items-start justify-start pt-[2.8px] px-0 pb-0 box-border font-body-body1-regular font-medium text-base text-gray-800"
-                    placeholder="Search By Post Name"
-                    type="text"
-                  />
-                  <div className="h-full w-full absolute !m-[0] top-[0px] right-[0px] bottom-[0px] left-[0px] rounded-xl bg-lightslategray-200 z-[1]" />
-                  <img
-                    className="h-[34.5px] w-[36.4px] relative overflow-hidden shrink-0"
-                    alt=""
-                    src="/quillsearch.svg"
-                  />
-                </div>
-                <div className="w-[199.6px] flex flex-col items-start justify-start pt-[19.3px] px-0 pb-0 box-border">
-                  <div className="self-stretch h-[26.2px] relative tracking-[0.04em] font-medium inline-block shrink-0">
-                    Search by Media
-                  </div>
-                </div>
+<section className="w-[1647px] flex flex-row items-start justify-start py-0 px-8 box-border max-w-full text-center text-[32px] font-poppins mq1325:flex-row mq1325:pl-2.5 mq1325:pr-2.5 mq1325:box-border">
+          <div className="flex-1 flex flex-row items-start justify-start gap-[50px] max-w-full mq800:gap-[25px] mq1325:flex-wrap">
+            <div className="flex-[0.9478] flex flex-col items-center justify-start pt-48 px-5 pb-[265px] box-border gap-[37px] min-w-[498px] max-w-full mq800:min-w-full mq1125:pt-[125px] mq1125:pb-[172px] mq1125:box-border mq450:gap-[18px] mq450:pt-[81px] mq450:pb-28 mq450:box-border mq1325:flex-1">
+              <div className="flex flex-row items-start justify-start py-0 px-[18px]">
+                <h1 className="m-0 relative text-inherit leading-[42px] font-medium font-inherit text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] mq800:text-[26px] mq800:leading-[34px] mq450:text-[19px] mq450:leading-[25px]">
+                  Profile Preview
+                </h1>
               </div>
+              <img className="w-[278px] h-[285px] relative rounded-[50%] bg-gainsboro-200" />
             </div>
-            <div className="w-[725.5px] flex flex-row items-start justify-between gap-[20px] max-w-full mq750:flex-wrap">
-              <div className="w-[304.5px] rounded-xl flex flex-col items-end justify-start pt-[13.8px] px-0 pb-0 box-border gap-[56.6px] bg-[url('/public/rectangle-108@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                <img
-                  className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                  alt=""
-                  src="/rectangle-108@2x.png"
-                />
-                <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                  <div className="flex flex-col items-start justify-start gap-[6.9px]">
-                    <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                      <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                      <img
-                        className="absolute top-[12.8px] left-[11.5px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                        loading="lazy"
-                        alt=""
-                        src="/materialsymbolslightdeleteoutline.svg"
-                      />
-                    </div>
-                    <img
-                      className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                      loading="lazy"
-                      alt=""
-                      src="/group-91.svg"
-                    />
-                  </div>
-                </div>
-                <textarea
-                  className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[18px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                  placeholder="International c.."
-                  rows={6}
-                  cols={15}
-                />
-              </div>
-              <div className="w-[304.5px] rounded-xl flex flex-col items-end justify-start pt-[13.8px] px-0 pb-0 box-border gap-[56.6px] bg-[url('/public/rectangle-1081@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                <img
-                  className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                  alt=""
-                  src="/rectangle-1081@2x.png"
-                />
-                <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                  <div className="flex flex-col items-start justify-start gap-[6.9px]">
-                    <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                      <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                      <img
-                        className="absolute top-[12.8px] left-[11.5px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                        alt=""
-                        src="/materialsymbolslightdeleteoutline-1.svg"
-                      />
-                    </div>
-                    <img
-                      className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                      alt=""
-                      src="/group-91-1.svg"
-                    />
-                  </div>
-                </div>
-                <textarea
-                  className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[18px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                  placeholder="International c.."
-                  rows={6}
-                  cols={15}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-[733.5px] flex flex-row items-start justify-start py-0 px-px box-border max-w-full">
-            <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px] mq750:flex-wrap">
-              <div className="w-[304.5px] rounded-xl flex flex-col items-end justify-start pt-[13.7px] px-0 pb-0 box-border gap-[56.6px] bg-[url('/public/rectangle-1082@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                <img
-                  className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                  alt=""
-                  src="/rectangle-1082@2x.png"
-                />
-                <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                  <div className="flex flex-col items-start justify-start gap-[7px]">
-                    <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                      <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                      <img
-                        className="absolute top-[12.9px] left-[11.6px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                        alt=""
-                        src="/materialsymbolslightdeleteoutline-1.svg"
-                      />
-                    </div>
-                    <img
-                      className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                      alt=""
-                      src="/group-91-1.svg"
-                    />
-                  </div>
-                </div>
-                <textarea
-                  className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[18px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                  placeholder="International c.."
-                  rows={6}
-                  cols={15}
-                />
-              </div>
-              <div className="w-[304.5px] flex flex-col items-start justify-start pt-3 px-0 pb-0 box-border">
-                <div className="self-stretch rounded-xl flex flex-col items-end justify-start pt-[13.8px] px-0 pb-0 gap-[56.6px] bg-[url('/public/rectangle-1083@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                  <img
-                    className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                    alt=""
-                    src="/rectangle-1083@2x.png"
-                  />
-                  <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                    <div className="flex flex-col items-start justify-start gap-[6.9px]">
-                      <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                        <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                        <img
-                          className="absolute top-[12.8px] left-[11.5px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                          alt=""
-                          src="/materialsymbolslightdeleteoutline-1.svg"
-                        />
-                      </div>
-                      <img
-                        className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                        alt=""
-                        src="/group-91-1.svg"
-                      />
-                    </div>
-                  </div>
-                  <textarea
-                    className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[18px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                    placeholder="International c.."
-                    rows={6}
-                    cols={15}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-[632.2px] flex flex-col items-start justify-start pt-[8.3px] px-0 pb-0 box-border min-w-[632.2px] max-w-full lg:flex-1 mq750:min-w-full">
-          <div className="self-stretch flex flex-row items-end justify-between max-w-full gap-[20px]">
-            <div className="w-[486.5px] flex flex-col items-start justify-start gap-[46.9px] max-w-[calc(100%_-_36px)] mq750:gap-[23px]">
-              <div className="self-stretch flex flex-row items-start justify-start gap-[30.5px] mq450:flex-wrap mq750:gap-[15px]">
-                <div className="flex-1 flex flex-row items-start justify-start py-0 pr-[7px] pl-0 box-border gap-[24.7px] min-w-[142px]">
-                  <button className="cursor-pointer [border:none] pt-[11.1px] px-[42px] pb-[12.4px] bg-button flex-1 rounded-xl flex flex-row items-start justify-start hover:bg-mediumslateblue-100">
-                    <div className="h-[46.9px] w-[112.2px] relative rounded-xl bg-button hidden" />
-                    <div className="h-[23.4px] flex-1 relative text-sm tracking-[0.04em] font-medium font-body-body1-regular text-black-main-background text-left inline-block z-[1]">
-                      All
+            <div className="flex-1 flex flex-col items-start justify-start pt-[82.5px] px-0 pb-0 box-border min-w-[498px] max-w-full mq800:pt-[54px] mq800:box-border mq800:min-w-full mq1325:flex-1">
+              <form className="m-0 self-stretch flex flex-col items-start justify-start gap-[60px] max-w-full mq800:gap-[30px]">
+                <div className="self-stretch flex flex-row items-center justify-end">
+                  <button
+                    className="cursor-pointer [border:none] py-[15px] px-5 bg-success-success200 rounded-3xs flex flex-row items-center justify-center whitespace-nowrap hover:bg-turquoise"
+                    onClick={onButtonClick}
+                  >
+                    <div className="relative text-sm font-semibold font-inter text-color text-left inline-block min-w-[123px]">
+                      Change Password
                     </div>
                   </button>
-                  <div className="w-[74.3px] flex flex-col items-start justify-start pt-[11.1px] px-0 pb-0 box-border">
-                    <button className="cursor-pointer [border:none] p-0 bg-[transparent] self-stretch h-[23.4px] relative text-sm tracking-[0.04em] font-medium font-body-body1-regular text-black-main-background text-left inline-block shrink-0">
-                      Twitter
+                </div>
+                <div className="self-stretch flex flex-col items-end justify-start gap-[20px] max-w-full">
+                  <div className="self-stretch flex flex-col items-start justify-start gap-[30px] max-w-full">
+                    <div className="self-stretch flex flex-row items-center justify-start py-0 px-0 box-border gap-[10px] max-w-full mq800:flex-wrap">
+                    <div
+      className={`flex-1 flex flex-col items-start justify-start py-0 pr-3 pl-0 box-border gap-[3px] min-w-[246px] max-w-full text-left text-sm text-darkgray font-inter `}
+    >
+      <div className="flex flex-row items-center justify-start p-2.5">
+        <div className="relative font-semibold inline-block min-w-[74px]">
+          FirstName
+        </div>
+      </div>
+      <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+        <input
+          className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[194px] max-w-full"
+          placeholder="First Name"
+          type="text"
+        />
+      </div>
+    </div><div
+      className={`flex-1 flex flex-col items-start justify-start py-0 pr-3 pl-0 box-border gap-[3px] min-w-[246px] max-w-full text-left text-sm text-darkgray font-inter `}
+    >
+      <div className="flex flex-row items-center justify-start p-2.5">
+        <div className="relative font-semibold inline-block min-w-[74px]">
+          LastName
+        </div>
+      </div>
+      <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+        <input
+          className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[194px] max-w-full"
+          placeholder="Last Name"
+          type="text"
+        />
+      </div>
+    </div>
+                      
+                    </div>
+
+                     <div
+      className={`self-stretch flex flex-col items-start justify-start gap-[3px] max-w-full text-left text-sm text-darkgray font-inter `}
+    >
+      <div className="self-stretch flex flex-row items-center justify-start p-2.5">
+        <div className="relative font-semibold">organizationName</div>
+      </div>
+      <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+        <input
+          className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+          placeholder="organiza"
+          type="text"
+        />
+      </div>
+    </div>
+    <div
+      className={`self-stretch flex flex-col items-start justify-start gap-[3px] max-w-full text-left text-sm text-darkgray font-inter `}
+    >
+      <div className="self-stretch flex flex-row items-center justify-start p-2.5">
+        <div className="relative font-semibold">Gmail</div>
+      </div>
+      <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+        <input
+          className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+          placeholder="Gmail"
+          type="text"
+        />
+      </div>
+    </div>
+    <div
+      className={`self-stretch flex flex-col items-start justify-start gap-[3px] max-w-full text-left text-sm text-darkgray font-inter `}
+    >
+      <div className="self-stretch flex flex-row items-center justify-start p-2.5">
+        <div className="relative font-semibold">Phone</div>
+      </div>
+      <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+        <input
+          className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+          placeholder="Phone"
+          type="text"
+        />
+      </div>
+    </div>
+                  </div>
+                  <div className="self-stretch flex flex-row items-center justify-between gap-[20px] mq450:flex-wrap">
+                    <div className="flex flex-row items-center justify-end gap-[10px]">
+                      <button className="cursor-pointer [border:none] py-[15px] px-5 bg-button rounded-3xs flex flex-row items-center justify-center whitespace-nowrap hover:bg-mediumslateblue-100">
+                        <div className="relative text-sm font-semibold font-inter text-color text-left inline-block min-w-[94px]">
+                          Upload Image
+                        </div>
+                      </button>
+                      <button className="cursor-pointer py-3 px-[18px] bg-[transparent] w-[84px] rounded-3xs box-border flex flex-row items-center justify-center border-[2px] border-solid border-button hover:bg-mediumslateblue-200 hover:box-border hover:border-[2px] hover:border-solid hover:border-mediumslateblue-100">
+                        <div className="relative text-sm font-semibold font-inter text-button text-left inline-block min-w-[44px]">
+                          Delete
+                        </div>
+                      </button>
+                    </div>
+                    <button className="cursor-pointer [border:none] py-[15px] px-5 bg-button rounded-3xs flex flex-row items-center justify-center whitespace-nowrap hover:bg-mediumslateblue-100">
+                      <div className="relative text-sm font-semibold font-inter text-color text-left inline-block min-w-[97px]">
+                        Save Changes
+                      </div>
                     </button>
                   </div>
                 </div>
-                <div className="w-[102px] flex flex-col items-start justify-start pt-[11.1px] px-0 pb-0 box-border">
-                  <button className="cursor-pointer [border:none] p-0 bg-[transparent] self-stretch h-[23.4px] relative text-sm tracking-[0.04em] font-medium font-body-body1-regular text-black-main-background text-left inline-block shrink-0">
-                    Facebook
-                  </button>
-                </div>
-                <div className="w-[104.9px] flex flex-col items-start justify-start pt-[11.1px] px-0 pb-0 box-border">
-                  <button className="cursor-pointer [border:none] p-0 bg-[transparent] self-stretch h-[23.4px] relative text-sm tracking-[0.04em] font-medium font-body-body1-regular text-black-main-background text-left inline-block shrink-0">
-                    Instagram
-                  </button>
-                </div>
-              </div>
-              <div className="w-[388.7px] flex flex-row items-start justify-start py-0 px-[42px] box-border max-w-full mq450:pl-5 mq450:pr-5 mq450:box-border">
-                <div className="flex-1 flex flex-col items-start justify-start gap-[69px] mq450:gap-[34px]">
-                  <div className="self-stretch rounded-xl flex flex-col items-end justify-start pt-[13.8px] px-0 pb-0 gap-[56.6px] bg-[url('/public/rectangle-1084@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                    <img
-                      className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                      alt=""
-                      src="/rectangle-1084@2x.png"
-                    />
-                    <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                      <div className="flex flex-col items-start justify-start gap-[6.9px]">
-                        <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                          <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                          <img
-                            className="absolute top-[12.8px] left-[11.5px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                            alt=""
-                            src="/materialsymbolslightdeleteoutline-1.svg"
-                          />
-                        </div>
-                        <img
-                          className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                          alt=""
-                          src="/group-91-1.svg"
-                        />
-                      </div>
-                    </div>
-                    <textarea
-                      className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[19px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                      placeholder="International c.."
-                      rows={6}
-                      cols={15}
-                    />
-                  </div>
-                  <div className="self-stretch rounded-xl flex flex-col items-end justify-start pt-[13.8px] px-0 pb-0 gap-[56.6px] bg-[url('/public/rectangle-1083@2x.png')] bg-cover bg-no-repeat bg-[top] mq450:gap-[28px]">
-                    <img
-                      className="self-stretch h-[284px] relative rounded-xl max-w-full overflow-hidden shrink-0 object-cover hidden"
-                      alt=""
-                      src="/rectangle-1083@2x.png"
-                    />
-                    <div className="flex flex-row items-start justify-end py-0 px-3.5">
-                      <div className="flex flex-col items-start justify-start gap-[6.9px]">
-                        <div className="w-[39.3px] h-[42.7px] relative rounded-8xs bg-brown box-border shrink-0 z-[1] border-[1px] border-solid border-indianred">
-                          <div className="absolute top-[0px] left-[0px] rounded-8xs bg-brown box-border w-full h-full hidden border-[1px] border-solid border-indianred" />
-                          <img
-                            className="absolute top-[12.8px] left-[11.5px] w-[16.2px] h-[17.1px] overflow-hidden z-[1]"
-                            alt=""
-                            src="/materialsymbolslightdeleteoutline-1.svg"
-                          />
-                        </div>
-                        <img
-                          className="w-[39.3px] h-[42.7px] relative shrink-0 z-[1]"
-                          alt=""
-                          src="/group-91-1.svg"
-                        />
-                      </div>
-                    </div>
-                    <textarea
-                      className="[border:none] bg-whitesmoke-200 h-[121.3px] w-auto [outline:none] self-stretch rounded-xl flex flex-col items-start justify-start pt-[26.2px] px-[18px] pb-[26px] box-border font-body-body1-regular font-medium text-xs text-gray-900 z-[1]"
-                      placeholder="International c.."
-                      rows={6}
-                      cols={15}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col items-start justify-end pt-0 px-0 pb-[26.2px]">
-              <div className="w-4 h-[637px] relative rounded-xl bg-lightgray-100">
-                <div className="absolute top-[0px] left-[0px] rounded-xl bg-lightgray-100 w-full h-full hidden" />
-                <div className="absolute top-[559.8px] left-[0px] rounded-xl bg-linen w-4 h-[31.9px] z-[1]" />
-              </div>
+              </form>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-FilterContent.propTypes = {
-  className: PropTypes.string,
-};
-
-export default FilterContent;
+        </section>

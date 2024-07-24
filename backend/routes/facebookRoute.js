@@ -255,6 +255,19 @@ router.delete('/posts/:id', async (req, res) => {
   }
 });
 
+// Endpoint to check Facebook connection status
+router.get('/check/:userId', async (req, res) => {
+  try {
+    const facebookData = await Facebook.findOne({ userId: req.params.userId });
+    if (facebookData && facebookData.facebookAccessToken) {
+      return res.json({ isConnected: true });
+    }
+    res.json({ isConnected: false });
+  } catch (error) {
+    console.error('Error checking Facebook connection:', error);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;
 

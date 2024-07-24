@@ -276,45 +276,46 @@ export default function CreatePost() {
       }
   };
 
-    const onButtonClick = () => {
-      setDropdownVisible(!isDropdownVisible);
+
+  const [userType, setUserType] = useState(null); // Declare userType state
+  const onButtonClick = () => {
+    setDropdownVisible(!isDropdownVisible);
+  };
+  
+  const onSchedulePostClick = () => {
+    setScheduleDate(new Date());
+    setIsScheduled(true);
+    setDropdownVisible(false); // Hide the dropdown when date picker is shown
+  };
+  
+  const onPostClick = () => {
+    setIsScheduled(false);
+    setDropdownVisible(false); // Hide the dropdown when switching back to post
+    setScheduleDate(null); // Clear the schedule date
+  };
+  
+  useEffect(() => {
+    const fetchUserType = async () => {
+      const userId = getUserIdFromToken(localStorage.getItem('token'));
+      try {
+        const response = await fetch(`http://localhost:5000/stripe/verify/${userId}`); // Update with your user endpoint
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+        const data = await response.json();
+        setUserType(data.usertype); // Assuming your backend sends `usertype` in the response
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      } finally {
+        setLoading(false); // End loading state
+      }
     };
   
-
-    const onSchedulePostClick = () => {
-      setScheduleDate(new Date());
-      setIsScheduled(true);
-      setDropdownVisible(false); // Hide the dropdown when date picker is shown
-    };
-  
-    const onPostClick = () => {
-      setIsScheduled(false);
-      setDropdownVisible(false); // Hide the dropdown when switching back to post
-      setScheduleDate(null); // Clear the schedule date
-    };
-
-    useEffect(() => {
-      const fetchPaymentStatus = async () => {
-          const userId = getUserIdFromToken(localStorage.getItem('token'));
-          try {
-              const response = await fetch(`http://localhost:5000/stripe/verify?userId=${userId}`);
-              if (!response.ok) {
-                  throw new Error('Failed to fetch payment status');
-              }
-              const data = await response.json();
-              setPaymentStatus(data.status);
-          } catch (error) {
-              console.error('Error fetching payment status:', error);
-          } finally {
-              setLoading(false); // End loading state
-          }
-      };
-
-      fetchPaymentStatus();
+    fetchUserType();
   }, []);
-
+  
   if (loading) {
-      return <div>Loading...</div>; // Optional loading indicator
+    return <div>Loading...</div>; // Optional loading indicator
   }
     
     return (
@@ -380,79 +381,74 @@ export default function CreatePost() {
     onChange={handleImageUpload} 
 />
 
-            <div className="flex justify-between">
-      {scheduleDate && (
-        <DatePicker
-          selected={scheduleDate}
-          onChange={(date) => setScheduleDate(date)}
-          showTimeSelect
-          timeFormat="HH:mm"
-          timeIntervals={15}
-          timeCaption="Time"
-          className="block w-full pl-10 sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-          dateFormat="MMMM d, yyyy h:mm aa"
-          placeholderText="Select a date and time..."
-        />
-      )} </div>
-      <div className="w-[180px] flex flex-row items-end justify-start gap-[5px] max-w-full mq750:gap-[25px]">
-        {isScheduled ? (
-         <button
-         className="cursor-pointer [border:none] pt-[12px] pb-[10px] pr-5 pl-[10px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"
-         onClick={() => handlePost(scheduleDate)}
-     >
-         <div className="relative text-sm tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
-             Schedule Post
-         </div>
-     </button>
-     
-     
-      
-      
-        ) : (
-          <button
-            className="cursor-pointer [border:none] pt-[12.4px] pb-[12.1px] pr-9 pl-[43px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"
-            onClick={() => handlePost(null)}
-          >
-            <div className="relative text-lg tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
-              POST
-            </div>
-          </button>
-        )}
-        <div className="relative inline-block text-left">
-          <div
-            className="h-11 w-[39px] bg-button overflow-hidden flex flex-col items-center justify-center py-[11px] px-0 cursor-pointer"
-            onClick={onButtonClick}
-          >
-            <img
-              className="w-3.5 h-[8.2px]"
-              alt=""
-              src="/vector.svg"
-            />
+<div className="flex justify-between">
+    {scheduleDate && (
+      <DatePicker
+        selected={scheduleDate}
+        onChange={(date) => setScheduleDate(date)}
+        showTimeSelect
+        timeFormat="HH:mm"
+        timeIntervals={15}
+        timeCaption="Time"
+        className="block w-full pl-10 sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+        dateFormat="MMMM d, yyyy h:mm aa"
+        placeholderText="Select a date and time..."
+      />
+    )}
+    <div className="w-[180px] flex flex-row items-end justify-start gap-[5px] max-w-full mq750:gap-[25px]">
+      {isScheduled ? (
+        <button
+          className="cursor-pointer [border:none] pt-[12px] pb-[10px] pr-5 pl-[10px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"
+          onClick={() => handlePost(scheduleDate)}
+        >
+          <div className="relative text-sm tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
+            Schedule Post
           </div>
-          {isDropdownVisible && (
-                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 cursor-pointer">
-                    <div className="py-1">
-                        <a
-                            onClick={onPostClick}
-                            className="block px-4 py-2 text-gray-700 hover:bg-mediumslateblue-100"
-                        >
-                            POST
-                        </a>
-                        <a
-                            onClick={paymentStatus === 'completed' ? onSchedulePostClick : (e) => e.preventDefault()}
-                            className={`block px-4 py-2 ${paymentStatus === 'completed' ? 'text-gray-700 hover:bg-mediumslateblue-100' : 'text-gray-700 cursor-not-allowed'}`}
-                            title={paymentStatus === 'completed' ? '' : 'Unlock with PRO'}
-                        >
-                            SCHEDULE POST
-                        </a>
-                        {/* Add more dropdown items here */}
-               
-                {/* Add more dropdown items here */}
-              </div>
-            </div>
-          )}
+        </button>
+      ) : (
+        <button
+          className="cursor-pointer [border:none] pt-[12.4px] pb-[12.1px] pr-9 pl-[43px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"
+          onClick={() => handlePost(null)}
+        >
+          <div className="relative text-lg tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
+            POST
+          </div>
+        </button>
+      )}
+      <div className="relative inline-block text-left">
+        <div
+          className="h-11 w-[39px] bg-button overflow-hidden flex flex-col items-center justify-center py-[11px] px-0 cursor-pointer"
+          onClick={onButtonClick}
+        >
+          <img
+            className="w-3.5 h-[8.2px]"
+            alt=""
+            src="/vector.svg"
+          />
         </div>
+        {isDropdownVisible && (
+          <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 cursor-pointer">
+            <div className="py-1">
+              <a
+                onClick={onPostClick}
+                className="block px-4 py-2 text-gray-700 hover:bg-mediumslateblue-100"
+              >
+                POST
+              </a>
+              <a
+                onClick={userType === 'premium' ? onSchedulePostClick : (e) => e.preventDefault()}
+                className={`block px-4 py-2 ${userType === 'premium' ? 'text-gray-700 hover:bg-mediumslateblue-100' : 'text-gray-700 cursor-not-allowed'}`}
+                title={userType === 'premium' ? '' : 'Unlock with PRO'}
+              >
+                SCHEDULE POST
+              </a>
+              {/* Add more dropdown items here */}
+            </div>
+          </div>
+        )}
       </div>
+    </div>
+  </div>
     
             
           </div>

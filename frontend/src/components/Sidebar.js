@@ -35,6 +35,9 @@ const Sidebar = ({ className = "" }) => {
     navigate("/pricing");
   }, [navigate]);
 
+  const onGroupsClick0 = useCallback(() => {
+    navigate("/getting-started");
+  }, [navigate]);
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
@@ -63,32 +66,32 @@ const Sidebar = ({ className = "" }) => {
         return null;
     }
 };
+
 const [loading, setLoading] = useState(true); // For handling loading state
 
 useEffect(() => {
-  const fetchPaymentStatus = async () => {
-      const userId = getUserIdFromToken(localStorage.getItem('token'));
-      try {
-          const response = await fetch(`http://localhost:5000/stripe/verify?userId=${userId}`);
-          if (!response.ok) {
-              throw new Error('Failed to fetch payment status');
-          }
-          const data = await response.json();
-          if (data.status === 'completed') {
-              setButtonState('Premium');
-          } else {
-              setButtonState('Upgrade to PRO');
-          }
-      } catch (error) {
-          console.error('Error fetching payment status:', error);
-      } finally {
-          setLoading(false); // End loading state
+  const fetchUserType = async () => {
+    const userId = getUserIdFromToken(localStorage.getItem('token'));
+    try {
+      const response = await fetch(`http://localhost:5000/stripe/verify/${userId}`); // Update with your user endpoint
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
       }
+      const data = await response.json();
+      if (data.usertype === 'premium') {
+        setButtonState('Premium');
+      } else {
+        setButtonState('Upgrade to PRO');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    } finally {
+      setLoading(false); // End loading state
+    }
   };
 
-  fetchPaymentStatus();
+  fetchUserType();
 }, []);
-
 //Session
 const [lastActivityTime, setLastActivityTime] = useState(new Date());
 
@@ -100,25 +103,6 @@ useEffect(() => {
   }
 }, [navigate]);
 
-useEffect(() => {
-  const checkTokenExpiration = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const currentTime = new Date();
-      const timeDifference = currentTime - new Date(lastActivityTime);
-      const maxInactiveTime = 10 * 60 * 1000; // 10 minutes in milliseconds
-
-      if (timeDifference > maxInactiveTime) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    }
-  };
-  checkTokenExpiration();
-  const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
-
-  return () => clearInterval(intervalId);
-}, [lastActivityTime, navigate]);
 
 
   return (
@@ -126,15 +110,15 @@ useEffect(() => {
       className={`self-stretch w-[233px] bg-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-0 px-0 pb-[70px] gap-[235px] text-left text-lg text-gray-100 font-inter border-r-[1px] border-solid border-gainsboro-200 border-b-[1px] mq1050:flex mq1050:pb-[45px] mq1050:box-border mq450:flex mq450:w-[233px] mq725:w-[233px] mq725:self-stretch mq725:h-auto mq725:pb-[29px] mq725:box-border ${className}`}
     >
       <div className="self-stretch flex flex-col items-end justify-start py-0 pr-0 pl-px gap-[43px]">
-        <div className="self-stretch bg-gray-300 flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
+        <div  onClick={onGroupsClick0} className="self-stretch bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
           <img
             className="h-[58px] w-[87px] relative object-cover"
             loading="lazy"
             alt=""
             src="/logo@2x.png"
           />
-          <div className="flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0">
-            <a className="[text-decoration:none] self-stretch relative text-[inherit]">
+          <div className="flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
+            <a className=" self-stretch relative text-[inherit]">
               Post Portal
             </a>
           </div>
