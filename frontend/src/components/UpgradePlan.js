@@ -53,8 +53,8 @@ const getUserIdFromToken = (token) => {
 // console.log('User ID:', userId);
   
 const createCheckoutSession = async () => {
+  const userId = getUserIdFromToken(localStorage.getItem('token'));
   try {
-      const userId = getUserIdFromToken(localStorage.getItem('token'));
       const response = await fetch('http://localhost:5000/stripe/checkout', {
           method: 'POST',
           headers: {
@@ -64,17 +64,28 @@ const createCheckoutSession = async () => {
       });
       const session = await response.json();
       console.log(session.url);
-      console.log(session.id);
+      const sessionId = session.id;
+      localStorage.setItem('sessionId', sessionId);
+      console.log(sessionId);
 
       // Redirect to Checkout
       const stripe = await stripePromise;
-      const result = await stripe.redirectToCheckout({ sessionId: session.id });
+      const result = await stripe.redirectToCheckout({ sessionId: sessionId });
+
 
       if (result.error) {
-          console.error(result.error.message);
-      } else {
-          alert('successful payment');
-      }
+        console.error(result.error.message);
+    } else {
+        const res = await fetch(`http://localhost:5000/stripe/complete?userId=${encodeURIComponent(userId)}&sessionId=${encodeURIComponent(sessionId)}`, {
+            method: 'GET', // Keep GET if you prefer
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        console.log(data.status);
+    }
+    
   } catch (error) {
       console.error('Error creating checkout session:', error);
   }

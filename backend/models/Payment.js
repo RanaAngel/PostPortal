@@ -7,6 +7,9 @@ const PaymentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
       },
+      sessionId:{
+        type: String,
+      },
   amount: {
     type: Number,
     required: true,

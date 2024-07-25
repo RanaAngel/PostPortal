@@ -12,6 +12,7 @@ router.use(cors());
 
 // Route to create a Stripe Checkout session
 router.post('/checkout', async (req, res) => {
+    console.log('checkout hit');
     try {
         const userId = req.body.userId;
         const session = await stripe.checkout.sessions.create({
@@ -27,21 +28,17 @@ router.post('/checkout', async (req, res) => {
                 quantity: 1,
             }],
             mode: 'payment',
-            // success_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}&userId=${userId}`, // Updated success URL
-            success_url: `${process.env.BASE_URL}/dashboard`, // Updated success URL
+            success_url: `${process.env.BASE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&userId=${userId}`,
             cancel_url: `${process.env.BASE_URL}/cancel`,
         });
-
-        // Calculate the total amount paid
-        // const totalAmountPaid = session.line_items.data[0].price.unit_amount* session.line_items.data[0].quantity;
-        const totalAmountPaid = 10*1;
 
         // Create a new payment record in the database
         const payment = new Payment({
             userID: userId,
-            amount: totalAmountPaid,
+            amount: 1000, // Assuming $10.00 for simplicity
             currency: 'USD',
-            status: 'completed', // Initial status
+            status: 'pending', // Initial status
+            sessionId: session.id,
         });
         await payment.save();
 
@@ -55,36 +52,37 @@ router.post('/checkout', async (req, res) => {
 
 // Route to handle successful payments
 router.get('/complete', async (req, res) => {
-  try {
-    const userId = req.body.userId;
-      const session = await stripe.checkout.sessions.retrieve(req.query.session_id, {
-          expand: ['payment_intent.payment_method']
-      });
+    console.log('complete route hit');
+    const userId = req.query.userId;
+    const sessionId = req.query.session_id;
+    console.log(userId, sessionId);
 
-      // Find the payment record by session ID
-      const paymentRecord = await Payment.findOne({ sessionID: req.query.session_id });
-      if (!paymentRecord) {
-          return res.status(404).send('Payment record not found');
-      }
+    try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId, {
+            expand: ['payment_intent.payment_method']
+        });
 
-      // Update the payment status based on the session outcome
-      if (session.payment_status === 'paid') {
-          paymentRecord.status = 'completed';
-      } else {
-          paymentRecord.status = 'failed'; // Or 'pending' if you want to keep it pending until manual review
-      }
-      await paymentRecord.save();
-      res.redirect(`https://localhost:3000/dashboard?&userId=${userId}`);
+        // Find the payment record by session ID
+        const paymentRecord = await Payment.findOne({ sessionId });
+        if (!paymentRecord) {
+            return res.status(404).send('Payment record not found');
+        }
 
-
-      // Send a success message along with the session ID
-      // res.json({ success: true, session_id: req.query.session_id });
-  } catch (error) {
-      console.error('Error retrieving session:', error);
-      res.status(500).send('An error occurred during payment completion.');
-  }
+        // Update the payment status based on the session outcome
+        if (session.payment_status === 'paid') {
+            paymentRecord.status = 'completed';
+        } else {
+            paymentRecord.status = 'failed'; // Or 'pending' if you want to keep it pending until manual review
+        }
+        await paymentRecord.save();
+        console.log(paymentRecord.status);
+        res.json({status: paymentRecord.status});
+        // Redirect user after successful payment
+    } catch (error) {
+        console.error('Error retrieving session:', error);
+        res.status(500).send('An error occurred during payment completion.');
+    }
 });
-
 
 // Route to handle cancellations
 router.get('/cancel', (req, res) => {

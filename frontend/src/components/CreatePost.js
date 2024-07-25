@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+
 
 export default function CreatePost({ closeCreatePostModal }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -9,6 +13,67 @@ export default function CreatePost({ closeCreatePostModal }) {
     const [text, setText] = useState('');
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [scheduleDate, setScheduleDate] = useState(null);
+    const navigate = useNavigate(); // Instead of const history = useHistory();
+
+    // Function to get user ID from JWT token
+const GetUserIdFromToken = (token) => {
+    try {
+      // Decode the token
+      const decodedToken = jwtDecode(token);
+      
+      // Extract the user ID (assuming it's stored as 'userId' in the payload)
+      const userId = decodedToken.userId;
+      
+      return userId;
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
+  };
+
+    const handleSchedulePostClick = async() => {
+        const userId = GetUserIdFromToken(localStorage.getItem('token'));
+
+        const response = await fetch('http://localhost:5000/stripe/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId }),
+        });
+        const data = await response.json();
+        const Status = data.status;
+        console.log('payment status: ',Status);
+        const sessionId=localStorage.getItem('sessionId');
+
+
+
+
+    const res = await fetch(`http://localhost:5000/stripe/complete?userId=${encodeURIComponent(userId)}&sessionId=${encodeURIComponent(sessionId)}`, {
+                method: 'GET', // Keep GET if you prefer
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const info = await res.json();
+            const finalStatus = info.status;
+            console.log(finalStatus);
+
+        let userHasUpgradedPlan;
+        if (finalStatus) {
+            userHasUpgradedPlan = true;
+        } else {
+            navigate('/upgrade-plan');        }
+        
+        if (!userHasUpgradedPlan) {
+            navigate('/upgrade-plan');        
+        } else {
+            handlePost(scheduleDate); // Proceed with scheduling the post if userHasUpgradedPlan is true
+            alert('Post scheduled successfully')
+        }
+        
+    };
+
 
     const handlePost = async (scheduleDate) => {
         try {
@@ -277,7 +342,7 @@ export default function CreatePost({ closeCreatePostModal }) {
                             <div className="col-span-2">
                                 <div className="mt-4 flex items-center space-x-4">
                                     <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm" onClick={() => handlePost(null)}>Post</button>
-                                    <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm" onClick={() => handlePost(scheduleDate)}>Schedule Post</button>
+                                    <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm" onClick={handleSchedulePostClick}>Schedule Post</button>
                                     <button type="button" className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm" onClick={closeCreatePostModal}>Cancel</button>
                                 </div>
                             </div>

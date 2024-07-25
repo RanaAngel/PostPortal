@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Library from './pages/Library';
 import PostAnalytics from './pages/PostAnalytics'; 
+import UpgradePlan from '../src/components/UpgradePlan'; // import Upgrade plan component
 
 
 const App = () => {
@@ -24,7 +25,8 @@ const App = () => {
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/library" element={<Library />} /> {/* New Library Route */}
         <Route path="/post-analytics/:postId" element={<PostAnalytics />} /> {/* New PostAnalytics Route */}
-       
+        <Route path="/upgrade-plan" component={UpgradePlan} />
+
       </Routes>
     </Router>
   );
