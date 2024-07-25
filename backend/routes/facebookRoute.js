@@ -140,7 +140,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
       title,
       imageURL: imageUrl,
       uploadUrl: '',
-      scheduledAt: parsedScheduleDate,
+      scheduledAt: scheduleDate,
       postedAt: null,
       status: scheduleDate ? 'scheduled' : 'draft'
   });
@@ -178,7 +178,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
       });
   
       await newPost.save();
-    console.log('Content posted and saved to the database.');
+    console.log('Content scheduled and saved to the database.');
     res.json(response.data);
 
 });

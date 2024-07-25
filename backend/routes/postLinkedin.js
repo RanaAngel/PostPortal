@@ -24,23 +24,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+// POST route for posting content on LinkedIn
 router.post('/postContent', upload.single('imageFile'), async (req, res) => {
     console.log('postContent route hit');
     try {
         const { title, text, userId, scheduleDate } = req.body;
         const imageFile = req.file;
         const imageURL = req.body.imageURL;
-
         console.log(title, text, userId, scheduleDate);
-
-        // Validate scheduleDate
-        let parsedScheduleDate = null;
-        if (scheduleDate) {
-            parsedScheduleDate = moment(scheduleDate, 'YYYY-MM-DDTHH:mm:ssZ', true).toDate();
-            if (!parsedScheduleDate || isNaN(parsedScheduleDate.getTime())) {
-                throw new Error('Invalid date format');
-            }
-        }
+        const parsedScheduleDate = new Date(scheduleDate);
 
         // Retrieve the LinkedIn access token for the user from the database
         const linkedinToken = await linkedin.findOne({ userId });
@@ -48,20 +40,13 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
             return res.status(404).send('LinkedIn token not found for user');
         }
         const accessToken = linkedinToken.accessToken;
+        console.log('linkedin token', accessToken);
 
-        // Logging received data for debugging
-        console.log('Received title:', title);
-        console.log('Received text:', text);
-        console.log('Received userID:', userId);
-        console.log('Received imageFile:', imageFile);
-        console.log('Received imageURL:', imageURL);
-        console.log('Received scheduleDate:', scheduleDate);
-
-        const newPost = new Post({
+        const NewPost = new Post({
             userID: userId,
             content: text,
             title,
-            platforms: ['linkedin'],
+            platforms: 'linkedin',
             imageURL: imageURL,
             uploadUrl: '',
             scheduledAt: parsedScheduleDate,
@@ -69,46 +54,48 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
             status: scheduleDate ? 'scheduled' : 'draft'
         });
 
-        await newPost.save();
+        await NewPost.save();
 
-        if (scheduleDate && moment().isBefore(parsedScheduleDate)) {
-            console.log('Scheduling post');
-            cron.schedule(parsedScheduleDate, async () => {
-                try {
-                    const ownerId = await getLinkedinId(accessToken);
-                    const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
-                    const imageUrn = uploadDetails.image;
-                    const uploadUrl = uploadDetails.uploadUrl;
+        let formattedDate = moment(scheduleDate, 'MMM DD, YYYY HH:mm:ss', true).format();
+        // if (!formattedDate) {
+        //     throw new Error('Invalid date format');
+        // }
 
-                    await uploadImageToLinkedIn(uploadUrl, imageFile.path);
-                    const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
-                    
-                    newPost.uploadUrl = uploadUrl;
-                    newPost.postedAt = new Date();
-                    newPost.status = 'published';
-                    await newPost.save();
-                    
-                    console.log('Content posted and saved to the database.');
-                } catch (error) {
-                    console.error('Error posting scheduled content:', error);
-                }
+        if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
+            console.log('if condition');
+            const cronTime = moment(scheduleDate).format('m H D M *');
+            cron.schedule(cronTime, async () => {
+                const ownerId = await getLinkedinId(accessToken);
+                const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+                console.log(JSON.stringify(uploadDetails, null, 2));
+                const imageUrn = uploadDetails.image;
+                const uploadUrl = uploadDetails.uploadUrl;
+                const imageBuffer = imageFile.path;
+                await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+                console.log('image uploaded: ', uploadImageToLinkedIn);
+                const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+                NewPost.uploadUrl = uploadUrl;
+                NewPost.postedAt = Date.now();
+                NewPost.status = 'published';
+                await NewPost.save();
+                console.log('Content posted and saved to the database.');
             });
             res.status(200).json({ message: 'Post scheduled successfully' });
         } else {
-            console.log('Posting immediately');
+            console.log('else condition');
             const ownerId = await getLinkedinId(accessToken);
             const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+            console.log(JSON.stringify(uploadDetails, null, 2));
             const imageUrn = uploadDetails.image;
             const uploadUrl = uploadDetails.uploadUrl;
-
-            await uploadImageToLinkedIn(uploadUrl, imageFile.path);
+            const imageBuffer = imageFile.path;
+            await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+            console.log('image uploaded: ', uploadImageToLinkedIn);
             const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
-            
-            newPost.uploadUrl = uploadUrl;
-            newPost.postedAt = new Date();
-            newPost.status = 'published';
-            await newPost.save();
-            
+            NewPost.uploadUrl = uploadUrl;
+            NewPost.postedAt = Date.now();
+            NewPost.status = 'published';
+            await NewPost.save();
             console.log('Content posted and saved to the database.');
             res.status(200).json(response);
         }

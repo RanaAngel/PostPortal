@@ -25,7 +25,7 @@ const postSchema = new mongoose.Schema({
     
   },
   platforms: {
-    type: [String],
+    type: String,
     required: false
   },
   ayrsharePostId: {

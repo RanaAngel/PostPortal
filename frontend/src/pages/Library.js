@@ -13,16 +13,27 @@ const Library = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/facebook/posts');
+        
         // Filter posts to show only those with status 'published' or 'scheduled'
-        const filteredPosts = response.data.filter(post => post.status === 'published' || post.status === 'scheduled');
+        const filteredPosts = response.data.filter(post => {
+          // Exclude posts where scheduledAt is null if status is 'scheduled'
+          if (post.status === 'scheduled' && post.scheduledAt === "null") {
+            return false;
+          }
+          // Include posts with status 'published' or valid 'scheduled' posts
+          return post.status === 'published' || (post.status === 'scheduled' && post.scheduledAt !== "null");
+        });
+        
         setPosts(filteredPosts);
+        
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
     };
-
+  
     fetchPosts();
   }, []);
+  
 
   const handlePostClick = (postId) => {
     navigate(`/post/${postId}`);

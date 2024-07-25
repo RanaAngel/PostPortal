@@ -304,7 +304,7 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
             content: text,
             title,
             name: postTitle,
-            platforms: ['twitter'],
+            platforms: 'twitter',
             imageURL: imageURL,
             uploadUrl: '',
             scheduledAt: parsedScheduleDate,

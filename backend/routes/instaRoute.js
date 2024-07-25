@@ -58,8 +58,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
       title,
       imageURL: imageUrl,
       uploadUrl: '',
-      scheduledAt: parsedScheduleDate,
-      name: postTitle,
+      scheduledAt: scheduleDate,
       postedAt: null,
       status: scheduleDate ? 'scheduled' : 'draft'
   });
@@ -105,7 +104,6 @@ router.post('/post', upload.single('image'), async (req, res) => {
       title,
       content: text,
       imageURL: imageUrl,
-      name: postTitle,
       platforms: 'instagram',
       ayrsharePostId,
       status : 'published',

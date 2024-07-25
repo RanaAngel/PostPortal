@@ -4,6 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CreatePost() {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -18,6 +20,8 @@ export default function CreatePost() {
     const [isScheduled, setIsScheduled] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState(null); // To store payment status
     const [loading, setLoading] = useState(true); // For handling loading state
+    const notifySuccess = (message) => toast.success(message);
+    const notifyError = (message) => toast.error(message);
 
     let postTitle = '';
     const handlePost = async (scheduleDate) => {
@@ -81,122 +85,122 @@ export default function CreatePost() {
   }
     // Twitter
     const handlePostTweet = async (postTitle, scheduleDate) => {
-        try {
-            const userId = localStorage.getItem('twitter_user_id');
-            const formData = new FormData();
-            formData.append('title', postTitle);
-            formData.append('name',title);
-            formData.append('text', text);
-            formData.append('userId', userId);
-            formData.append('scheduleDate', scheduleDate);
-    
-            if (selectedImage) {
-                // Upload image to ImgBB
-                const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
-                const imageBBFormData = new FormData();
-                imageBBFormData.append('image', selectedImage);
-    
-                const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
-                const imageUrl = imageBBResponse.data.data.url;
-    
-                // Download the image from ImgBB
-                const imageBlob = await fetchImageFromImgBB(imageUrl);
-                if (imageBlob) {
-                    formData.append('imageFile', imageBlob, 'downloaded_image.jpg'); // Give the file a name
-                    formData.append('imageURL', imageUrl); // Add the image URL separately
-                } else {
-                    console.error('Failed to download image from ImgBB');
-                    return;
-                }
-            } else {
-                console.error('No image selected');
-                return;
-            }
-    
-            const response = await axios.post('http://localhost:5000/twitter/tweet', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            console.log("Content shared successfully");
-            console.log(JSON.stringify(response.data, undefined, 2));
-        } catch (error) {
-            console.error('Error posting tweet:', error);
-        }
-    };
+      try {
+          const userId = localStorage.getItem('twitter_user_id');
+          const formData = new FormData();
+          formData.append('postTitle', postTitle);
+          formData.append('title', title);
+          formData.append('text', text);
+          formData.append('userId', userId);
+          formData.append('scheduleDate', scheduleDate);
+
+          if (selectedImage) {
+              // Upload image to ImgBB
+              const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
+              const imageBBFormData = new FormData();
+              imageBBFormData.append('image', selectedImage);
+
+              const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
+              const imageUrl = imageBBResponse.data.data.url;
+
+              const imageBlob = await fetchImageFromImgBB(imageUrl);
+              if (imageBlob) {
+                  formData.append('imageFile', imageBlob, 'downloaded_image.jpg');
+                  formData.append('imageURL', imageUrl);
+              } else {
+                  notifyError('Failed to download image from ImgBB');
+                  return;
+              }
+          } else {
+              notifyError('No image selected');
+              return;
+          }
+
+          const response = await axios.post('http://localhost:5000/twitter/tweet', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+              },
+          });
+          notifySuccess("Content shared successfully");
+          console.log(JSON.stringify(response.data, undefined, 2));
+      } catch (error) {
+          notifyError('Error posting tweet: ' + error.message);
+      }
+  };
     
     
 
     // Facebook
     const handleFacebookPost = async (postTitle, scheduleDate) => {
-        try {
-            const jwtToken = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('title', postTitle);
-            formData.append('name',title);
-            formData.append('text', text);
-            formData.append('token', jwtToken);
-            formData.append('scheduleDate', scheduleDate);
-            if (selectedImage) {
-                formData.append('image', selectedImage);
-            }
+      try {
+          const jwtToken = localStorage.getItem('token');
+          const formData = new FormData();
+          formData.append('postTitle', postTitle);
+          formData.append('title', title);
+          formData.append('text', text);
+          formData.append('token', jwtToken);
+          formData.append('scheduleDate', scheduleDate);
+          if (selectedImage) {
+              formData.append('image', selectedImage);
+          }
 
-            // Upload image to ImageBB
-            const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
-            const imageBBFormData = new FormData();
-            imageBBFormData.append('image', selectedImage);
-            
-            const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
-            const imageUrl = imageBBResponse.data.data.url;
-            formData.append('imageUrl', imageUrl);
+          const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
+          const imageBBFormData = new FormData();
+          imageBBFormData.append('image', selectedImage);
+          
+          const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
+          const imageUrl = imageBBResponse.data.data.url;
+          formData.append('imageUrl', imageUrl);
 
-            const response = await axios.post('http://localhost:5000/api/facebook/post', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+          const response = await axios.post('http://localhost:5000/api/facebook/post', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+              },
+          });
 
-            console.log('Post successful:', response.data);
-        } catch (error) {
-            console.error('Error posting content:', error.response ? error.response.data : error.message);
-        }
-    };
+          notifySuccess('Post successful');
+          console.log('Post successful:', response.data);
+      } catch (error) {
+          notifyError('Error posting content: ' + (error.response ? error.response.data : error.message));
+      }
+  };
+
 
     // Instagram
     const handleInstagramPost = async (postTitle, scheduleDate) => {
-        try {
-            const jwtToken = localStorage.getItem('token');
-            const formData = new FormData();
-            
-            formData.append('title', title);
-            formData.append('postTitle', postTitle);
-            formData.append('text', text);
-            formData.append('token', jwtToken);
-            formData.append('scheduleDate', scheduleDate);
-            if (selectedImage) {
-                formData.append('image', selectedImage);
-            }
+      try {
+          const jwtToken = localStorage.getItem('token');
+          const formData = new FormData();
+          
+          formData.append('title', title);
+          formData.append('postTitle', postTitle);
+          formData.append('text', text);
+          formData.append('token', jwtToken);
+          formData.append('scheduleDate', scheduleDate);
+          if (selectedImage) {
+              formData.append('image', selectedImage);
+          }
 
-            // Upload image to ImageBB
-            const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
-            const imageBBFormData = new FormData();
-            imageBBFormData.append('image', selectedImage);
-            
-            const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
-            const imageUrl = imageBBResponse.data.data.url;
-            formData.append('imageUrl', imageUrl);
+          const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
+          const imageBBFormData = new FormData();
+          imageBBFormData.append('image', selectedImage);
+          
+          const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
+          const imageUrl = imageBBResponse.data.data.url;
+          formData.append('imageUrl', imageUrl);
 
-            const response = await axios.post('http://localhost:5000/api/instagram/post', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+          const response = await axios.post('http://localhost:5000/api/instagram/post', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+              },
+          });
 
-            console.log('Post successful:', response.data);
-        } catch (error) {
-            console.error('Error posting content:', error.response ? error.response.data : error.message);
-        }
-    };
+          notifySuccess('Post successful');
+          console.log('Post successful:', response.data);
+      } catch (error) {
+          notifyError('Error posting content: ' + (error.response ? error.response.data : error.message));
+      }
+  };
 
     const getUserIdFromToken = (token) => {
         if (!token) {
@@ -218,48 +222,45 @@ export default function CreatePost() {
     // LinkedIn
     const handleLinkedInPost = async (postTitle, scheduleDate) => {
       if (!selectedPlatforms.includes('linkedin')) {
-          console.error('Selected platform is not LinkedIn.');
+          notifyError('Selected platform is not LinkedIn.');
           return;
       }
       try {
-              const accessToken = localStorage.getItem('token');
-              const userId = getUserIdFromToken(accessToken);
+          const accessToken = localStorage.getItem('token');
+          const userId = getUserIdFromToken(accessToken);
 
           if (!userId) {
-              console.error('Access token or User ID not found.');
+              notifyError('Access token or User ID not found.');
               return;
           }
-          
           
           const formData = new FormData();
           formData.append('postTitle', postTitle);
           formData.append('text', text);
-          formData.append('title',title);
+          formData.append('title', title);
           formData.append('userId', userId);
           formData.append('scheduleDate', scheduleDate);
           if (selectedImage) {
-              // Upload image to ImageBB
               const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
               const imageBBFormData = new FormData();
               imageBBFormData.append('image', selectedImage);
-  
+
               const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, imageBBFormData);
               const imageUrl = imageBBResponse.data.data.url;
 
-                // Download the image from ImgBB
-                const imageBlob = await fetchImageFromImgBB(imageUrl);
-                if (imageBlob) {
-                    formData.append('imageFile', imageBlob, 'downloaded_image.jpg'); // Give the file a name
-                    formData.append('imageURL', imageUrl); // Add the image URL separately
-                } else {
-                    console.error('Failed to download image from ImgBB');
-                    return;
-                }
-  
+              const imageBlob = await fetchImageFromImgBB(imageUrl);
+              if (imageBlob) {
+                  formData.append('imageFile', imageBlob, 'downloaded_image.jpg');
+                  formData.append('imageURL', imageUrl);
+              } else {
+                  notifyError('Failed to download image from ImgBB');
+                  return;
+              }
           } else {
-              console.error('No image selected');
+              notifyError('No image selected');
               return;
           }
+
           const response = await axios.post(
               'http://localhost:5000/sharePost/postContent',
               formData,
@@ -270,11 +271,12 @@ export default function CreatePost() {
                   },
               }
           );
-          console.log('Content shared successfully on LinkedIn:', response.data);
+          notifySuccess('Content shared successfully on LinkedIn');
       } catch (error) {
-          console.error('Error posting content on LinkedIn:', error);
+          notifyError('Error posting content on LinkedIn: ' + error.message);
       }
   };
+
 
 
   const [userType, setUserType] = useState(null); // Declare userType state
@@ -328,7 +330,7 @@ export default function CreatePost() {
           mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
         <section className="self-stretch flex flex-row items-center justify-center py-[87.9px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
-          
+        <ToastContainer /> 
         <div className="flex-1 flex flex-col items-start justify-start gap-[50px] max-w-full mq750:gap-[25px] ">
           
           <div className="self-stretch flex flex-col items-start justify-start gap-[10px] max-w-full">

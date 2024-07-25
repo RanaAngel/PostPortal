@@ -68,30 +68,6 @@ const navigate = useNavigate();
     navigate('/')
   }, [navigate]);
 
-  
-//     <input
-//       className="[outline:none] bg-gainsboro h-[50px] w-full rounded-8xs box-border flex flex-row items-start justify-start pt-[15px] px-[19px] pb-4 font-inter font-medium text-base text-lightslategray-100 min-w-[250px] max-w-full z-[1] border-[1px] border-solid border-lightslategray-100"
-//       placeholder="PASSWORD*"
-//       type={showPassword ? "text" : "password"}
-//       value={formData.password}
-//       onChange={handleChange}
-//       name="password"
-//     />
-//   </div>
-//   <div className="absolute top-[50%] right-[10px] transform -translate-y-1/2 cursor-pointer">
-//     {showPassword ? (
-//       <FiEyeOff
-//         className="text-lightslategray-100"
-//         onClick={togglePasswordVisibility}
-//       />
-//     ) : (
-//       <FiEye
-//         className="text-lightslategray-100"
-//         onClick={togglePasswordVisibility}
-//       />
-//     )}
-//   </div>
-// </div>
 
 return (
   <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px] pb-[166px] pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
@@ -149,7 +125,7 @@ return (
         <div className="self-stretch h-[115.1px] flex flex-row items-start justify-center py-0 pr-5 pl-[21px] box-border">
           <div className="self-stretch w-[114.9px] flex flex-row items-start justify-center relative gap-[10px] shrink-0 z-[1]">
             <div className="self-stretch flex-1 relative rounded-[50%] bg-neutral-main-50" />
-            <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray z-[1]" />
+            <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray-200 z-[1]" />
             <img
               className="h-[37px] w-[42px] absolute !m-[0] top-[39px] left-[36px] overflow-hidden shrink-0 z-[2]"
               loading="lazy"
@@ -159,7 +135,7 @@ return (
           </div>
         </div>
         <form onSubmit={handleSubmit}
-      className={`m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-start justify-start pt-[132px] pb-[79px] pr-[45px] pl-[46px] box-border gap-[37px] shrink-0 max-w-full mt-[-75.1px] mq850:gap-[18px] mq850:pl-[23px] mq850:pr-[22px] mq850:pb-[51px] mq850:box-border `}
+      className={`m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-start justify-start pt-[132px] pb-[79px] pr-[45px] pl-[46px] box-border gap-[37px] shrink-0 max-w-full mt-[-75.1px] mq850:gap-[18px] mq850:pl-[23px] mq850:pr-[22px] mq850:pb-[51px] mq850:box-border `}
     >
       <img
         className="w-[664px] h-[678px] relative rounded-xl hidden max-w-full"
@@ -170,7 +146,7 @@ return (
         <div className="self-stretch flex flex-row items-start justify-start py-0 pr-[11px] pl-2.5 box-border max-w-full">
           <div className="flex-1 flex flex-row items-start justify-start gap-[30px] max-w-full mq850:flex-wrap">
             <input
-              className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[15px] px-4 pb-4 font-inter font-medium text-base text-black-card min-w-[172px] z-[1] border-[1px] border-solid border-black-card"
+              className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 bg-[transparent] rounded-8xs box-border flex flex-row items-start justify-start pt-[15px] px-4 pb-4 font-inter font-medium text-base text-black-card min-w-[172px] z-[1] border-[1px] border-solid border-black-card"
               placeholder="FIRST NAME *"
               type="text"
               value={formData.firstName} 
@@ -178,7 +154,7 @@ return (
               name="firstName"
             />
             <input
-              className="w-full [outline:none] bg-gainsboro flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[13px] px-3.5 pb-3.5 font-inter font-medium text-base text-black-card min-w-[167px] whitespace-nowrap z-[1] border-[1px] border-solid border-black-card"
+              className="w-full [outline:none] bg-gainsboro flex-1 bg-[transparent] rounded-8xs box-border flex flex-row items-start justify-start pt-[13px] px-3.5 pb-3.5 font-inter font-medium text-base text-black-card min-w-[167px] whitespace-nowrap z-[1] border-[1px] border-solid border-black-card"
               placeholder="LAST NAME *"
               type="text"
               value={formData.lastName} 

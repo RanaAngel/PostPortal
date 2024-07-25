@@ -2,6 +2,9 @@
 import { useCallback } from "react";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -15,29 +18,34 @@ const LoginForm = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-      const { token, redirectUrl } = await response.json();
-      console.log('Token:', token);
-      console.log('Redirect URL:', redirectUrl); // Log the redirectUrl
-      localStorage.setItem('token', token);
-      alert('Login successful');
-      // Redirect based on the received redirectUrl
-      navigate(redirectUrl); // Redirect to the appropriate dashboard
+        const response = await fetch('http://localhost:5000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+
+        const { token, redirectUrl } = await response.json();
+        console.log('Token:', token);
+        console.log('Redirect URL:', redirectUrl); // Log the redirectUrl
+
+        localStorage.setItem('token', token);
+        toast.success('Login successful'); // Replace alert with toast notification
+        
+        // Redirect based on the received redirectUrl
+        navigate(redirectUrl); // Redirect to the appropriate dashboard
 
     } catch (error) {
-      console.error('Login error:', error.message);
-      alert('Login failed. Please try again.');
+        console.error('Login error:', error.message);
+        toast.error('Login failed. Please try again.'); // Replace alert with toast notification
     }
-  };
+};
+
   const onGroupClick = useCallback(() => {
     // Please sync "Landing Page" to the project
     navigate('/')
@@ -56,6 +64,7 @@ const LoginForm = () => {
 return (
   <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px] pb-[263px] pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
     <header className="self-stretch flex flex-row items-start justify-end py-0 pr-[15px] pl-0 box-border max-w-full">
+    
       <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px]">
         <img
           className="h-[87px] w-[155px] relative object-cover"
@@ -109,7 +118,7 @@ return (
           <div className="self-stretch h-[115.1px] flex flex-row items-start justify-center py-0 pr-5 pl-[21px] box-border">
             <div className="self-stretch w-[114.9px] flex flex-row items-start justify-center relative gap-[10px] shrink-0 z-[1]">
               <div className="self-stretch flex-1 relative rounded-[50%] bg-neutral-main-50" />
-              <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray z-[1]" />
+              <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray-200 z-[1]" />
               <img
                 className="h-[37px] w-[42px] absolute !m-[0] top-[39px] left-[36px] overflow-hidden shrink-0 z-[2]"
                 loading="lazy"
@@ -118,7 +127,8 @@ return (
               />
             </div>
           </div>
-          <form   className="m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
+          <form   className="m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
+          <ToastContainer />
             <img
               className="w-[664px] h-[461px] relative rounded-xl hidden max-w-full"
               alt=""
@@ -129,7 +139,7 @@ return (
                 <div className="self-stretch flex flex-row items-start justify-start max-w-full z-[1]">
                   <div className="flex-1 flex flex-row items-start justify-start p-2.5 box-border max-w-full">
                     <input
-                      className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[19px] px-4 pb-3 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
+                      className="w-full [outline:none] bg-gainsboro h-[50px] bg-[transparent] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[19px] px-4 pb-3 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
                       placeholder="WORK EMAIL*" type="email" name="email" value={formData.email} onChange={handleChange}
                       
                     />
@@ -138,7 +148,7 @@ return (
                 <div className="self-stretch flex flex-row items-start justify-start max-w-full z-[1]">
                   <div className="flex-1 flex flex-row items-start justify-start p-2.5 box-border max-w-full">
                     <input
-                      className="w-full [outline:none] bg-gainsboro flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[17px] px-4 pb-2.5 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
+                      className="w-full [outline:none] bg-gainsboro bg-[transparent] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[17px] px-4 pb-2.5 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
                       placeholder="PASSWORD *" type="password" name="password" value={formData.password} onChange={handleChange}
                       
                     />
