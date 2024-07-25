@@ -23,7 +23,7 @@ router.post('/checkout', async (req, res) => {
                   product_data: {
                       name: 'Scheduled Post',
                   },
-                  unit_amount: 1000, // Price in cents
+                  unit_amount: 10000, // Price in cents
               },
               quantity: 1,
           }],

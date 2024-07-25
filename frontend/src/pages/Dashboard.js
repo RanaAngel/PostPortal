@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { useCallback } from "react";
 
 import axios from 'axios';
 import Calendar from 'react-calendar';
 
 
-import Schedule from '../components/Schedule';
 
 import Facebook from "../components/Facebook";
 
@@ -47,6 +47,14 @@ const Dashboard = () => {
   const [lastActivityTime, setLastActivityTime] = useState(new Date());
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [postCounts, setPostCounts] = useState({
+    facebook: 0,
+    instagram: 0,
+    linkedin: 0,
+    twitter: 0,
+  });
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -75,7 +83,18 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, [lastActivityTime, navigate]);
 
-
+  useEffect(() => {
+    const fetchPostCounts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/dashboard/post-counts');
+        setPostCounts(response.data);
+      } catch (error) {
+        console.error('Error fetching post counts:', error);
+      }
+    };
+  
+    fetchPostCounts();
+  }, []);
 //BarChart
 useEffect(() => {
   const fetchPosts = async () => {
@@ -95,6 +114,11 @@ useEffect(() => {
 
   fetchPosts();
 }, []);
+const onGroupClick = useCallback(() => {
+  // Please sync "Landing Page" to the project
+  navigate('/channels')
+}, [navigate]);
+
 
 useEffect(() => {
   if (postData.length > 0) {
@@ -150,10 +174,10 @@ const formattedDate = formatDate(today);
                     </a>
                 </div>
                 <div className="self-stretch flex flex-row items-center justify-center py-[3.5px] px-[27px] gap-[60px] text-lg text-text-colors mq825:gap-[30px] mq1400:flex-wrap">
-                    <Facebook logosfacebook="/logosfacebook.svg" facebook="Facebook" prop="24" />
-                    <Facebook logosfacebook="/skilliconsinstagram.svg" facebook="Instagram" prop="24" propBackgroundColor="unset" />
-                    <Facebook logosfacebook="/skilliconslinkedin.svg" facebook="LinkedIn" prop="0" propBackgroundColor="unset" />
-                    <Facebook logosfacebook="/logostwitter.svg" facebook="Twitter" prop="0" propBackgroundColor="unset" />
+                <Facebook logosfacebook="/logosfacebook.svg" facebook="Facebook" prop={postCounts.facebook} />
+      <Facebook logosfacebook="/skilliconsinstagram.svg" facebook="Instagram" prop={postCounts.instagram} />
+      <Facebook logosfacebook="/skilliconslinkedin.svg" facebook="LinkedIn" prop={postCounts.linkedin} />
+      <Facebook logosfacebook="/logostwitter.svg" facebook="Twitter" prop={postCounts.twitter} />
                     <div className="flex-1 rounded-3xs bg-just-white box-border overflow-hidden flex flex-row items-end justify-end min-w-[260px] max-w-[265px] text-xl text-secondary-secondary900 border-[2px] border-solid border-low-opq-color">
                         <div className="h-[306px] flex-1 flex flex-col items-center justify-start">
                             <div className="self-stretch flex-1 flex flex-col items-start justify-between">
@@ -195,7 +219,7 @@ const formattedDate = formatDate(today);
                                     </div>
                                 </div>
                                 <button className="cursor-pointer [border:none] py-[1.5px] px-[52px] bg-button self-stretch overflow-hidden flex flex-col items-start justify-between box-border min-h-[51px] mq450:pl-5 mq450:pr-5 mq450:box-border">
-                                    <button className="cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-center justify-center gap-[10px]">
+                                    <button onClick={onGroupClick} className="cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-center justify-center gap-[10px]">
                                         <div className="relative text-sm leading-[28px] font-medium font-title-medium text-just-white text-left">Add More Channels</div>
                                         <img className="h-6 w-6 relative overflow-hidden shrink-0" alt="" src="/icroundadd.svg" />
                                     </button>
@@ -215,7 +239,7 @@ const formattedDate = formatDate(today);
                     </div>
                 </div>
                 <div className="self-stretch flex flex-row items-start justify-start gap-[10px] max-w-full text-lg text-secondary-title-color mq1400:flex-wrap">
-                <div className="w-[427px] rounded-xl bg-just-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-[19px] px-[19px] pb-[80px] gap-[18.5px] min-h-[300px] max-w-full border-[1px] border-solid border-outline mq450:pt-5 mq450:pb-[50px] mq450:box-border">
+                <div className="w-[427px] rounded-xl bg-just-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-[19px] px-[19px] pb-[35px] gap-[18.5px] min-h-[300px] max-w-full border-[1px] border-solid border-outline mq450:pt-5 mq450:pb-[50px] mq450:box-border">
       <div className="self-stretch flex flex-col items-start justify-start gap-[6px] text-primary-subtitle-color">
         <div className="self-stretch flex flex-row items-center justify-between gap-[20px] z-[1] mq450:flex-wrap">
           <div className="w-[200px] relative leading-[28px] font-medium text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block shrink-0">
@@ -231,9 +255,9 @@ const formattedDate = formatDate(today);
         </div>
         <div className="relative text-xs leading-[28px] inline-block min-w-[60px] z-[1]">This Week</div>
       </div>
-      <div className="overflow-y-auto w-full" style={{ maxHeight: '150px' }}>
+      <div className="overflow-y-auto w-full" style={{ maxHeight: '200px' }}>
         {postData.map((post) => (
-          <div key={post._id} className="self-stretch rounded-md bg-background-color overflow-hidden flex flex-row items-start justify-start py-[9px] px-[15px] gap-[4px] z-[1] text-base border-[0.5px] border-solid border-outline mq450:flex-wrap mb-1">
+          <div key={post._id} className="self-stretch rounded-md bg-background-color overflow-hidden flex flex-row items-start justify-start py-[9px] px-[5px] gap-[1px] z-[1] text-base border-[0.5px] border-solid border-outline mq450:flex-wrap mb-1">
             <div className="flex-1 flex flex-col items-start justify-start gap-[6px] min-w-[184px]">
               <div className="self-stretch relative leading-[24px]">{post.title}</div>
               <div className="w-[258px] relative text-3xs font-inter text-primary-subtitle-color inline-block whitespace-nowrap">

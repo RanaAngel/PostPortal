@@ -2,8 +2,8 @@
 import { useCallback } from "react";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const SignupForm = () => {
@@ -21,36 +21,41 @@ const SignupForm = () => {
   setFormData({ ...formData, [e.target.name]: e.target.value });  
   };
 
-const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
-
-     // Check for null values in formData
-  for (const key in formData) {
-    if (!formData[key]) {
-      alert(`${key.toUpperCase()} is required.`);
-      return;
+    // Check for null values in formData
+    for (const key in formData) {
+        if (!formData[key]) {
+            toast.error(`${key.toUpperCase()} is required.`);
+            return;
+        }
     }
-  }
+
     try {
-      const response = await fetch('http://localhost:5000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) {
-        throw new Error('Signup failed');
-      }
-      alert('Signup successful');
-      // Redirect or do something else after successful signup
-      navigate('/login');
+        const response = await fetch('http://localhost:5000/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Signup failed');
+        }
+
+        toast.success('Signup successful!');
+        // Redirect after a short delay to allow toast to be visible
+        setTimeout(() => {
+            navigate('/login');
+        }, 1000); // Adjust the delay time as needed
+
     } catch (error) {
-      console.error('Signup error:', error.message);
-      alert('Signup failed. Please try again.');
+        console.error('Signup error:', error.message);
+        toast.error('Signup failed. Please try again.');
     }
-  };
+};
 const [showPassword, setShowPassword] = useState(false);
 
 const togglePasswordVisibility = () => {
@@ -136,7 +141,9 @@ return (
         </div>
         <form onSubmit={handleSubmit}
       className={`m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-start justify-start pt-[132px] pb-[79px] pr-[45px] pl-[46px] box-border gap-[37px] shrink-0 max-w-full mt-[-75.1px] mq850:gap-[18px] mq850:pl-[23px] mq850:pr-[22px] mq850:pb-[51px] mq850:box-border `}
-    >
+    > <ToastContainer
+    style={{ fontSize: '1rem' }} // Adjust the font size as needed
+/>
       <img
         className="w-[664px] h-[678px] relative rounded-xl hidden max-w-full"
         alt=""

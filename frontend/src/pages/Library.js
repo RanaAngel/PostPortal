@@ -138,8 +138,8 @@ const Library = () => {
                   <div
                     key={post._id}
                     onClick={() => handlePostClick(post._id)}
-                    className="flex-1 rounded-10xs bg-white box-border flex flex-col items-start justify-start pt-[13px] pb-[34px] pr-[10px] pl-[10px] gap-[19px] min-w-[211px] text-left text-xs-5 text-dimgray-100 font-inter cursor-pointer"
-                    style={{ maxWidth: 'calc(33.33% - 14px)', border: '1px solid #84909F', overflow: 'hidden' }}
+                    className="flex-1 rounded-xl bg-just-white border-[2px] border-solid border-outline box-border flex flex-col items-start justify-start pt-[13px] pb-[34px] pr-[10px] pl-[10px] gap-[19px] min-w-[211px] text-left text-xs-5 text-dimgray-100 font-inter cursor-pointer"
+                 
                   >
                     <div className="self-stretch h-[154px] flex flex-col items-start justify-start gap-[8px]">
                       <div className="self-stretch flex flex-row items-start justify-start py-0 px-[11px]">

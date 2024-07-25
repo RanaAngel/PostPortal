@@ -4,6 +4,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -29,16 +32,56 @@ const PostDetails = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      try {
-        await axios.delete(`http://localhost:5000/api/facebook/posts/${id}`);
-        navigate('/library'); // Redirect to the library page after deletion
-      } catch (error) {
-        console.error('Error deleting post:', error);
-        setError('Failed to delete post');
-      }
-    }
-  };
+    const showToast = (message, onConfirm, onCancel) => {
+        toast(
+            ({ closeToast }) => (
+                <div>
+                    <p>{message}</p>
+                    <div>
+                        <button
+                            onClick={() => {
+                                onConfirm();
+                                closeToast();
+                            }}
+                            className="mr-2 bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                            Confirm
+                        </button>
+                        <button
+                            onClick={() => {
+                                onCancel();
+                                closeToast();
+                            }}
+                            className="bg-red-500 text-white px-2 py-1 rounded"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            ),
+            { closeOnClick: false, autoClose: false }
+        );
+    };
+
+    const onConfirmDelete = async () => {
+        try {
+            await axios.delete(`http://localhost:5000/api/facebook/posts/${id}`);
+            toast.success('Post deleted successfully');
+            setTimeout(() => {
+                navigate('/library');
+            }, 800);
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            toast.error('Failed to delete post');
+        }
+    };
+
+    showToast(
+        'Are you sure you want to delete this post?',
+        onConfirmDelete,
+        () => toast.info('Delete action canceled')
+    );
+};
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -54,6 +97,7 @@ const PostDetails = () => {
           mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
         <section className="self-stretch flex flex-col items-center justify-center py-[87.9px] px-5">
+        <ToastContainer />
           <div className="w-full max-w-[800px] bg-white p-5 rounded-lg shadow-md">
             <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
             <img

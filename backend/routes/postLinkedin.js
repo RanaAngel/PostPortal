@@ -25,6 +25,7 @@ const upload = multer({ storage: storage });
 
 
 // POST route for posting content on LinkedIn
+// Route to post content on LinkedIn
 router.post('/postContent', upload.single('imageFile'), async (req, res) => {
     console.log('postContent route hit');
     try {
@@ -32,7 +33,9 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
         const imageFile = req.file;
         const imageURL = req.body.imageURL;
         console.log(title, text, userId, scheduleDate);
-        const parsedScheduleDate = new Date(scheduleDate);
+
+        // Parse scheduleDate to ISO format
+        const parsedScheduleDate = moment(scheduleDate).toISOString();
 
         // Retrieve the LinkedIn access token for the user from the database
         const linkedinToken = await linkedin.findOne({ userId });
@@ -56,29 +59,28 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
 
         await NewPost.save();
 
-        let formattedDate = moment(scheduleDate, 'MMM DD, YYYY HH:mm:ss', true).format();
-        // if (!formattedDate) {
-        //     throw new Error('Invalid date format');
-        // }
-
         if (scheduleDate && moment().isBefore(moment(scheduleDate))) {
             console.log('if condition');
             const cronTime = moment(scheduleDate).format('m H D M *');
             cron.schedule(cronTime, async () => {
-                const ownerId = await getLinkedinId(accessToken);
-                const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
-                console.log(JSON.stringify(uploadDetails, null, 2));
-                const imageUrn = uploadDetails.image;
-                const uploadUrl = uploadDetails.uploadUrl;
-                const imageBuffer = imageFile.path;
-                await uploadImageToLinkedIn(uploadUrl, imageBuffer);
-                console.log('image uploaded: ', uploadImageToLinkedIn);
-                const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
-                NewPost.uploadUrl = uploadUrl;
-                NewPost.postedAt = Date.now();
-                NewPost.status = 'published';
-                await NewPost.save();
-                console.log('Content posted and saved to the database.');
+                try {
+                    const ownerId = await getLinkedinId(accessToken);
+                    const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+                    console.log(JSON.stringify(uploadDetails, null, 2));
+                    const imageUrn = uploadDetails.image;
+                    const uploadUrl = uploadDetails.uploadUrl;
+                    const imageBuffer = imageFile.path;
+                    await uploadImageToLinkedIn(uploadUrl, imageBuffer);
+                    console.log('image uploaded: ', uploadImageToLinkedIn);
+                    const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
+                    NewPost.uploadUrl = uploadUrl;
+                    NewPost.postedAt = Date.now();
+                    NewPost.status = 'published';
+                    await NewPost.save();
+                    console.log('Content posted and saved to the database.');
+                } catch (error) {
+                    console.error('Error during scheduled post:', error);
+                }
             });
             res.status(200).json({ message: 'Post scheduled successfully' });
         } else {
@@ -109,8 +111,6 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
     }
 });
 
-
-
 // Get LinkedIn ID of the user
 function getLinkedinId(accessToken) {
     console.log('getLinkedinId');
@@ -136,8 +136,7 @@ function getLinkedinId(accessToken) {
     });
 }
 
-
-
+// Register image upload on LinkedIn
 const registerImageUpload = async (accessToken, ownerId, imageBuffer) => {
     console.log('Registering image upload');
     return new Promise((resolve, reject) => {
@@ -176,33 +175,48 @@ const registerImageUpload = async (accessToken, ownerId, imageBuffer) => {
     });
 };
 
-
+// Upload image to LinkedIn with retries
 const uploadImageToLinkedIn = async (uploadUrl, imageBuffer) => {
     console.log('Uploading image to LinkedIn');
-    return new Promise((resolve, reject) => {
-        const req = https.request(uploadUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'image/jpeg', // Adjust this based on your image type
-                'Content-Length': imageBuffer.length,
-            },
-        }, (res) => {
-            if (res.statusCode === 201) {
-                console.log('Image uploaded successfully');
-                resolve();
-            } else {
-                reject(new Error(`Failed to upload image to LinkedIn. Status code: ${res.statusCode}`));
-            }
-        });
-        req.on('error', (error) => {
-            console.error('Error uploading image:', error);
-            reject(error);
-        });
-        req.write(imageBuffer);
-        req.end();
-    });
-};
+    const maxRetries = 3;
+    let attempt = 0;
 
+    while (attempt < maxRetries) {
+        try {
+            return new Promise((resolve, reject) => {
+                const req = https.request(uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'image/jpeg', // Adjust this based on your image type
+                        'Content-Length': imageBuffer.length,
+                    },
+                }, (res) => {
+                    if (res.statusCode === 201) {
+                        console.log('Image uploaded successfully');
+                        resolve();
+                    } else {
+                        reject(new Error(`Failed to upload image to LinkedIn. Status code: ${res.statusCode}`));
+                    }
+                });
+                req.on('error', (error) => {
+                    console.error('Error uploading image:', error);
+                    reject(error);
+                });
+                req.write(imageBuffer);
+                req.end();
+            });
+        } catch (error) {
+            if (error.message.includes('ECONNRESET')) {
+                console.log(`Retrying image upload (attempt ${attempt + 1} of ${maxRetries})...`);
+                attempt++;
+                await new Promise(resolve => setTimeout(resolve, 1000)); // wait 2 seconds before retrying
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error('Failed to upload image to LinkedIn after multiple attempts');
+};
 
 // Post content on LinkedIn with image
 const postShareWithImage = async (accessToken, ownerId, title, text, imageUrn) => {
@@ -256,7 +270,6 @@ const postShareWithImage = async (accessToken, ownerId, title, text, imageUrn) =
     });
 };
 
-
 // Generic HTTP requester
 function _request(method, hostname, path, headers, body) {
     console.log('_request hit');
@@ -292,6 +305,6 @@ function _request(method, hostname, path, headers, body) {
     });
 }
 
-
-
 module.exports = router;
+
+

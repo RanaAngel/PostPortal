@@ -18,7 +18,8 @@ import Profile from './pages/Profile';
 import SuccessPage from './pages/SuccessPage'; 
 import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
-
+import UserTable from './components/UserTable';
+import UserPost from './components/UserPost';
 
 const App = () => {
   
@@ -42,6 +43,9 @@ const App = () => {
             <Route path="/admindashboard" element={<AdminDashboard />} />
             <Route path="/post-analytics/:postId" element={<PostAnalytics />} />
             <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="/users" element={<UserTable />}/>
+            <Route path="/userpost" element={<UserPost />}/>
+               
           </Routes>
           </Router>
   );

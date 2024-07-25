@@ -50,23 +50,22 @@ router.post('/login', async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email' });
     }
 
     // Check if password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid password' });
     }
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, 'secretkey', { expiresIn: '1h' });
-    // Redirect based on user role
 
+    // Redirect based on user role
+    let redirectUrl = '/dashboard'; // Default redirect URL for regular users
     if (user.role === 'admin') {
       redirectUrl = '/admindashboard'; // Redirect to admin dashboard for admin users
-    }else{
-      redirectUrl = '/dashboard'; 
     }
 
     res.json({ token, redirectUrl });
@@ -75,7 +74,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 //forget password 
 router.post('/forgot-password', async (req, res) => {

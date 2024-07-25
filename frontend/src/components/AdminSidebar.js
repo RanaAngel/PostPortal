@@ -1,104 +1,179 @@
-// Sidebar.js
-import React from 'react';
+import { useCallback,useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import "antd/dist/reset.css";
+import { Dropdown, Menu, Button } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
-import routes from '../routes/sidebar'
-import { NavLink,  Routes, Link , useLocation} from 'react-router-dom'
-import SidebarSubmenu from './SidebarSubmenu';
-import XMarkIcon  from '@heroicons/react/24/outline/XMarkIcon'
-import { useDispatch } from 'react-redux';
 
-const AdminSidebar = ({ setActiveComponent, handleLogout }) => {
+const AdminSidebar = ({ className = "" }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  
+  const onGroupsClick = useCallback(() => {
+    navigate("/admindashboard");
+  }, [navigate]);
+
+  const onGroupsClick1 = useCallback(() => {
+    navigate("/users");
+  }, [navigate]);
+
+  const onGroupsClick2 = useCallback(() => {
+    navigate("/userpost");
+  }, [navigate]);
+
+  const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+    window.location.reload(true);
+  };
+
+
+  const getUserIdFromToken = (token) => {
+    if (!token) {
+        console.error('JWT token is missing');
+        return null;
+    }
+
+    try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const { userId } = JSON.parse(decodedPayload);
+        return userId;
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return null;
+    }
+};
+
+
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Please login again.');
+    navigate('/login');
+  }
+}, [navigate]);
+
+
+
   return (
-    <div className="bg-gray-800 w-64 flex flex-col items-center pt-8 text-white">
-      <div className="flex items-center justify-center">
-        <img src="/95ba66434f85ea111bc97dcb33d85d72-1@2x.png" alt="Logo" className="w-16 h-16" />
-        <h1 className="text-2xl ml-4 font-bold">PostPortal</h1>
+    <div
+      className={`self-stretch w-[233px] bg-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-0 px-0 pb-[70px] gap-[235px] text-left text-lg text-gray-100 font-inter border-r-[1px] border-solid border-gainsboro-200 border-b-[1px] mq1050:flex mq1050:pb-[45px] mq1050:box-border mq450:flex mq450:w-[233px] mq725:w-[233px] mq725:self-stretch mq725:h-auto mq725:pb-[29px] mq725:box-border ${className}`}
+      style={{ minHeight: '100vh' }}>
+      <div className="self-stretch flex flex-col items-end justify-start py-0 pr-0 pl-px gap-[43px]">
+        <div  className="self-stretch bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
+          <img
+            className="h-[58px] w-[87px] relative object-cover"
+            loading="lazy"
+            alt=""
+            src="/logo@2x.png"
+          />
+          <div className="flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
+            <a className=" self-stretch relative text-[inherit]">
+              Post Portal
+            </a>
+          </div>
+        </div>
+        <div className="self-stretch flex flex-row items-start justify-end py-0 pr-1 pl-[9px] mq450:items-start mq450:justify-start mq450:pl-px mq450:box-border">
+          <div className="flex-1 flex flex-col items-start justify-start pt-0 px-2.5 pb-[23px] gap-[48px] mq450:w-20 mq450:items-start mq450:justify-start">
+            <button
+              className={`cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/dashboard') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 active:bg-button lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              onClick={onGroupsClick}
+            >
+              <div className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
+                <img
+                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
+                  alt=""
+                  src="/magedashboard2.svg"
+                />
+                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                  Dashboard
+                </div>
+              </div>
+            </button>
+            <button
+              className={`cursor-pointer [border:none] py-[11px] px-[37px] bg-[transparent] self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/library') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              onClick={onGroupsClick1}
+            >
+              <div className="w-[108px] flex flex-row items-center justify-start py-0 pr-[15px] pl-0 box-border gap-[20px]">
+                <img
+                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
+                  loading="lazy"
+                  alt=""
+                  src="/solarlibrarylinear-1.svg"
+                />
+                <div className="flex-1 relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
+                  Users
+                </div>
+              </div>
+            </button>
+            <button
+              className={`cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/create-post') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              onClick={onGroupsClick2}
+            >
+              <div className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
+                <img
+                  className="h-5 w-5 relative overflow-hidden shrink-0"
+                  loading="lazy"
+                  alt=""
+                  src="/ioncreatesharp.svg"
+                />
+                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                  Posts
+                </div>
+              </div>
+            </button>
+            
+            
+            <div className="self-stretch rounded-mid bg-gray-1300 hidden flex-col items-start justify-start py-2.5 px-[35px] mq450:flex mq450:pl-7 mq450:box-border mq725:flex mq1000:hidden">
+              
+              <div className="flex flex-row items-center justify-start py-1 pr-1.5 pl-0 gap-[12px]">
+              <img
+              className="h-10 w-10 relative overflow-hidden shrink-0"
+              alt=""
+              src="/mingcuteuser4Line.svg"
+            />
+                
+                <Dropdown
+    className="h-6 flex-1"
+    overlay={
+      <Menu>
+        <Menu.Item key="logout">
+          <a onClick={(e) => {
+            e.preventDefault();
+            handleLogout(); // Only the logout action is available
+          }}>
+            Logout
+          </a>
+        </Menu.Item>
+      </Menu>
+    }
+    trigger={["click"]}
+  >
+    <Button onClick={(e) => e.preventDefault()}>
+      {`Admin `}
+      <DownOutlined />
+    </Button>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="mt-8 w-full">
-        <ul className="space-y-2">
-          <li>
-            <button onClick={() => setActiveComponent('dashboard')} className="flex items-center px-4 py-2 rounded-md hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1" />
-              </svg>
-              <span className="ml-4">Dashboard</span>
-            </button>
-          </li>
+    
 
-          <li>
-            <button onClick={() => setActiveComponent('users')} className="flex items-center px-4 py-2 rounded-md hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1" />
-              </svg>
-              <span className="ml-4">Users</span>
-            </button>
-          </li>
 
-          <li>
-            <button onClick={() => setActiveComponent('contacts')} className="flex items-center px-4 py-2 rounded-md hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1" />
-              </svg>
-              <span className="ml-4">Contacts</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveComponent('userpost')} className="flex items-center px-4 py-2 rounded-md hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1" />
-              </svg>
-              <span className="ml-4">Posts</span>
-            </button>
-          </li>
-
-          <li>
-            <button onClick={handleLogout} className="flex items-center px-4 py-2 rounded-md hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1" />
-              </svg>
-              <span className="ml-4">Logout</span>
-            </button>
-          </li>
-        </ul>
-      </div>
     </div>
-    // <div className="drawer-side  z-30  ">
-    //         <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label> 
-    //         <ul className="menu  pt-2 w-80 bg-base-100 min-h-full   text-base-content">
-    //         <button className="btn btn-ghost bg-base-300  btn-circle z-50 top-0 right-0 mt-4 mr-2 absolute lg:hidden">
-    //         <XMarkIcon className="h-5 inline-block w-5"/>
-    //         </button>
-
-    //             <li className="mb-2 font-semibold text-xl">
-                    
-    //                 <Link to={'/dashboard'}><img className="mask mask-squircle w-10" src="/logo192.png" alt="DashWind Logo"/>PostPortal</Link> </li>
-    //             {/* {
-    //                 routes.map((route, k) => {
-    //                     return(
-    //                         <li className="" key={k}>
-    //                             {
-    //                                 route.submenu ? 
-    //                                     <SidebarSubmenu {...route}/> : 
-    //                                 (<NavLink
-    //                                     end
-    //                                     to={route.path}
-    //                                     className={({isActive}) => `${isActive ? 'font-semibold  bg-base-200 ' : 'font-normal'}`} >
-    //                                        {route.icon} {route.name}
-    //                                         {
-    //                                             location.pathname === route.path ? (<span className="absolute inset-y-0 left-0 w-1 rounded-tr-md rounded-br-md bg-primary "
-    //                                             aria-hidden="true"></span>) : null
-    //                                         }
-    //                                 </NavLink>)
-    //                             }
-                                
-    //                         </li>
-    //                     )
-    //                 })
-    //             } */}
-
-    //         </ul>
-    //     </div>
   );
+};
+
+AdminSidebar.propTypes = {
+  className: PropTypes.string,
 };
 
 export default AdminSidebar;

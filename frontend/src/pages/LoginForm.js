@@ -15,36 +15,37 @@ const LoginForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch('http://localhost:5000/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+      const response = await fetch('http://localhost:5000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
 
-        const { token, redirectUrl } = await response.json();
-        console.log('Token:', token);
-        console.log('Redirect URL:', redirectUrl); // Log the redirectUrl
+      const { token, redirectUrl } = await response.json();
+      localStorage.setItem('token', token);
 
-        localStorage.setItem('token', token);
-        toast.success('Login successful'); // Replace alert with toast notification
-        
-        // Redirect based on the received redirectUrl
-        navigate(redirectUrl); // Redirect to the appropriate dashboard
+      // Show success message
+      toast.success('Login successful');
+
+      // Redirect after a short delay to allow the toast to be visible
+      setTimeout(() => {
+        navigate(redirectUrl);
+      }, 800);
 
     } catch (error) {
-        console.error('Login error:', error.message);
-        toast.error('Login failed. Please try again.'); // Replace alert with toast notification
+      toast.error(error.message);
     }
-};
+  };
 
   const onGroupClick = useCallback(() => {
     // Please sync "Landing Page" to the project
@@ -63,6 +64,7 @@ const LoginForm = () => {
 
 return (
   <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px] pb-[263px] pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
+    
     <header className="self-stretch flex flex-row items-start justify-end py-0 pr-[15px] pl-0 box-border max-w-full">
     
       <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px]">
@@ -84,6 +86,7 @@ return (
       </div>
     </header>
     <section className="w-[1702px] flex flex-row items-end justify-between max-w-full gap-[20px] text-left text-21xl text-gray-200 font-body-body1-regular mq1500:flex-wrap">
+    
       <div className="w-[654px] flex flex-col items-start justify-start gap-[147px] min-w-[654px] max-w-full mq1225:min-w-full mq450:gap-[37px] mq850:gap-[73px] mq1500:flex-1">
         <div className="self-stretch flex flex-col items-start justify-start gap-[46px] max-w-full mq850:gap-[23px]">
           <h1 className="m-0 self-stretch relative text-inherit tracking-[0.04em] font-extrabold font-inherit mq450:text-5xl mq850:text-13xl">
@@ -128,17 +131,22 @@ return (
             </div>
           </div>
           <form   className="m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
-          <ToastContainer />
+          <ToastContainer
+    style={{ fontSize: '1rem' }} // Adjust the size as needed, e.g., 14px
+/>
+
             <img
               className="w-[664px] h-[461px] relative rounded-xl hidden max-w-full"
               alt=""
               src="/logincontainer1.svg"
             />
+           
             <div className="self-stretch flex flex-col items-start justify-start gap-[13px] max-w-full">
               <div className="self-stretch flex flex-col items-start justify-start gap-[19px] max-w-full">
                 <div className="self-stretch flex flex-row items-start justify-start max-w-full z-[1]">
+                
                   <div className="flex-1 flex flex-row items-start justify-start p-2.5 box-border max-w-full">
-                    <input
+                  <input
                       className="w-full [outline:none] bg-gainsboro h-[50px] bg-[transparent] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[19px] px-4 pb-3 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
                       placeholder="WORK EMAIL*" type="email" name="email" value={formData.email} onChange={handleChange}
                       

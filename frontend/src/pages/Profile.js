@@ -4,6 +4,8 @@ import { jwtDecode } from 'jwt-decode';
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import ChangePassword from '../components/ChangePassword';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
   const [image, setImage] = useState(null);
@@ -67,7 +69,6 @@ const Profile = () => {
       formData.append('image', image);
       const imageBBApiKey = '8d7d3372506f50dc50891b45144e1bb8';
 
-
       try {
         const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, formData);
         const imageUrl = imageBBResponse.data.data.url;
@@ -78,23 +79,24 @@ const Profile = () => {
         });
 
         setProfile(uploadRes.data);
-        alert('image updated successfully');
+        toast.success('Image updated successfully');
         console.log('Profile image updated:', uploadRes.data);
       } catch (error) {
         console.error('Error uploading image', error);
+        toast.error('Failed to upload image');
       }
     }
   };
 
-  // Add this function inside your Profile component
   const handleDeleteImage = async () => {
     try {
       const deleteRes = await axios.delete(`http://localhost:5000/dashboard/deleteImage?userId=${encodeURIComponent(userId)}`);
-      alert('Deleted image successfully');
+      toast.success('Deleted image successfully');
       console.log('Image deleted successfully:', deleteRes.data);
       setProfile({ ...profile, imageUrl: '' });
     } catch (error) {
       console.error('Error deleting image', error);
+      toast.error('Failed to delete image');
     }
   };
 
@@ -106,33 +108,68 @@ const Profile = () => {
         profileData: profile,
       });
       setProfile(profileRes.data);
-      alert('profile updated successfully');
+      toast.success('Profile updated successfully');
       console.log('Profile updated:', profileRes.data);
     } catch (error) {
       console.error('Error updating profile', error);
+      toast.error('Failed to update profile');
     }
   };
 
   const removePremium = async () => {
-    const userId = getUserIdFromToken(localStorage.getItem('token')); // Function to get userId from token
-  
-    // Show a confirmation dialog
-    const isConfirmed = window.confirm('Are you sure you want to remove your premium status?');
-  
-    if (isConfirmed) {
-      try {
-        await axios.patch(`http://localhost:5000/dashboard/users/${userId}/remove-premium`);
-       
-        // Refresh the page to reflect changes
-        window.location.reload();
-      } catch (error) {
-        console.error('Error removing premium status:', error);
-        alert('Failed to remove premium status');
-      }
-    }
-  };
-  
 
+    const showToast = (message, onConfirm, onCancel) => {
+        toast(
+            ({ closeToast }) => (
+                <div className="flex flex-col items-start p-4">
+                    <p className="mb-2">{message}</p>
+                    <div className="flex space-x-2">
+                        <button
+                            onClick={() => {
+                                onConfirm();
+                                closeToast();
+                            }}
+                            className="bg-green-500 text-white px-4 py-2 rounded"
+                        >
+                            Confirm
+                        </button>
+                        <button
+                            onClick={() => {
+                                onCancel();
+                                closeToast();
+                            }}
+                            className="bg-red-500 text-white px-4 py-2 rounded"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            ),
+            { closeOnClick: false, autoClose: false }
+        );
+    };
+
+    const onConfirmRemove = async () => {
+        try {
+            await axios.patch(`http://localhost:5000/dashboard/users/${userId}/remove-premium`);
+            toast.success('Premium status removed successfully');
+            // Optionally, navigate to another page or refresh the page
+            setTimeout(() => {
+              window.location.reload();
+          }, 800);
+             // Refresh the page to reflect changes
+        } catch (error) {
+            console.error('Error removing premium status:', error);
+            toast.error('Failed to remove premium status');
+        }
+    };
+
+    showToast(
+        'Are you sure you want to remove your premium status?',
+        onConfirmRemove,
+        () => toast.info('Remove action canceled')
+    );
+};
   return (
     
     <div className="w-full relative bg-color overflow-hidden flex flex-row items-start justify-start tracking-[normal] leading-[normal] mq1050:pr-5 mq1050:box-border">
@@ -144,6 +181,7 @@ const Profile = () => {
         />
         
         <section className="w-[1647px] flex flex-row items-start justify-start py-0 px-8 box-border max-w-full text-center text-[32px] font-poppins mq1325:flex-row mq1325:pl-2.5 mq1325:pr-2.5 mq1325:box-border">
+          
       <div className="flex-1 flex flex-row items-start justify-start gap-[50px] max-w-full mq800:gap-[25px] mq1325:flex-wrap">
         <div className="flex-[0.9478] flex flex-col items-center justify-start pt-48 px-5 pb-[265px] box-border gap-[37px] min-w-[498px] max-w-full mq800:min-w-full mq1125:pt-[125px] mq1125:pb-[172px] mq1125:box-border mq450:gap-[18px] mq450:pt-[81px] mq450:pb-28 mq450:box-border mq1325:flex-1">
           <div className="flex flex-row items-start justify-start py-0 px-[18px]">

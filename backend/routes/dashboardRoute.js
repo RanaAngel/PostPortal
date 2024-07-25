@@ -172,5 +172,61 @@ router.post('/change_password', async (req, res) => {
   }
 });
 
+//postcount
+router.get('/post-counts', async (req, res) => {
+  try {
+    const counts = {
+      facebook: await Posts.countDocuments({ platforms: 'facebook' }),
+      instagram: await Posts.countDocuments({ platforms: 'instagram' }),
+      linkedin: await Posts.countDocuments({ platforms: 'linkedin' }),
+      twitter: await Posts.countDocuments({ platforms: 'twitter' }),
+    };
+    res.json(counts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
+// Route to get the total number of non-admin users
+router.get('/total-users', async (req, res) => {
+  try {
+    // Count the number of users who are not admins
+    const userCount = await User.countDocuments({ role: { $ne: 'admin' } });
+    res.json({ totalUsers: userCount });
+  } catch (error) {
+    console.error('Error fetching total users:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to get the count of free users excluding admins
+router.get('/free-users', async (req, res) => {
+  try {
+    const freeUsersCount = await User.countDocuments({
+      role: { $ne: 'admin' }, // Exclude admin users
+      usertype: 'free', // Only free users
+    });
+
+    res.json({ freeUsersCount });
+  } catch (error) {
+    console.error('Error fetching free users:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+// Route to get the count of premium users excluding admins
+router.get('/premium-users', async (req, res) => {
+  try {
+    const premiumUsersCount = await User.countDocuments({
+      role: { $ne: 'admin' }, // Exclude admin users
+      usertype: 'premium', // Only premium users
+    });
+
+    res.json({ premiumUsersCount });
+  } catch (error) {
+    console.error('Error fetching free users:', error);
+    res.status(500).json({ error: error.message });
+  }
+
+});
 module.exports = router;

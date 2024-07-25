@@ -336,7 +336,7 @@ export default function CreatePost() {
           <div className="self-stretch flex flex-col items-start justify-start gap-[10px] max-w-full">
             <div className="self-stretch relative font-semibold">Post Name</div>
             <input
-              className="[outline:none] bg-[transparent] self-stretch h-[37px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border min-w-[250px] border-[1px] border-solid border-black-card"
+              className="[outline:none] bg-[transparent] self-stretch h-[37px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border min-w-[250px] border-[2px] border-solid border-outline"
               placeholder="Post Title"
               type="text"
               value={title}
@@ -348,7 +348,7 @@ export default function CreatePost() {
               Content
             </div>
             <textarea
-              className="bg-[transparent] [outline:none] self-stretch h-[166.4px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border flex flex-row items-start justify-start py-[21px] px-[31px] font-inter text-smi-5 text-darkgray border-[1px] border-solid border-black-card"
+              className="bg-[transparent] [outline:none] self-stretch h-[166.4px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border flex flex-row items-start justify-start py-[21px] px-[31px] font-inter text-smi-5 text-darkgray border-[2px] border-solid border-outline box-border"
               placeholder="What's on your mind"
               value={text}
               onChange={(e) => setText(e.target.value)}
