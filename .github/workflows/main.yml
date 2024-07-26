@@ -111,11 +111,9 @@ jobs:
             zip -r artifact.zip frontend backend .env
             aws s3 cp artifact.zip s3://krishna-s3-bucket9/artifact/
 
-      - name: Install Ansible
+      - name: Run Ansible playbook
         run: |
-                sudo apt update
-                sudo apt install -y ansible
-
+           ansible-playbook -i inventory.ini deploy.yml
       
     
 
