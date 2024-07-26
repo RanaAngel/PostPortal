@@ -1,0 +1,13 @@
+---
+- name: Deploy MERN Stack
+  hosts: EC2
+  become: yes
+  gather_facts: yes  
+  roles:
+  - server
+  vars:
+    ansible_shell_executable: /bin/bash
+    ansible_aws_ssm_region: us-east-1
+    ansible_connection: community.aws.aws_ssm
+    ansible_aws_ssm_bucket_name: krishna-s3-bucket9
+

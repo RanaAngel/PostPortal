@@ -1,0 +1,114 @@
+
+
+name: infra provision
+
+on:
+ push:
+    branches:
+      - main
+      - cicd
+
+permissions:
+ id-token: write
+ contents: read
+ pull-requests: write
+
+env:
+ awsRegion: "us-east-1"
+
+jobs:
+ build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.awsRegion }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          role-duration-seconds: 1200
+          role-session-name: MySessionName
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Verify Terraform version
+        run: terraform --version
+
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      # - name: Generate Deployment Package
+      #   run: cd mern-todo && zip -r todo.zip *
+
+      - name: Terraform Initialize
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: ./terraform  
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: ./terraform  
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply --auto-approve
+      # - name: Wait
+      #   run: |
+      #     sleep 60
+
+      ###zip artifact and send to s3
+
+      - name: Get the database name
+        id: getenv
+        run: |
+          cat << EOF > backend/.env
+          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          TWITTER_CLIENT_ID: ${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_CLIENT_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
+          TWITTER_REDIRECT_URI: ${{ secrets.TWITTER_REDIRECT_URI }}
+          AUTH_BASE_URL: ${{ secrets.AUTH_BASE_URL }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+          RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
+          PORT: ${{ secrets.PORT }}
+          OWNER_ID: ${{ secrets.OWNER_ID }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          AYRSHARE_API_KEY: ${{ secrets.AYRSHARE_API_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          CLIENT_URL: ${{ secrets.CLIENT_URL }}
+          EOF
+
+      - name: Generate Deployment Package and send to s3
+        run: |
+            zip -r artifact.zip frontend backend .env
+            aws s3 cp artifact.zip s3://krishna-s3-bucket9/artifact/
+
+      # - name: Run ansible
+      #   working-directory: ./ansible
+      #   run: |
+      #       ansible-playbook configure.yml -i aws_ec2.yml 
+
+
+    
+
+            
+  

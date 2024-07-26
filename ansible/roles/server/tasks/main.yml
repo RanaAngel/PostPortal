@@ -1,0 +1,78 @@
+---
+- name: Update APT package cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nodejs
+    - npm
+    - mongodb
+    - git
+    - build-essential
+
+- name: Configure MongoDB
+  template:
+    src: mongodb.conf.j2
+    dest: /etc/mongodb.conf
+  notify:
+    - restart mongodb
+
+- name: Install PM2 for Node.js application management
+  npm:
+    name: pm2
+    global: yes
+
+- name: Create /Users/manish/Downloads/PostPortal-angel directory
+  ansible.builtin.file:
+    path: /Users/manish/Downloads/PostPortal-angel
+    state: directory
+
+- name: Check if the MERN stack repository already exists
+  stat:
+    path: /Users/manish/Downloads/PostPortal-angel.git
+  register: repo_exists
+
+- name: Clone your MERN stack repository if it doesn't exist
+  git:
+    repo: https://github.com/Zeeshan1920/my-test-project
+    dest: /home/haider/mern-stack
+  when: not repo_exists.stat.exists
+
+- name: Install backend dependencies
+  command: sudo npm install
+  args:
+    chdir: /home/haider/mern-stack/backend
+
+- name: Start the backend application
+  command: pm2 start server.js -f
+  args:
+    chdir: /home/haider/mern-stack/backend
+
+- name: Remove package-lock.json
+  file:
+    path: /home/haider/mern-stack/frontend/package-lock.json
+    state: absent
+  when: ansible_os_family == 'Debian'
+
+- name: Run npm install (Frontend)
+  command: sudo npm install
+  args:
+    chdir: /home/haider/mern-stack/frontend 
+
+- name: Build the frontend
+  command: sudo npm run build
+  args:
+    chdir: /home/haider/mern-stack/frontend
+
+
+- name: Start the frontend application
+  command: npm start
+  args:
+    chdir: /home/haider/mern-stack/frontend
+
+...
