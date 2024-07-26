@@ -25,7 +25,22 @@ module.exports = {
         gainsboro: "rgba(217, 217, 217, 0.2)",
         darkslategray: "#3d3d40",
       },
-      spacing: {},
+
+      extend: {
+        // Adding scrollbar hide utilities
+        scrollbar: {
+          hide: {
+            '-ms-overflow-style': 'none', /* IE and Edge */
+            'scrollbar-width': 'none', /* Firefox */
+          },
+          hideWebkit: {
+            '::-webkit-scrollbar': {
+              display: 'none', /* Safari and Chrome */
+            },
+          },
+        },
+      },
+      
       fontFamily: {
         inter: "Inter",
       },
@@ -74,4 +89,17 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-hide': {
+          '-ms-overflow-style': 'none', /* IE and Edge */
+          'scrollbar-width': 'none', /* Firefox */
+        },
+        '.scrollbar-hide::-webkit-scrollbar': {
+          display: 'none', /* Safari and Chrome */
+        },
+      });
+    },
+  ],
 };
