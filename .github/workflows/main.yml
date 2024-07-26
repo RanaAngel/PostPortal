@@ -113,7 +113,7 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-           ansible-playbook -i inventory.ini deploy.yml
+            ansible-inventory -i aws_ec2.yml --graph    
       
     
 
