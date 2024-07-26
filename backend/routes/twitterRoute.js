@@ -41,12 +41,6 @@ const upload = multer({ storage: storage });
 
 
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-
 
 // Create an OAuth 1.0a instance with consumer key and secret
 const oauth = Oauth({
@@ -279,6 +273,7 @@ router.post('/callback', async (req, res) => {
 
 
 
+
 router.post('/tweet', upload.single('imageFile'), async (req, res) => {
     try {
         const { title, postTitle, text, userId, scheduleDate} = req.body;
@@ -287,6 +282,11 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
         console.log('image url: ',imageFile);
         console.log('imageUrl: ',imageURL);
         const parsedScheduleDate = new Date(scheduleDate);
+        console.log('Received title:', title);
+        console.log('Received text:', text);
+        console.log('Received userID:', userId);
+        console.log('Received postTitle:', postTitle);
+        console.log('Received scheduleDate:', scheduleDate);
         const twitterToken = await twitter.findOne({ userId });
         if (!twitterToken) {
             return res.status(404).send('Twitter token not found for user');
@@ -356,7 +356,6 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
         res.status(500).json({ error: 'Failed to post tweet' });
     }
 });
-
 // Endpoint to check Twitter connection status
 router.get('/check/:userId', async (req, res) => {
     try {
@@ -372,5 +371,5 @@ router.get('/check/:userId', async (req, res) => {
   });
 
 
-
+  
 module.exports = router;

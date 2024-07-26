@@ -269,5 +269,24 @@ router.get('/check/:userId', async (req, res) => {
   }
 });
 
+// POST request to filter posts by platform
+router.post('/filter', async (req, res) => {
+  const { platform } = req.body;
+
+  try {
+    let filterCondition = {};
+
+    if (platform && platform !== 'All') {
+      filterCondition = { platforms: platform }; // Filter by the 'platforms' field
+    }
+    // Fetch posts based on filter condition
+    const posts = await Post.find(filterCondition);
+    res.status(200).json({ posts });
+  } catch (error) {
+    console.error('Error filtering posts:', error);
+    res.status(500).json({ message: 'Failed to filter posts', error: error.message });
+  }
+});
+
 module.exports = router;
 

@@ -164,7 +164,7 @@ return (
                 </div>
               </div>
               <div className="self-stretch flex flex-row items-start justify-end py-0 px-2.5">
-              <button className="cursor-pointer [border:none] p-0 bg-[transparent] relative text-[15px] font-medium font-body-body1-regular text-gray-200 text-left inline-block z-[1]" onClick={onForgetPasswordClick}>
+              <button type="button" className="cursor-pointer [border:none] p-0 bg-[transparent] relative text-[15px] font-medium font-body-body1-regular text-gray-200 text-left inline-block z-[1]" onClick={onForgetPasswordClick}>
           FORGET PASSWORD?
         </button>
 
