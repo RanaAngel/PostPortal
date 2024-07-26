@@ -66,6 +66,15 @@ jobs:
       # - name: Wait
       #   run: |
       #     sleep 60
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install ansible
+
 
       ###zip artifact and send to s3
 
@@ -73,28 +82,28 @@ jobs:
         id: getenv
         run: |
           cat << EOF > backend/.env
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
-          TWITTER_CLIENT_ID: ${{ secrets.TWITTER_CLIENT_ID }}
-          TWITTER_CLIENT_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
-          TWITTER_REDIRECT_URI: ${{ secrets.TWITTER_REDIRECT_URI }}
-          AUTH_BASE_URL: ${{ secrets.AUTH_BASE_URL }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
-          RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
-          PORT: ${{ secrets.PORT }}
-          OWNER_ID: ${{ secrets.OWNER_ID }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          AYRSHARE_API_KEY: ${{ secrets.AYRSHARE_API_KEY }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          BASE_URL: ${{ secrets.BASE_URL }}
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          CLIENT_URL: ${{ secrets.CLIENT_URL }}
+          CONSUMER_KEY=${{ secrets.CONSUMER_KEY }}
+          CONSUMER_SECRET=${{ secrets.CONSUMER_SECRET }}
+          ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
+          BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}
+          TWITTER_CLIENT_ID=${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_CLIENT_SECRET=${{ secrets.TWITTER_CLIENT_SECRET }}
+          TWITTER_REDIRECT_URI=${{ secrets.TWITTER_REDIRECT_URI }}
+          AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }}
+          CLIENT_ID=${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+          REDIRECT_URI=${{ secrets.REDIRECT_URI }}
+          RESPONSE_TYPE=${{ secrets.RESPONSE_TYPE }}
+          PORT=${{ secrets.PORT }}
+          OWNER_ID=${{ secrets.OWNER_ID }}
+          MONGODB_URI=${{ secrets.MONGODB_URI }}
+          AYRSHARE_API_KEY=${{ secrets.AYRSHARE_API_KEY }}
+          STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+          BASE_URL=${{ secrets.BASE_URL }}
+          EMAIL_USER=${{ secrets.EMAIL_USER }}
+          EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+          CLIENT_URL=${{ secrets.CLIENT_URL }}
           EOF
 
       - name: Generate Deployment Package and send to s3
@@ -102,12 +111,7 @@ jobs:
             zip -r artifact.zip frontend backend .env
             aws s3 cp artifact.zip s3://krishna-s3-bucket9/artifact/
 
-      # - name: Run ansible
-      #   working-directory: ./ansible
-      #   run: |
-      #       ansible-playbook configure.yml -i aws_ec2.yml 
-
-
+      
     
 
             

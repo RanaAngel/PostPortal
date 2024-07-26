@@ -1,5 +1,5 @@
 variable "size" {
-  default = "t2.micro"
+  default = "t3.medium"
 
 }
 

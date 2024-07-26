@@ -1,78 +1,71 @@
 ---
-- name: Update APT package cache
-  apt:
-    update_cache: yes
-  when: ansible_os_family == 'Debian'
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
 
-- name: Install required packages
-  apt:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - nodejs
-    - npm
-    - mongodb
-    - git
-    - build-essential
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nodejs
+        - npm
+        - python3-pip
+        - awscli
+        - unzip
+        - nginx
 
-- name: Configure MongoDB
-  template:
-    src: mongodb.conf.j2
-    dest: /etc/mongodb.conf
-  notify:
-    - restart mongodb
+    - name: Install NVM
+      shell: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        source ~/.bashrc
+        nvm install --lts
+        nvm use --lts
 
-- name: Install PM2 for Node.js application management
-  npm:
-    name: pm2
-    global: yes
+    - name: Download deployment package from S3
+      aws_s3:
+        bucket: krishna-s3-bucket9
+        object: artifact.zip
+        dest: /home/ubuntu/artifact.zip
+        mode: get
+      register: s3_download
 
-- name: Create /Users/manish/Downloads/PostPortal-angel directory
-  ansible.builtin.file:
-    path: /Users/manish/Downloads/PostPortal-angel
-    state: directory
+    - name: Unzip deployment package
+      unarchive:
+        src: /home/ubuntu/artifact.zip
+        dest: /home/ubuntu/
+        remote_src: yes
 
-- name: Check if the MERN stack repository already exists
-  stat:
-    path: /Users/manish/Downloads/PostPortal-angel.git
-  register: repo_exists
+    - name: Copy environment variables
+      copy:
+        src: /home/ubuntu/backend/.env
+        dest: /home/ubuntu/backend/.env
 
-- name: Clone your MERN stack repository if it doesn't exist
-  git:
-    repo: https://github.com/Zeeshan1920/my-test-project
-    dest: /home/haider/mern-stack
-  when: not repo_exists.stat.exists
+    - name: Install backend dependencies
+      shell: |
+        cd /home/ubuntu/backend
+        npm install
 
-- name: Install backend dependencies
-  command: sudo npm install
-  args:
-    chdir: /home/haider/mern-stack/backend
+    - name: Start backend server
+      shell: |
+        cd /home/ubuntu/backend
+        pm2 start index.js --name backend
 
-- name: Start the backend application
-  command: pm2 start server.js -f
-  args:
-    chdir: /home/haider/mern-stack/backend
+    - name: Install frontend dependencies
+      shell: |
+        cd /home/ubuntu/frontend
+        npm install
 
-- name: Remove package-lock.json
-  file:
-    path: /home/haider/mern-stack/frontend/package-lock.json
-    state: absent
-  when: ansible_os_family == 'Debian'
+    - name: Build frontend
+      shell: |
+        cd /home/ubuntu/frontend
+        npm run build
 
-- name: Run npm install (Frontend)
-  command: sudo npm install
-  args:
-    chdir: /home/haider/mern-stack/frontend 
+    - name: Configure Nginx
+      copy:
+        src: /path/to/local/nginx.conf
+        dest: /etc/nginx/sites-available/default
+      notify:
+        - Restart Nginx
 
-- name: Build the frontend
-  command: sudo npm run build
-  args:
-    chdir: /home/haider/mern-stack/frontend
-
-
-- name: Start the frontend application
-  command: npm start
-  args:
-    chdir: /home/haider/mern-stack/frontend
-
-...

@@ -28,6 +28,11 @@ resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
   policy_arn = data.aws_iam_policy.aws_managed_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "role_policy_attachment2" {
+  role       = aws_iam_role.ssm.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
 # Create an IAM Instance Profile
 resource "aws_iam_instance_profile" "ssm_ec2" {
   name = "ec2_role_ssm"
