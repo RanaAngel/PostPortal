@@ -4,6 +4,8 @@ import axios from 'axios';
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Channels = () => {
   const [isFacebookConnected, setIsFacebookConnected] = useState(false);
@@ -269,14 +271,34 @@ const sendTokensToBackend = (accessToken) => {
     console.error('Error sending tokens to backend:', error);
   });
 };
-// Login/Logout
-const handleLogout = () => {
-  localStorage.removeItem('facebookAccessToken');
-  window.location.reload(true);
+
+//log out
+const handleLogout = async () => {
+  const userId = getUserIdFromToken(token);
+  try {
+    // Remove Facebook access token from the backend
+    await axios.post('http://localhost:5000/logout/facebooklogout', { userId });
+    toast.success('Logged out from Facebook successfully');
+    window.location.reload(true);
+  } catch (error) {
+    // Log detailed error information
+    console.error('Error logging out from Facebook:', error.response ? error.response.data : error.message);
+    toast.error('Error logging out from Facebook: ' + (error.response ? error.response.data.message : error.message));
+  }
 };
-const handleTwitterLogout = () => {
-  localStorage.removeItem('twitter_user_id');
-  window.location.reload(true);
+
+const handleTwitterLogout = async () => {
+  const userId = getUserIdFromToken(token);
+  console.log(userId);
+  try {
+    // Remove Twitter user ID from the backend
+    await axios.post('http://localhost:5000/logout/twitterlogout', { userId });
+    toast.success('Logged out from Twitter successfully');
+    window.location.reload(true);
+  } catch (error) {
+    console.error('Error logging out from Twitter:', error);
+    toast.error('Error logging out from Twitter: ' + error.message);
+  }
 };
 
   return (

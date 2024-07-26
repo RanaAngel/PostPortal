@@ -11,28 +11,20 @@ const path = require('path');
 const fs = require('fs');
 
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Directory to store uploaded files
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
-    }
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
-// POST route for posting content on LinkedIn
+
 // Route to post content on LinkedIn
-router.post('/postContent', upload.single('imageFile'), async (req, res) => {
+router.post('/postContent', upload.single('image'), async (req, res) => {
     console.log('postContent route hit');
     try {
         const { title, text, userId, scheduleDate } = req.body;
         const imageFile = req.file;
         const imageURL = req.body.imageURL;
         console.log(title, text, userId, scheduleDate);
+        console.log('image:',imageFile);
 
         // Parse scheduleDate to ISO format
         const parsedScheduleDate = moment(scheduleDate).toISOString();
@@ -43,7 +35,7 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
             return res.status(404).send('LinkedIn token not found for user');
         }
         const accessToken = linkedinToken.accessToken;
-        console.log('linkedin token', accessToken);
+        console.log('linkedin token: ', accessToken);
 
         const NewPost = new Post({
             userID: userId,
@@ -65,11 +57,11 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
             cron.schedule(cronTime, async () => {
                 try {
                     const ownerId = await getLinkedinId(accessToken);
-                    const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+                    const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.buffer);
                     console.log(JSON.stringify(uploadDetails, null, 2));
                     const imageUrn = uploadDetails.image;
                     const uploadUrl = uploadDetails.uploadUrl;
-                    const imageBuffer = imageFile.path;
+                    const imageBuffer = imageFile.buffer;
                     await uploadImageToLinkedIn(uploadUrl, imageBuffer);
                     console.log('image uploaded: ', uploadImageToLinkedIn);
                     const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
@@ -86,11 +78,11 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
         } else {
             console.log('else condition');
             const ownerId = await getLinkedinId(accessToken);
-            const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.path);
+            const uploadDetails = await registerImageUpload(accessToken, ownerId, imageFile.buffer);
             console.log(JSON.stringify(uploadDetails, null, 2));
             const imageUrn = uploadDetails.image;
             const uploadUrl = uploadDetails.uploadUrl;
-            const imageBuffer = imageFile.path;
+            const imageBuffer = imageFile.buffer;
             await uploadImageToLinkedIn(uploadUrl, imageBuffer);
             console.log('image uploaded: ', uploadImageToLinkedIn);
             const response = await postShareWithImage(accessToken, ownerId, title, text, imageUrn);
@@ -110,6 +102,7 @@ router.post('/postContent', upload.single('imageFile'), async (req, res) => {
         }
     }
 });
+
 
 // Get LinkedIn ID of the user
 function getLinkedinId(accessToken) {
@@ -304,7 +297,6 @@ function _request(method, hostname, path, headers, body) {
         req.end();
     });
 }
-
 module.exports = router;
 
 

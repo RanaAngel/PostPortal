@@ -55,7 +55,26 @@ const UserTable = () => {
     setEditingUser(null);
     setCreatingUser(false);
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 10; // Number of posts per page
 
+  // Calculate indices for slicing the posts array
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+
+  // Slice the posts array to include only posts for the current page
+  const currentPosts = users.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Generate page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(users.length / postsPerPage); i++) {
+    pageNumbers.push(i);
+  }
   return (
     <div className="w-full relative bg-color overflow-hidden flex flex-row items-start justify-start tracking-[normal] leading-[normal] mq1050:pr-5 mq1050:box-border">
     <AdminSidebar />
@@ -65,31 +84,37 @@ const UserTable = () => {
             mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
         <section className="self-stretch overflow-hidden flex flex-col items-start justify-start pt-[15px] px-[49px] pb-[98px] box-border gap-[10px] max-w-full lg:pt-5 lg:pb-16 lg:box-border mq825:pb-[42px] mq825:box-border mq1400:pl-6 mq1400:pr-6 mq1400:box-border">
-        <div className="bg-white p-4 rounded-md shadow-md">
-      <h2 className="text-xl font-bold mb-4">Users Table</h2>
-      {creatingUser ? (
-        <CreateUserForm onSave={handleCreateSave} onCancel={handleCancel} />
-      ) : editingUser ? (
-        <EditUserForm user={editingUser} onSave={handleSave} onCancel={handleCancel} />
-      ) : (
-        <div>
+      <div className="bg-white p-4 rounded-md shadow-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <input
+            type="text"
+            placeholder="Search by user name"
+            className="p-2 border rounded-md"
+          />
           <button
             onClick={handleCreate}
-            className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-button text-white px-4 py-2 rounded-md hover:bg-purple-600 cursor-pointer"
           >
-            Create User
+            + Add User
           </button>
+        </div>
+        <h2 className="text-xl font-bold mb-4">Users Table</h2>
+        {creatingUser ? (
+          <CreateUserForm onSave={handleCreateSave} onCancel={handleCancel} />
+        ) : editingUser ? (
+          <EditUserForm user={editingUser} onSave={handleSave} onCancel={handleCancel} />
+        ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white text-left text-gray-500">
               <thead>
                 <tr>
-                  <th className="px-4 py-2">#</th>
+                  <th className="px-4 py-2">User ID</th>
+                  <th className="px-4 py-2">Email</th>
                   <th className="px-4 py-2">First Name</th>
                   <th className="px-4 py-2">Last Name</th>
-                  <th className="px-4 py-2">Organization Name</th>
-                  <th className="px-4 py-2">Email</th>
-                  <th className="px-4 py-2">Phone</th>
+                  <th className="px-4 py-2">Organization</th>
                   <th className="px-4 py-2">User Type</th>
+                  <th className="px-4 py-2">Phone</th>
                   <th className="px-4 py-2">Actions</th>
                 </tr>
               </thead>
@@ -97,24 +122,24 @@ const UserTable = () => {
                 {users.map((user, index) => (
                   <tr key={user._id} className="border-t">
                     <td className="px-4 py-2">{index + 1}</td>
+                    <td className="px-4 py-2">{user.email}</td>
                     <td className="px-4 py-2">{user.firstName}</td>
                     <td className="px-4 py-2">{user.lastName}</td>
                     <td className="px-4 py-2">{user.organizationName}</td>
-                    <td className="px-4 py-2">{user.email}</td>
-                    <td className="px-4 py-2">{user.phone}</td>
                     <td className="px-4 py-2">{user.usertype}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2">{user.phone}</td>
+                    <td className="px-4 py-2 flex gap-2">
                       <button
                         onClick={() => handleEdit(user)}
-                        className="px-2 py-1 bg-blue-500 hover:bg-blue-700 text-white rounded-md mr-2"
+                        className="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600"
                       >
-                        Edit
+                        <i className="fas fa-edit"></i>
                       </button>
                       <button
                         onClick={() => handleDelete(user._id)}
-                        className="px-2 py-1 bg-red-500 hover:bg-red-700 text-white rounded-md"
+                        className="px-4 py-3 bg-red-500 text-white rounded-md hover:bg-red-600"
                       >
-                        Delete
+                        <i className="fas fa-trash"></i>
                       </button>
                     </td>
                   </tr>
@@ -122,9 +147,32 @@ const UserTable = () => {
               </tbody>
             </table>
           </div>
+        )}
+        <div className="flex justify-between items-center mt-4">
+          <button className="px-4 py-2 bg-button text-white border border-gray-300 rounded-md hover:bg-purple-600 cursor-pointer">
+            &larr; Previous
+          </button>
+          <ul className="flex list-style-none">
+            {pageNumbers.map((number) => (
+              <li key={number} className={`mx-1`}>
+                <button
+                  onClick={() => handlePageChange(number)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${
+                    number === currentPage
+                      ? 'bg-button text-white cursor-pointer hover:bg-purple-600'
+                      : 'text-white bg-button border border-blue-500 hover:bg-purple-600 cursor-pointer'
+                  }`}
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button className="px-4 py-2 bg-button text-white border border-gray-300 rounded-md hover:bg-purple-600 cursor-pointer">
+            Next &rarr;
+          </button>
         </div>
-      )}
-    </div>
+      </div>
     </section>
     </main>
     </div>

@@ -243,7 +243,7 @@ const formattedDate = formatDate(today);
       <div className="self-stretch flex flex-col items-start justify-start gap-[6px] text-primary-subtitle-color">
         <div className="self-stretch flex flex-row items-center justify-between gap-[20px] z-[1] mq450:flex-wrap">
           <div className="w-[200px] relative leading-[28px] font-medium text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block shrink-0">
-            Upcoming Posts
+            Posts Available
           </div>
           <div className="rounded bg-just-white flex flex-row items-center justify-center py-0 px-[17px] text-xs font-roboto border-[1px] border-solid border-whitesmoke">
             <div className="h-[27px] flex flex-row items-center justify-center py-0 px-0.5 box-border">

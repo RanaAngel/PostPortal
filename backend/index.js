@@ -14,8 +14,9 @@ const facebookRoute = require('./routes/facebookRoute');
 const instaRoute = require('./routes/instaRoute');
 // const analyticsRoute=require('./routes/analyticsRoute');
 const stripeRoutes = require('./routes/stripeRoute');
+const openaiRoutes = require('./routes/openaiRoute');
 const path = require('path'); // Import path module
-
+const logout = require('./routes/logout');
  
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,6 +52,10 @@ app.use('/api/instagram', instaRoute);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 //stripe Route
 app.use('/stripe', stripeRoutes);
+//AI
+app.use('/openai',openaiRoutes);
+
+app.use('/logout',logout);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,tlsAllowInvalidCertificates: true, })
