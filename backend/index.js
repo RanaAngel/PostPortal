@@ -26,10 +26,10 @@ app.use(cors());
 app.use(express.json());
 
 // Middleware
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL, // Set your frontend URL here
-//   credentials: true
-// }));
+app.use(cors({
+  origin: '*', // This allows requests from any origin
+  credentials: true
+}));
 // app.use(express.json());
 
 // Routes
