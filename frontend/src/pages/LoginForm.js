@@ -47,9 +47,16 @@ const LoginForm = () => {
   }, [navigate]);
 
 return (
+<<<<<<< Updated upstream
   <div className="w-full relative bg-black-main-background overflow-hidden flex flex-col items-end justify-start pt-[80px] px-[127px] pb-[265px] box-border gap-[80px] tracking-[normal] leading-[normal] mq1325:gap-[57px] pr-[170px] pl-[154px] box-border mq900:gap-[28px] mq900:pl-[31px] mq900:pr-[31px] mq900:box-border">
     {/* // <div className="w-full relative bg-black-main-background flex flex-row flex-wrap items-start justify-start py-[65px] px-[90px] box-border leading-[normal] tracking-[normal] mq750:pl-[22px] mq750:pr-[22px] mq750:box-border mq1050:pl-[45px] mq1050:pr-[45px] mq1050:box-border"> */}
     <header className="self-stretch flex flex-row items-start justify-end py-0 pr-1 pl-3 box-border max-w-full">
+=======
+  <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px]  pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
+    
+    <header className="self-stretch flex flex-row items-start justify-end py-0 pr-[15px] pl-0 box-border max-w-full">
+    
+>>>>>>> Stashed changes
       <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px]">
         <img
           className="h-20 w-20 relative object-cover"
@@ -66,10 +73,18 @@ return (
         </div>
       </div>
     </header>
+<<<<<<< Updated upstream
     <section className="w-[1639px] flex flex-row items-end justify-between max-w-full gap-[20px] text-left text-[40px] text-black-main-text font-inter mq1725:flex-wrap">
       <div className="w-[775px] flex flex-col items-start justify-start gap-[123.5px] min-w-[775px] max-w-full mq1325:min-w-full mq450:gap-[31px] mq900:gap-[62px] mq1725:flex-1">
         <div className="self-stretch flex flex-col items-start justify-start gap-[42px] max-w-full mq450:gap-[21px]">
           <h1 className="m-0 self-stretch relative text-inherit tracking-[0.04em] font-extrabold font-inherit mq450:text-5xl mq900:text-[32px]">
+=======
+    <section className="w-[1702px] flex flex-row items-center justify-between max-w-full gap-[20px] text-left text-21xl text-gray-200 font-body-body1-regular mq1500:flex-wrap">
+    
+      <div className="w-[654px] flex flex-col items-start justify-start gap-[32px] min-w-[654px] max-w-full mq1225:min-w-full mq450:gap-[37px] mq850:gap-[73px] mq1500:flex-1">
+        <div className="self-stretch flex flex-col items-start justify-start gap-[46px] max-w-full mq850:gap-[23px]">
+          <h1 className="m-0 self-stretch relative text-inherit tracking-[0.04em] font-extrabold font-inherit mq450:text-5xl mq850:text-13xl">
+>>>>>>> Stashed changes
             CARE TO EXPLORE OUR SERVICES? GET TO MANAGE POSTS IN SINGLE CLICK
           </h1>
           <div className="w-[743px] relative text-5xl font-medium text-black-sub-text inline-block max-w-full mq450:text-[19px]">

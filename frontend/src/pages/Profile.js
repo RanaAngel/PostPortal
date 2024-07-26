@@ -18,7 +18,6 @@ const Profile = () => {
     imageUrl: '',
   });
   const [showChangePassword, setShowChangePassword] = useState(false); // State to control the visibility of the ChangePassword component
-
   const handleChangePassword = () => {
     setShowChangePassword(true);
   };
@@ -180,10 +179,10 @@ const Profile = () => {
             mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
         
-        <section className="w-[1647px] flex flex-row items-start justify-start py-0 px-8 box-border max-w-full text-center text-[32px] font-poppins mq1325:flex-row mq1325:pl-2.5 mq1325:pr-2.5 mq1325:box-border">
+        <section className="w-full flex flex-row items-start justify-start py-0 px-8 box-border max-w-full text-center text-[32px] font-poppins mq1325:flex-row mq1325:pl-2.5 mq1325:pr-2.5 mq1325:box-border">
           
       <div className="flex-1 flex flex-row items-start justify-start gap-[50px] max-w-full mq800:gap-[25px] mq1325:flex-wrap">
-        <div className="flex-[0.9478] flex flex-col items-center justify-start pt-48 px-5 pb-[265px] box-border gap-[37px] min-w-[498px] max-w-full mq800:min-w-full mq1125:pt-[125px] mq1125:pb-[172px] mq1125:box-border mq450:gap-[18px] mq450:pt-[81px] mq450:pb-28 mq450:box-border mq1325:flex-1">
+        <div className=" flex flex-col items-center justify-start pt-48 px-5 pb-[265px] box-border gap-[37px] min-w-[498px] max-w-full mq800:min-w-full mq1125:pt-[125px] mq1125:pb-[172px] mq1125:box-border mq450:gap-[18px] mq450:pt-[81px] mq450:pb-28 mq450:box-border mq1325:flex-1">
           <div className="flex flex-row items-start justify-start py-0 px-[18px]">
             <h1 className="m-0 relative text-inherit leading-[42px] font-medium font-inherit text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] mq800:text-[26px] mq800:leading-[34px] mq450:text-[19px] mq450:leading-[25px]">
               Profile Preview

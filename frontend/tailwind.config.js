@@ -40,7 +40,24 @@ module.exports = {
           },
         },
       },
+<<<<<<< Updated upstream
       
+=======
+      extend: {
+        // Adding scrollbar hide utilities
+        scrollbar: {
+          hide: {
+            '-ms-overflow-style': 'none', /* IE and Edge */
+            'scrollbar-width': 'none', /* Firefox */
+          },
+          hideWebkit: {
+            '::-webkit-scrollbar': {
+              display: 'none', /* Safari and Chrome */
+            },
+          },
+        },
+      },
+>>>>>>> Stashed changes
       fontFamily: {
         inter: "Inter",
       },
@@ -64,6 +81,15 @@ module.exports = {
       "29xl": "48px",
       "17xl": "36px",
       inherit: "inherit",
+    },
+    animation: {
+      border: 'background ease infinite',
+    },
+    keyframes: {
+      background: {
+        '0%, 100%': { backgroundPosition: '0% 50%' },
+        '50%': { backgroundPosition: '100% 50%' },
+      },
     },
     screens: {
       mq1800: {
