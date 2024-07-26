@@ -6,23 +6,6 @@ import LandingPage from './pages/Home/LandingPage';
 import SignupForm from './pages/SignUpForm';
 import LoginForm from './pages/LoginForm';
 import Dashboard from './pages/Dashboard';
-<<<<<<< Updated upstream
-import ProtectedRoute from './components/ProtectedRoute'; 
-
-const App = () => {
-  
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<SignupForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/dashboard" element={<ProtectedRoute />} />  
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </Router>
-=======
 import AdminDashboard from './pages/AdminDashboard';
 import Library from './pages/Library';
 import PostAnalytics from './pages/PostAnalytics';
@@ -66,8 +49,8 @@ const App = () => {
             <Route pathh="/Change" element={<ChangePassword/>}/>
           </Routes>
           </Router>
->>>>>>> Stashed changes
   );
 };
+
 
 export default App;

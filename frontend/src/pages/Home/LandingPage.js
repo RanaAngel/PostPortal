@@ -1,42 +1,12 @@
-// frontend/client/src/components/LandingPage.js
-
-import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// const LandingPage = () => {
-//   return (
-//     <div>
-//       <h1>Welcome to My App</h1>
-//       <div>
-//         <Link to="/signup">Signup</Link>
-//         <Link to="/login">Login</Link>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default LandingPage;
-
-import LogSign from './LogSign';
-import FooterElement from './Main';
-import Services from './Services';
-import Pricing from './Pricing';
-import Reviews from './Reviews';
-import ContactUs from './ContactUs';
+import NavTopBar from "./components/NavTopBar";
+import FrameComponent3 from "./components/FrameComponent3";
+import FrameComponent2 from "./components/FrameComponent2";
+import SocialMediaHeading from "./components/SocialMediaHeading";
+import FrameComponent1 from "./components/FrameComponent1";
+import FrameComponent from "./components/FrameComponent";
 
 const LandingPage = () => {
   return (
-<<<<<<< Updated upstream
-    <div className="w-full relative bg-gray-100 overflow-y-auto flex flex-col items-end justify-start py-[5.5px] px-0 box-border gap-[100px] leading-[normal] tracking-[normal] mq900:gap-[75px] mq450:gap-[44px] mq1350:gap-[150px] mq1300:gap-[87px]">
-      <LogSign />
-      <section className="self-stretch flex flex-col items-start justify-start gap-[100px] max-w-full">
-        <FooterElement />
-        <Services />
-      </section>
-      <Pricing />
-      <Reviews />
-      <ContactUs />
-=======
     <div className="w-full absolute bg-neutral-main-50 overflow-y-auto flex flex-col items-center justify-start pt-0 px-0 pb-[108.7px] box-border gap-[64px] tracking-[normal] leading-[normal] mq450:gap-[16px] mq900:gap-[16px] mq1300:gap-[32px]">
       <NavTopBar />
       <main className="w-[1785px] flex flex-col items-center justify-start py-0 pr-0 pl-5 box-border gap-[129px] max-w-full mq450:gap-[16px] mq900:gap-[32px] mq1300:gap-[64px]">
@@ -75,8 +45,8 @@ const LandingPage = () => {
         <FrameComponent1 />
         <FrameComponent />
       </main>
->>>>>>> Stashed changes
     </div>
   );
 };
+
 export default LandingPage;

@@ -3,31 +3,18 @@ import PropTypes from "prop-types";
 const FrameComponent3 = ({ className = "" }) => {
   return (
     <div
-      className={`self-stretch flex flex-row items-start justify-between  gap-[43px] max-w-full text-left text-45xl text-black-main-background font-body-body1-regular mq900:gap-[21px] mq1650:flex-wrap ${className}`}
+      className={`self-stretch flex flex-row items-start justify-start gap-[43px] max-w-full text-left text-45xl text-black-main-background font-body-body1-regular mq900:gap-[21px] mq1650:flex-wrap ${className}`}
     >
-<<<<<<< Updated upstream
-      <div className="w-[50%] flex flex-col items-start justify-start pt-[69px] px-0 pb-0 box-border max-w-full mq900:pt-[45px] mq900:box-border mq900:w-full mq1650:flex-1">
-=======
       <div className="w-[729px]  flex flex-col items-start justify-start pt-[69px] px-0 pb-0 box-border min-w-[729px] max-w-full mq900:pt-[45px] mq900:box-border mq900:min-w-full mq1650:flex-1">
->>>>>>> Stashed changes
         <div className="self-stretch flex flex-col items-start justify-start gap-[30px] max-w-full">
-          <div className="self-stretch w-full flex flex-row items-start justify-start py-0 px-px box-border max-w-full">
-            <h1 className="self-stretch m-0 flex-1 relative text-inherit tracking-[0.02em] font-extrabold font-inherit whitespace-pre-wrap inline-block max-w-full mq450:text-19xl mq900:text-32xl">
+          <div className="w-[640px] flex flex-row items-start justify-start py-0 px-px box-border max-w-full">
+            <h1 className="m-0 flex-1 relative text-inherit tracking-[0.02em] font-extrabold font-inherit whitespace-pre-wrap inline-block max-w-full mq450:text-19xl mq900:text-32xl">
               MANAGE YOUR POSTS WITH POST PORTAL
             </h1>
           </div>
-          <h3 className="m-0 self-stretch relative text-5xl font-medium font-inherit text-gray-100 text-justify mq450:text-lgi">
-            Streamline your social media management efforts and unlock the full potential of your online presence with PostPortal. Our all-in-one solution empowers individuals and businesses to plan, schedule, analyze, and optimize their social media activities effortlessly.
-          </h3>
+          <h3 className="m-0 self-stretch relative text-5xl font-medium font-inherit text-gray-100 text-justify mq450:text-lgi">{`Streamline your social media management efforts and unlock the full potential of your online presence with PostPortal. Our all-in-one solution empowers individuals and businesses to plan, schedule, analyze, and optimize their social media activities effortlessly. `}</h3>
         </div>
       </div>
-<<<<<<< Updated upstream
-      <div className="w-[60%]  items-end justify-start max-w-full mq900:w-full mq1300:items-center mq1300:justify-start">
-        <div className="w-full h-[787px] flex flex-col items-end justify-start pt-[141px] px-[57px] pb-[125px] box-border relative max-w-full mq450:pt-[60px] mq450:pb-[53px] mq450:box-border mq900:pt-[92px] mq900:px-7 mq900:pb-[81px] mq900:box-border">
-          <div className="w-full flex-1 flex flex-col items-start justify-start py-[77px] px-[73px] box-border gap-[10px]  max-w-full z-[1] mq450:pt-[50px] mq450:pb-[50px] mq450:box-border mq900:w-full mq900:pl-[90px] mq900:pt-[88px] mq900:pr-[90px] mq900:box-border">
-            <div className="self-stretch h-[249px] flex flex-col items-center justify-right relative gap-[10px] ">
-  
-=======
       <div className="flex-1 flex flex-col items-end justify-start min-w-[645px] max-w-full mq900:min-w-full mq1300:items-center mq1300:justify-start">
         <div className="w-[886px] h-[787px] flex flex-col items-end justify-start pt-[141px] px-[57px] pb-[125px] box-border relative max-w-full mq450:pt-[60px] mq450:pb-[53px] mq450:box-border mq900:pt-[92px] mq900:px-7 mq900:pb-[81px] mq900:box-border">
           <div className="w-[513px] flex-1 flex flex-col items-start justify-start py-[77px] px-[73px] box-border gap-[10px]  bg-cover bg-no-repeat bg-[top] max-w-full z-[1] mq450:pt-[50px] mq450:pb-[50px] mq450:box-border mq900:w-[610px] mq900:pl-[90px] mq900:pt-[88px] mq900:pr-[90px] mq900:box-border">
@@ -38,7 +25,6 @@ const FrameComponent3 = ({ className = "" }) => {
                 alt=""
                 src=""
               />
->>>>>>> Stashed changes
               <img
                 className="w-[143.6px] h-[116.5px] relative object-contain z-[1]"
                 loading="lazy"
@@ -46,26 +32,18 @@ const FrameComponent3 = ({ className = "" }) => {
                 src="/00946387da8d7278971a45a96268961d-2@2x.png"
               />
               <img
-                className="w-[169.7px] gap-[100px]  h-[163.4px] absolute !m-[0] top-[-42px] left-[11.8px] object-contain z-[2]"
+                className="w-[169.7px] h-[163.4px] absolute !m-[0] top-[-42px] left-[11.8px] object-contain z-[2]"
                 loading="lazy"
                 alt=""
                 src="/00946387da8d7278971a45a96268961d-3@2x.png"
               />
             </div>
           </div>
-<<<<<<< Updated upstream
-          <div className="w-full h-full absolute !m-[0] top-[0px] right-[0.7px] bottom-[0px] left-[0px]">
-            <img
-              className="absolute justify-between top-[-50px] left-[0px] w-full h-full"
-              alt=""
-              src="Image-wrapper1.png"
-=======
           <div className="w-full h-full absolute !m-[0] top-[0px] right-[0px] bottom-[0px] left-[0px]">
             <img
               className="absolute h-full w-full top-[0px] right-[0px] bottom-[0px] left-[0px] max-w-full overflow-hidden max-h-full"
               alt=""
               src="/Image-wrapper.png"
->>>>>>> Stashed changes
             />
             <div className="absolute top-[262px] left-[221.6px] w-[206.6px] flex flex-row items-start justify-start">
               <img

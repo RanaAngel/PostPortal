@@ -12,7 +12,7 @@ const Profile = () => {
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
-    organizationNfame: '',
+    organizationName: '',
     email: '',
     phone: '',
     imageUrl: '',
