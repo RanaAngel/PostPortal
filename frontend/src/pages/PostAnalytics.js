@@ -46,12 +46,12 @@ const PostAnalytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/${selectedOption1}/posts`);
+        const response = await axios.get(`http://localhost:5000/api/Facebook/posts`);
         const fetchedPosts = response.data.filter(post => {
-          if (post.status === 'scheduled' && post.scheduledAt === "null") {
+          if (post.name === "null" || post.platforms === "null") {
             return false;
           }
-          return post.status === 'published' || (post.status === 'scheduled' && post.scheduledAt !== "null");
+          return post.title;
         });
 
         const dummyData = fetchedPosts.map(post => ({
