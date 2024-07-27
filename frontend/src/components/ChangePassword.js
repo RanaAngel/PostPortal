@@ -42,7 +42,7 @@ const ChangePassword = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://44.207.233.50:5000/dashboard/change_password`, {
+      const response = await fetch(`http://52.20.87.194:5000/dashboard/change_password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

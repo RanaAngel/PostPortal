@@ -116,7 +116,7 @@ export default function CreatePost() {
               return;
           }
 
-          const response = await axios.post('http://44.207.233.50:5000/twitter/tweet', formData, {
+          const response = await axios.post('http://52.20.87.194:5000/twitter/tweet', formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
               },
@@ -152,7 +152,7 @@ export default function CreatePost() {
           const imageUrl = imageBBResponse.data.data.url;
           formData.append('imageUrl', imageUrl);
 
-          const response = await axios.post('http://44.207.233.50:5000/api/facebook/post', formData, {
+          const response = await axios.post('http://52.20.87.194:5000/api/facebook/post', formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
               },
@@ -189,7 +189,7 @@ export default function CreatePost() {
           const imageUrl = imageBBResponse.data.data.url;
           formData.append('imageUrl', imageUrl);
 
-          const response = await axios.post('http://44.207.233.50:5000/api/instagram/post', formData, {
+          const response = await axios.post('http://52.20.87.194:5000/api/instagram/post', formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
               },
@@ -262,7 +262,7 @@ export default function CreatePost() {
           }
 
           const response = await axios.post(
-              'http://44.207.233.50:5000/sharePost/postContent',
+              'http://52.20.87.194:5000/sharePost/postContent',
               formData,
               {
                   headers: {
@@ -300,7 +300,7 @@ export default function CreatePost() {
     const fetchUserType = async () => {
       const userId = getUserIdFromToken(localStorage.getItem('token'));
       try {
-        const response = await fetch(`http://44.207.233.50:5000/stripe/verify/${userId}`); // Update with your user endpoint
+        const response = await fetch(`http://52.20.87.194:5000/stripe/verify/${userId}`); // Update with your user endpoint
         if (!response.ok) {
           throw new Error('Failed to fetch user details');
         }

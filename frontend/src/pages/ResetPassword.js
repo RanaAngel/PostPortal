@@ -14,7 +14,7 @@ const ResetPassword = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://44.207.233.50:5000/auth/reset-password/${id}/${token}`, {
+      const response = await fetch(`http://52.20.87.194:5000/auth/reset-password/${id}/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

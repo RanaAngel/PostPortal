@@ -12,7 +12,7 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://44.207.233.50:5000/admin/update_user/${user._id}`, formData);
+      const response = await axios.put(`http://52.20.87.194:5000/admin/update_user/${user._id}`, formData);
       onSave(response.data);
       alert('User edited successfully');
     } catch (error) {

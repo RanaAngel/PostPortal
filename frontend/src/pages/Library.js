@@ -12,7 +12,7 @@ const Library = () => {
     // Fetch the posts from the server
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://44.207.233.50:5000/api/facebook/posts');
+        const response = await axios.get('http://52.20.87.194:5000/api/facebook/posts');
         
         // Filter posts to show only those with status 'published' or 'scheduled'
         const filteredPosts = response.data.filter(post => {

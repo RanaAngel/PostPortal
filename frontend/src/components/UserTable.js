@@ -13,7 +13,7 @@ const UserTable = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://44.207.233.50:5000/admin/get_users');
+        const response = await axios.get('http://52.20.87.194:5000/admin/get_users');
         setUsers(response.data);
       } catch (error) {
         console.error('Error:', error);
@@ -25,7 +25,7 @@ const UserTable = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await axios.delete(`http://44.207.233.50:5000/admin/delete_user/${userId}`);
+      await axios.delete(`http://52.20.87.194:5000/admin/delete_user/${userId}`);
       setUsers(users.filter(user => user._id !== userId));
       alert('User deleted successfully');
     } catch (error) {

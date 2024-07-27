@@ -20,7 +20,7 @@ const CreateUserForm = ({ onSave, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://44.207.233.50:5000/admin/create_user', formData);
+      const response = await axios.post('http://52.20.87.194:5000/admin/create_user', formData);
       onSave(response.data);
       alert('User created successfully');
     } catch (error) {

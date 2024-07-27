@@ -12,7 +12,7 @@ const ViewPost = ({ closeViewPostModal }) => {
 
     const fetchUserPosts = async () => {
         try {
-            const response = await axios.get('http://44.207.233.50:5000/dashboard/get_post');
+            const response = await axios.get('http://52.20.87.194:5000/dashboard/get_post');
             setUserPost(response.data);
         } catch (error) {
             console.error('Error fetching user posts:', error);

@@ -41,7 +41,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://44.207.233.50:5000/dashboard/profile?userId=${encodeURIComponent(userId)}`);
+        const res = await axios.get(`http://52.20.87.194:5000/dashboard/profile?userId=${encodeURIComponent(userId)}`);
         setProfile(res.data);
         console.log(res.data);
 
@@ -73,7 +73,7 @@ const Profile = () => {
         const imageBBResponse = await axios.post('https://api.imgbb.com/1/upload?key=' + imageBBApiKey, formData);
         const imageUrl = imageBBResponse.data.data.url;
 
-        const uploadRes = await axios.put('http://44.207.233.50:5000/dashboard/upload', {
+        const uploadRes = await axios.put('http://52.20.87.194:5000/dashboard/upload', {
           imageUrl: imageUrl,
           userId: userId
         });
@@ -90,7 +90,7 @@ const Profile = () => {
 
   const handleDeleteImage = async () => {
     try {
-      const deleteRes = await axios.delete(`http://44.207.233.50:5000/dashboard/deleteImage?userId=${encodeURIComponent(userId)}`);
+      const deleteRes = await axios.delete(`http://52.20.87.194:5000/dashboard/deleteImage?userId=${encodeURIComponent(userId)}`);
       toast.success('Deleted image successfully');
       console.log('Image deleted successfully:', deleteRes.data);
       setProfile({ ...profile, imageUrl: '' });
@@ -104,7 +104,7 @@ const Profile = () => {
     e.preventDefault();
 
     try {
-      const profileRes = await axios.put(`http://44.207.233.50:5000/dashboard/editProfile?userId=${encodeURIComponent(userId)}`, {
+      const profileRes = await axios.put(`http://52.20.87.194:5000/dashboard/editProfile?userId=${encodeURIComponent(userId)}`, {
         profileData: profile,
       });
       setProfile(profileRes.data);
@@ -151,7 +151,7 @@ const Profile = () => {
 
     const onConfirmRemove = async () => {
         try {
-            await axios.patch(`http://44.207.233.50:5000/dashboard/users/${userId}/remove-premium`);
+            await axios.patch(`http://52.20.87.194:5000/dashboard/users/${userId}/remove-premium`);
             toast.success('Premium status removed successfully');
             // Optionally, navigate to another page or refresh the page
             setTimeout(() => {

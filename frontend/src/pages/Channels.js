@@ -39,19 +39,19 @@ const Channels = () => {
         const userId = getUserIdFromToken(token);
         
         // Check Facebook connection
-        const facebookResponse = await axios.get(`http://44.207.233.50:5000/api/facebook/check/${userId}`);
+        const facebookResponse = await axios.get(`http://52.20.87.194:5000/api/facebook/check/${userId}`);
         if (facebookResponse.data.isConnected) {
           setIsFacebookConnected(true);
         }
 
         // Check Twitter connection
-        const twitterResponse = await axios.get(`http://44.207.233.50:5000/twitter/check/${userId}`);
+        const twitterResponse = await axios.get(`http://52.20.87.194:5000/twitter/check/${userId}`);
         if (twitterResponse.data.isConnected) {
           setIsTwitterConnected(true);
           setPinSubmitted(true); // Ensure we show "Connected" if already connected
         }
          // Check LinkedIn connection
-         const linkedInResponse = await axios.get(`http://44.207.233.50:5000/linkedin/check/${userId}`);
+         const linkedInResponse = await axios.get(`http://52.20.87.194:5000/linkedin/check/${userId}`);
          console.log('LinkedIn response:', linkedInResponse.data); // Debugging statement
          if (linkedInResponse.data.isConnected) {
          
@@ -73,7 +73,7 @@ const Channels = () => {
       if (!token) {
         throw new Error('JWT token not found');
       }
-      const response = await axios.post(`http://44.207.233.50:5000/twitter/initiate_oauth?token=${encodeURIComponent(token)}`);
+      const response = await axios.post(`http://52.20.87.194:5000/twitter/initiate_oauth?token=${encodeURIComponent(token)}`);
       const { oauth_token, oauth_token_secret, authorize_url } = response.data;
       localStorage.setItem('oauth_token', oauth_token);
       localStorage.setItem('oauth_token_secret', oauth_token_secret);
@@ -95,7 +95,7 @@ const Channels = () => {
       const oauthTokenSecret = localStorage.getItem('oauth_token_secret');
       console.log(oauthToken);
       console.log(pin);
-      const response = await axios.post(`http://44.207.233.50:5000/twitter/callback?token=${encodeURIComponent(token)}`, {
+      const response = await axios.post(`http://52.20.87.194:5000/twitter/callback?token=${encodeURIComponent(token)}`, {
         oauth_token: oauthToken,
         oauth_token_secret: oauthTokenSecret,
         pin: pin
@@ -120,7 +120,7 @@ const Channels = () => {
       if (!token) {
         throw new Error('JWT token not found');
       }
-      const authURL = `http://44.207.233.50:5000/linkedin/auth?token=${encodeURIComponent(token)}`;
+      const authURL = `http://52.20.87.194:5000/linkedin/auth?token=${encodeURIComponent(token)}`;
       window.location.href = authURL;
     } catch (error) {
       console.error('Error initiating LinkedIn authentication flow:', error);
@@ -175,7 +175,7 @@ useEffect(() => {
 const checkFacebookConnection = async () => {
   console.log('Checking Facebook connection...');
   try {
-    const response = await fetch(`http://44.207.233.50:5000/api/facebook/tokens?token=${localStorage.getItem('token')}`, {
+    const response = await fetch(`http://52.20.87.194:5000/api/facebook/tokens?token=${localStorage.getItem('token')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -248,7 +248,7 @@ const doLogin = () => {
 const sendTokensToBackend = (accessToken) => {
   const jwtToken = localStorage.getItem('token');
 
-  fetch('http://44.207.233.50:5000/api/facebook/tokens', {
+  fetch('http://52.20.87.194:5000/api/facebook/tokens', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

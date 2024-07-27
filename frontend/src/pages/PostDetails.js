@@ -18,7 +18,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://44.207.233.50:5000/api/facebook/posts/${id}`);
+        const response = await axios.get(`http://52.20.87.194:5000/api/facebook/posts/${id}`);
         setPost(response.data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -65,7 +65,7 @@ const PostDetails = () => {
 
     const onConfirmDelete = async () => {
         try {
-            await axios.delete(`http://44.207.233.50:5000/api/facebook/posts/${id}`);
+            await axios.delete(`http://52.20.87.194:5000/api/facebook/posts/${id}`);
             toast.success('Post deleted successfully');
             setTimeout(() => {
                 navigate('/library');
