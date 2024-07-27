@@ -84,7 +84,7 @@ const AdminSidebar = ({ className = "" }) => {
                   alt=""
                   src="/magedashboard2.svg"
                 />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                <div className="h-6 relative  hover:text-white text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
                   Dashboard
                 </div>
               </div>
@@ -100,7 +100,7 @@ const AdminSidebar = ({ className = "" }) => {
                   alt=""
                   src="/solarlibrarylinear-1.svg"
                 />
-                <div className="flex-1 relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
+                <div className="flex-1 hover:text-white relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
                   Users
                 </div>
               </div>
@@ -116,7 +116,7 @@ const AdminSidebar = ({ className = "" }) => {
                   alt=""
                   src="/ioncreatesharp.svg"
                 />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                <div className="h-6 hover:text-white relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
                   Posts
                 </div>
               </div>

@@ -133,13 +133,13 @@ const UserTable = () => {
                         onClick={() => handleEdit(user)}
                         className="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600"
                       >
-                        <i className="fas fa-edit"></i>
+                        Edit
                       </button>
                       <button
                         onClick={() => handleDelete(user._id)}
                         className="px-4 py-3 bg-red-500 text-white rounded-md hover:bg-red-600"
                       >
-                        <i className="fas fa-trash"></i>
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -152,7 +152,7 @@ const UserTable = () => {
           <button className="px-4 py-2 bg-button text-white border border-gray-300 rounded-md hover:bg-purple-600 cursor-pointer">
             &larr; Previous
           </button>
-          <ul className="flex list-style-none">
+          <ul className="flex list-none">
             {pageNumbers.map((number) => (
               <li key={number} className={`mx-1`}>
                 <button

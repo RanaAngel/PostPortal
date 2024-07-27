@@ -134,11 +134,12 @@ const UserPost = () => {
                   <tr key={post._id} className="border-t border-gray-200">
                     <td className="px-4 py-2">{indexOfFirstPost + index + 1}</td>
                     <td className="px-4 py-2">{`${user.firstName || ''} ${user.lastName || ''}`}</td>
-                    <td className="px-4 py-2">{post.content}</td>
+                    <td className="px-4 py-2 ">{post.content}</td>
                     <td className="px-4 py-2">{new Date(displayDate).toLocaleString()}</td>
                     <td className="px-4 py-2">
-                      <button className="px-2 py-1 bg-green-500 text-white cursor-pointer rounded-md mr-2 hover:bg-green-600">Edit</button>
+                      <div className='Flex1 Flex flex-wrap justify-between'>
                       <button className="px-2 py-1 bg-red-500 text-white cursor-pointer rounded-md hover:bg-red-600" onClick={() => confirmDelete(post._id)}>Delete</button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -154,7 +155,7 @@ const UserPost = () => {
           >
             &larr; Previous
           </button>
-          <ul className="flex list-style-none">
+          <ul className="flex list-none">
             {pageNumbers.map((number) => (
               <li key={number} className={`mx-1`}>
                 <button
