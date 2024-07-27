@@ -20,11 +20,8 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
 const { userInfo } = require('os');
-<<<<<<< Updated upstream
-=======
 const path = require('path');
 const fs = require('fs');
->>>>>>> Stashed changes
 
 
 
@@ -43,12 +40,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
 
 
 // Create an OAuth 1.0a instance with consumer key and secret
@@ -282,61 +273,38 @@ router.post('/callback', async (req, res) => {
 
 
 
+
 router.post('/tweet', upload.single('imageFile'), async (req, res) => {
     try {
-<<<<<<< Updated upstream
-        const { title, text, userId, scheduleDate } = req.body;
-        const imageFile = req.file; // Get the uploaded file
-        console.log(text, title, userId);
-        console.log(imageFile);
-        // Retrieve the Twitter access token for the user from the database
-=======
-        const { title, text, userId, scheduleDate} = req.body;
+        const { title, postTitle, text, userId, scheduleDate} = req.body;
         const imageFile = req.file;
         const imageURL = req.body.imageURL; // image URL from the 'imageURL' field
         console.log('image url: ',imageFile);
         console.log('imageUrl: ',imageURL);
         const parsedScheduleDate = new Date(scheduleDate);
->>>>>>> Stashed changes
+        console.log('Received title:', title);
+        console.log('Received text:', text);
+        console.log('Received userID:', userId);
+        console.log('Received postTitle:', postTitle);
+        console.log('Received scheduleDate:', scheduleDate);
         const twitterToken = await twitter.findOne({ userId });
         if (!twitterToken) {
             return res.status(404).send('Twitter token not found for user');
         }
         const access_token = JSON.parse(twitterToken.accessToken);
-<<<<<<< Updated upstream
+        // Logging received data for debugging
+   console.log('Received title:', title);
+   console.log('Received text:', text);
+   console.log('Received userID:', userId);
+   console.log('Received postTitle:', postTitle);
+   console.log('Received scheduleDate:', scheduleDate);
 
-=======
->>>>>>> Stashed changes
         const NewPost = new Post({
             userID: userId,
             content: text,
             title,
-<<<<<<< Updated upstream
-            imageURL: '',
-            uploadUrl: '',
-            scheduledAt: scheduleDate ? new Date(scheduleDate) : null,
-            postedAt: null,
-            status: scheduleDate ? 'scheduled' : 'draft'
-        });
-
-        await NewPost.save();
-
-        let formattedDate = moment(scheduleDate, 'MMM DD, YYYY HH:mm:ss', true).format();
-        // if (!formattedDate) {
-        //     throw new Error('Invalid date format');
-        // }
-
-        // Call the uploadImage function to get the media ID
-        const mediaId = await uploadImage(access_token, imageFile);
-        const mediaIdArray = [mediaId];
-        console.log("Image uploaded successfully: ", mediaIdArray);
-
-        if (scheduleDate) {
-            const cronTime = moment(scheduleDate).format('m H D M *');
-            cron.schedule(cronTime, async () => {
-                // Post the tweet with the image
-=======
-            platforms: ['twitter'],
+            name: postTitle,
+            platforms: 'twitter',
             imageURL: imageURL,
             uploadUrl: '',
             scheduledAt: parsedScheduleDate,
@@ -354,28 +322,10 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
             console.log('if condition running');
             const cronTime = moment(scheduleDate).format('m H D M *');
             cron.schedule(cronTime, async () => {
->>>>>>> Stashed changes
                 const messageResponse = await writeTweet(access_token, text, mediaIdArray);
                 const tweetId = messageResponse.data.id;
                 console.log('tweet id: ', tweetId);
                 const tweetData = messageResponse.data.text;
-<<<<<<< Updated upstream
-                onsole.log('tweet data: ', tweetData);
-
-                NewPost.imageURL = tweetData;
-                NewPost.uploadUrl = null;
-                NewPost.postedAt = Date.now();
-                NewPost.status = 'posted';
-                await NewPost.save();
-                console.log('Content posted and saved to the database.');
-            });
-            res.status(200).json({ message: 'Post scheduled successfully' });
-        }
-
-
-        else {
-            // Post the tweet with the image
-=======
                 console.log('tweet data: ', tweetData);
                 NewPost.uploadUrl = mediaId;
                 NewPost.postedAt = Date.now();
@@ -387,24 +337,10 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
             res.status(200).json({ message: 'Post scheduled successfully' });
         } else {
             console.log( 'else condition');
->>>>>>> Stashed changes
             const messageResponse = await writeTweet(access_token, text, mediaIdArray);
             const tweetId = messageResponse.data.id;
             console.log('tweet id: ', tweetId);
             const tweetData = messageResponse.data.text;
-<<<<<<< Updated upstream
-            onsole.log('tweet data: ', tweetData);
-            NewPost.imageURL = tweetData;
-            NewPost.uploadUrl = null;
-            NewPost.postedAt = Date.now();
-            NewPost.status = 'posted';
-            await NewPost.save();
-            console.log('Content posted and saved to the database.');
-            res.status(200).json(response);
-        }
-
-
-=======
             console.log('tweet data: ', tweetData);
             NewPost.uploadUrl = mediaId;
             NewPost.postedAt = Date.now();
@@ -415,57 +351,25 @@ router.post('/tweet', upload.single('imageFile'), async (req, res) => {
             console.log('Content posted and saved to the database.');
             res.status(200).json({ message: 'Post Shared successfully' });
         }
->>>>>>> Stashed changes
     } catch (error) {
         console.error('Error posting tweet:', error);
         res.status(500).json({ error: 'Failed to post tweet' });
     }
 });
-
-
-
-<<<<<<< Updated upstream
-function extractImageUrlFromText(text) {
-    // Regular expression to match URLs starting with 'https://t.co/'
-    const regex = /https:\/\/t\.co\/[\w]+/g;
-
-    // Find matches in the text
-    const matches = text.match(regex);
-
-    // If matches are found, join them to form the full URL
-    if (matches && matches.length > 0) {
-        return matches.join('');
-    }
-
-    // Return null if no matches are found
-    return null;
-}
-
-
-// Assuming this is part of your '/tweet' route handler
-router.get('/getImage', async (req, res) => {
-    console.log('twitter getimage hit');
+// Endpoint to check Twitter connection status
+router.get('/check/:userId', async (req, res) => {
     try {
-        const { imageUrn, userId } = req.query;
-        // console.log(userId); 
-
-        // Extract the image URL from the tweet's text
-        const imageUrl = extractImageUrlFromText(imageUrn);
-        // console.log('image url: ',imageUrl);
-
-        // Your existing code to save the tweet details to the database goes here...
-
-        res.status(200).json({ imageUrl });
+      const twitterData = await twitter.findOne({ userId: req.params.userId });
+      if (twitterData && twitterData.accessToken) {
+        return res.json({ isConnected: true });
+      }
+      res.json({ isConnected: false });
     } catch (error) {
-        console.error('Error posting tweet:', error);
-        res.status(500).json({ error: 'Failed to post tweet' });
+      console.error('Error checking Twitter connection:', error);
+      res.status(500).send('Server Error');
     }
-});
+  });
 
 
-
-=======
->>>>>>> Stashed changes
-
-
+  
 module.exports = router;

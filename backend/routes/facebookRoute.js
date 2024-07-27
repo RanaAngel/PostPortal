@@ -140,7 +140,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
       title,
       imageURL: imageUrl,
       uploadUrl: '',
-      scheduledAt: parsedScheduleDate,
+      scheduledAt: scheduleDate,
       postedAt: null,
       status: scheduleDate ? 'scheduled' : 'draft'
   });
@@ -178,7 +178,7 @@ router.post('/post', upload.single('image'), async (req, res) => {
       });
   
       await newPost.save();
-    console.log('Content posted and saved to the database.');
+    console.log('Content scheduled and saved to the database.');
     res.json(response.data);
 
 });
@@ -225,51 +225,68 @@ router.get('/posts', async (req, res) => {
     res.status(500).json({ message: 'Error fetching posts', error });
   }
 });
+// Example Express.js route
+router.get('/posts/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId); // Adjust based on your model
+    if (!post) {
+      return res.status(404).send({ message: 'Post not found' });
+    }
+    res.send(post);
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
 
-// Function to fetch post analytics from Ayrshare
-const getPostAnalytics = async (postId) => {
-  const ayrshareApiKey = process.env.AYRSHARE_API_KEY;
+  }
+  
+});
+
+router.delete('/posts/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const result = await Post.findByIdAndDelete(postId);
+    if (!result) {
+      return res.status(404).send({ message: 'Post not found' });
+    }
+    res.send({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting post:', error); // Log the full error
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+// Endpoint to check Facebook connection status
+router.get('/check/:userId', async (req, res) => {
+  try {
+    const facebookData = await Facebook.findOne({ userId: req.params.userId });
+    if (facebookData && facebookData.facebookAccessToken) {
+      return res.json({ isConnected: true });
+    }
+    res.json({ isConnected: false });
+  } catch (error) {
+    console.error('Error checking Facebook connection:', error);
+    res.status(500).send('Server Error');
+  }
+});
+
+
+router.post('/filter', async (req, res) => {
+  const { platform, userId } = req.body;
 
   try {
-    const response = await axios.get(`https://app.ayrshare.com/api/analytics?postId=${postId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ayrshareApiKey}`,
-      },
-    });
+    let posts;
+    if (platform === 'All') {
+      posts = await Post.find({ userID: userId });
+    } else {
+      posts = await Post.find({ userID: userId, platforms: platform });
+    }
 
-    return response.data;
+    res.json({ posts });
   } catch (error) {
-    console.error('Error fetching analytics:', error.response ? error.response.data : error.message);
-    throw new Error('Failed to fetch analytics from Ayrshare');
+    console.error('Error fetching filtered posts:', error);
+    res.status(500).json({ message: 'Server error' });
   }
-};
-
-// Route to fetch and save post analytics
-// router.get('/analytics/:postId', async (req, res) => {
-//   const { postId } = req.params;
-
-//   try {
-//     const analyticsData = await getPostAnalytics(postId);
-
-//     const userId = getUserIdFromToken(req.headers.authorization.split(' ')[1]);
-
-//     const analytics = new Analytics({
-//       userID: userId,
-//       postId: postId,
-//       platform: 'facebook', // Update this with the actual platform if different
-//       analytics: analyticsData,
-//     });
-
-//     await analytics.save();
-
-//     res.json({ message: 'Analytics saved successfully', data: analytics });
-//   } catch (error) {
-//     console.error('Error saving analytics:', error);
-//     res.status(500).json({ error: 'Error saving analytics', message: error.message });
-//   }
-// });
-
+});
 
 
 module.exports = router;

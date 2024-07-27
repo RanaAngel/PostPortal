@@ -13,20 +13,26 @@ const dashboardRoutes = require('./routes/dashboardRoute');//route for dashboard
 const facebookRoute = require('./routes/facebookRoute');
 const instaRoute = require('./routes/instaRoute');
 // const analyticsRoute=require('./routes/analyticsRoute');
-<<<<<<< Updated upstream
-=======
 const stripeRoutes = require('./routes/stripeRoute');
->>>>>>> Stashed changes
+const openaiRoutes = require('./routes/openaiRoute');
 const path = require('path'); // Import path module
+const logout = require('./routes/logout');
+const PostAnalytics = require('./routes/postRoute');
 
- 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+// Middleware
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL, // Set your frontend URL here
+//   credentials: true
+// }));
+// app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
@@ -45,11 +51,14 @@ app.use('/api/instagram', instaRoute);
 // app.use('/analytics',analyticsRoute);
 // Serve static files from the 'uploads' directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-<<<<<<< Updated upstream
-=======
 //stripe Route
 app.use('/stripe', stripeRoutes);
->>>>>>> Stashed changes
+//AI
+app.use('/openai',openaiRoutes);
+
+app.use('/logout',logout);
+
+app.use('/post_analytics',PostAnalytics);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,tlsAllowInvalidCertificates: true, })

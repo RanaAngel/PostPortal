@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  imageUrl: {
+    type: String,
+    required: false
+  },
   role: {
     type: String,
     enum: ['user', 'admin'], // Define allowed roles
@@ -37,6 +41,10 @@ const userSchema = new mongoose.Schema({
    type: String,
    enum:['premium','free'], //
    default: 'free'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 

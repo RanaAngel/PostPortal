@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios';
-import FacebookFlow from '../components/FacebookFlow';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate, useLocation, redirect } from 'react-router-dom';
@@ -9,23 +10,60 @@ const Channels = () => {
   const [isFacebookConnected, setIsFacebookConnected] = useState(false);
   const [pin, setPin] = useState('');
   const [isTwitterConnected, setIsTwitterConnected] = useState(false);
+  const [isLinkedInConnected, setIsLinkedInConnected] = useState(false);
   const [pinSubmitted, setPinSubmitted] = useState(false);
   
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
+  const getUserIdFromToken = (token) => {
+    if (!token) {
+        console.error('JWT token is missing');
+        return null;
+    }
+
+    try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const { userId } = JSON.parse(decodedPayload);
+        return userId;
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return null;
+    }
+};
 
   useEffect(() => {
-    
-    // Check if facebookAccessToken is present in local storage
-    const token = localStorage.getItem('facebookAccessToken');
-    if (token) {
-      setIsFacebookConnected(true);
+    // Function to fetch user connection status
+    const fetchConnectionStatus = async () => {
+      try {
+        const userId = getUserIdFromToken(token);
+        
+        // Check Facebook connection
+        const facebookResponse = await axios.get(`http://localhost:5000/api/facebook/check/${userId}`);
+        if (facebookResponse.data.isConnected) {
+          setIsFacebookConnected(true);
+        }
 
-    }
-    const twitterUserId = localStorage.getItem('twitter_user_id');
-    if (twitterUserId) {
-      setIsTwitterConnected(true);
-      setPinSubmitted(true); // Ensure we show "Connected" if already connected
-    }
+        // Check Twitter connection
+        const twitterResponse = await axios.get(`http://localhost:5000/twitter/check/${userId}`);
+        if (twitterResponse.data.isConnected) {
+          setIsTwitterConnected(true);
+          setPinSubmitted(true); // Ensure we show "Connected" if already connected
+        }
+         // Check LinkedIn connection
+         const linkedInResponse = await axios.get(`http://localhost:5000/linkedin/check/${userId}`);
+         console.log('LinkedIn response:', linkedInResponse.data); // Debugging statement
+         if (linkedInResponse.data.isConnected) {
+         
+           setIsLinkedInConnected(true);
+         }
+      } catch (error) {
+        console.error('Error fetching connection status:', error);
+      }
+    };
+
+    fetchConnectionStatus();
   }, []);
   
 
@@ -155,10 +193,10 @@ const checkFacebookConnection = async () => {
       }
     } else {
       const data = await response.json();
-      console.log('Response data:', data);
+      
 
       if (data.facebookAccessToken) {
-        console.log('Facebook access token found:', data.facebookAccessToken);
+       
         localStorage.setItem('facebookAccessToken', data.facebookAccessToken);
         setIsLoggedIn(true);
       } else {
@@ -232,14 +270,34 @@ const sendTokensToBackend = (accessToken) => {
     console.error('Error sending tokens to backend:', error);
   });
 };
-// Login/Logout
-const handleLogout = () => {
-  localStorage.removeItem('facebookAccessToken');
-  window.location.reload(true);
+
+//log out
+const handleLogout = async () => {
+  const userId = getUserIdFromToken(token);
+  try {
+    // Remove Facebook access token from the backend
+    await axios.post('http://localhost:5000/logout/facebooklogout', { userId });
+    toast.success('Logged out from Facebook successfully');
+    window.location.reload(true);
+  } catch (error) {
+    // Log detailed error information
+    console.error('Error logging out from Facebook:', error.response ? error.response.data : error.message);
+    toast.error('Error logging out from Facebook: ' + (error.response ? error.response.data.message : error.message));
+  }
 };
-const handleTwitterLogout = () => {
-  localStorage.removeItem('twitter_user_id');
-  window.location.reload(true);
+
+const handleTwitterLogout = async () => {
+  const userId = getUserIdFromToken(token);
+  console.log(userId);
+  try {
+    // Remove Twitter user ID from the backend
+    await axios.post('http://localhost:5000/logout/twitterlogout', { userId });
+    toast.success('Logged out from Twitter successfully');
+    window.location.reload(true);
+  } catch (error) {
+    console.error('Error logging out from Twitter:', error);
+    toast.error('Error logging out from Twitter: ' + error.message);
+  }
 };
 
   return (
@@ -251,12 +309,14 @@ const handleTwitterLogout = () => {
         mingcuteuser4Line="/mingcuteuser4line-1.svg"
       />
       <section className="self-stretch flex flex-row items-center justify-center py-[87.9px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
-  
+      <ToastContainer
+    style={{ fontSize: '1rem' }} // Adjust the font size as needed
+/>
       <section className="w-[1628px] flex-1 flex flex-col items-center justify-start py-0 px-5 box-border max-w-full text-right text-[36px] text-gray-500 font-roboto lg:items-start lg:justify-start mq750:items-start mq750:justify-start mq1050:items-start mq1050:justify-start">
           <div className="w-[788px] flex flex-col items-end justify-start gap-[88px] max-w-full mq450:gap-[22px] mq1050:gap-[44px]">
             <div className="self-stretch flex flex-col items-start justify-start gap-[6px] max-w-full">
               <div className="w-[765px] flex flex-row items-start justify-center py-0 px-5 box-border max-w-full">
-                <h1 className="m-0 w-[601px] relative text-inherit leading-[40px] font-bold font-inherit inline-block shrink-0 mq450:text-[22px] mq450:leading-[24px] mq1050:text-[29px] mq1050:leading-[32px]">
+                <h1 className="m-0 w-[601px] relative text-center leading-[40px] font-bold font-inherit inline-block shrink-0 mq450:text-[22px] mq450:leading-[24px] mq1050:text-[29px] mq1050:leading-[32px]">
                   Connect Your Social Media Channels
                 </h1>
               </div>
@@ -423,13 +483,18 @@ const handleTwitterLogout = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-start pt-[3px] px-0 pb-0">
-          <button onClick={handleLinkedInAuth} className="cursor-pointer [border:none] py-2 px-7 bg-button rounded flex flex-row items-start justify-start hover:bg-mediumslateblue">
-            <div className="relative text-sm leading-[20px] font-medium font-roboto text-white text-center inline-block min-w-[53px]">
-              Connect
-            </div>
-          </button>
+        <div className="flex flex-col items-start justify-start pt-[7px] px-0 pb-0">
+      <button
+        onClick={handleLinkedInAuth}
+        className={`cursor-pointer border-none py-2 px-7 ${
+          isLinkedInConnected ? 'bg-green-500' : 'bg-button'
+        } rounded flex flex-row items-start justify-start hover:bg-mediumslateblue`}
+      >
+        <div className="relative text-sm leading-[20px] font-medium font-roboto text-white text-center inline-block min-w-[53px]">
+          {isLinkedInConnected ? 'Connected' : 'Connect'}
         </div>
+      </button>
+    </div>
       </div>
     </div>
     </div>

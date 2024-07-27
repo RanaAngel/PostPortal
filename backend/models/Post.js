@@ -19,12 +19,13 @@ const postSchema = new mongoose.Schema({
     type: String,
 
   },
-  uploadUrl:{
+  name:{
     type: String,
+    required: false
     
   },
   platforms: {
-    type: [String],
+    type: String,
     required: false
   },
   ayrsharePostId: {
@@ -34,6 +35,10 @@ const postSchema = new mongoose.Schema({
   postedAt: {
     type: Date,
     default: Date.now
+  },
+ scheduledAt: {
+  type: String,
+    required: false
   },
   status: {
     type: String,

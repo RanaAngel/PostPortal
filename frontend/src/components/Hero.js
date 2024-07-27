@@ -1,10 +1,16 @@
 import { useCallback } from "react";
 import PropTypes from "prop-types";
+import { useNavigate} from "react-router-dom";
+
+
+
 
 const Hero = ({ className = "" }) => {
+  
+  const navigate = useNavigate();
   const onButtonClick = useCallback(() => {
-    // Please sync "Channels" to the project
-  }, []);
+    navigate("/channels");
+  }, [navigate]);
 
   return (
     <div
