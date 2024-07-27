@@ -105,7 +105,23 @@ useEffect(() => {
   }
 }, [navigate]);
 
+const [userName, setUserName] = useState('');
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+    const token = localStorage.getItem('token');
+    const userId = getUserIdFromToken(token);
+      try {
+        const response = await fetch(`http://52.20.87.194:5000/dashboard/user/profile?userId=${userId}`);
+        const data = await response.json();
+        setUserName(data.firstName); // Adjust based on your data structure
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <div
@@ -211,10 +227,9 @@ useEffect(() => {
               }
               trigger={["click"]}
             >
-              <Button onClick={(e) => e.preventDefault()}>
-                {`User `}
-                <DownOutlined />
-              </Button>
+                <Button onClick={(e) => e.preventDefault()} className="min-w-full">
+      {userName } <DownOutlined />
+    </Button>
                 </Dropdown>
               </div>
             </div>

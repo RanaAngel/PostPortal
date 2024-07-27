@@ -248,5 +248,27 @@ router.get('/posts/:userId', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch posts', error: error.message });
   }
 });
+// Endpoint to get user profile data by user ID
+router.get('/user/profile', async (req, res) => {
+  try {
+    // Get the user ID from the query parameters
+    const userId = req.query.userId;
+  
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 module.exports = router;

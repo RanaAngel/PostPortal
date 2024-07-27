@@ -1,10 +1,12 @@
 import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 import "antd/dist/reset.css";
 import { Dropdown, Menu, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbar = ({ className = "", mingcuteuser4Line }) => {
   const location = useLocation();
@@ -51,6 +53,35 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
   const handleProfile = () => {
     navigate('/profile'); // Change this to your profile route
   };
+  const [userName, setUserName] = useState('');
+
+  const getUserIdFromToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+      console.log('User ID:', userId); // Log user ID
+      return userId;
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+    const token = localStorage.getItem('token');
+    const userId = getUserIdFromToken(token);
+      try {
+        const response = await fetch(`http://52.20.87.194:5000/dashboard/user/profile?userId=${userId}`);
+        const data = await response.json();
+        setUserName(data.firstName); // Adjust based on your data structure
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <header
@@ -89,9 +120,9 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
             }
             trigger={["click"]}
           >
-            <Button onClick={(e) => e.preventDefault()} className="text-black min-w-full">
-              User <DownOutlined />
-            </Button>
+               <Button onClick={(e) => e.preventDefault()} className="min-w-full">
+      {userName } <DownOutlined />
+    </Button>
           </Dropdown>
         </div>
       </div>

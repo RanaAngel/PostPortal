@@ -170,11 +170,11 @@ const PostAnalytics = () => {
           <div className="flex flex-col items-center justify-center gap-[50px] mq750:gap-[25px] w-full">
             <div className="flex flex-col gap-[2rem] justify-cen items-center w-full">
               <div className="w-1/2 justify-center lg:w-1/3">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                <label className="text-gray-700 text-sm font-bold mb-2">
                   Media
                 </label>
                 <select
-                  className="w-1/2 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+                  className="flex-grow px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
                   value={selectedOption1}
                   onChange={handleOption1Change}
                 >
@@ -190,7 +190,7 @@ const PostAnalytics = () => {
                   Connected Page
                 </label>
                 <select
-                  className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+                  className="flex-grow px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
                   value={selectedOption2}
                   onChange={handleOption2Change}
                 >

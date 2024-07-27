@@ -174,15 +174,15 @@ const formattedDate = formatDate(today);
                         Media Posts View
                     </a>
                 </div>
-                <div className="self-stretch flex flex-row flex-wrap items-center justify-start py-[3.5px] px-[27px] gap-[6px] text-lg text-text-colors mq825:gap-[30px] mq1400:flex-wrap">
+                <div className="self-stretch flex flex-row flex-wrap items-center justify-start py-[3.5px] px-[27px] gap-[40px] text-lg text-text-colors mq825:gap-[30px] mq1400:flex-wrap">
                 <Facebook logosfacebook="/logosfacebook.svg" facebook="Facebook" prop={postCounts.facebook} />
       <Facebook logosfacebook="/skilliconsinstagram.svg" facebook="Instagram" prop={postCounts.instagram} />
       <Facebook logosfacebook="/skilliconslinkedin.svg" facebook="LinkedIn" prop={postCounts.linkedin} />
       <Facebook logosfacebook="/logostwitter.svg" facebook="Twitter" prop={postCounts.twitter} />
                     <div className="flex-1 rounded-3xs bg-just-white box-border overflow-hidden flex flex-row items-end justify-end min-w-[260px] max-w-[265px] text-xl text-secondary-secondary900 border-[2px] border-solid border-low-opq-color">
-                        <div className="h-[306px] flex-1 flex flex-col items-center justify-start">
+                        <div className="h-[300px] flex-1 flex flex-col items-center justify-start">
                             <div className="self-stretch flex-1 flex flex-col items-start justify-between">
-                                <div className="self-stretch flex flex-col items-center justify-center py-5 px-[30px] gap-[30px] mq450:gap-[15px]">
+                                <div className="self-stretch flex flex-col items-center justify-center py-5 px-[30px] gap-[20px] mq450:gap-[15px]">
                                     <div className="self-stretch flex flex-row items-center justify-start py-0 px-0">
                                         <h3 className="m-0 w-[222px] relative text-inherit tracking-[0.02em] leading-[28px] font-semibold font-inherit inline-block shrink-0 mq450:text-base mq450:leading-[22px]">
                                             Connected Channels

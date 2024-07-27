@@ -427,7 +427,7 @@ export default function CreatePost() {
                       className="cursor-pointer [border:none] pt-[12px] pb-[10px] pr-5 pl-[10px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"
                       onClick={() => handlePost(scheduleDate)}
                     >
-                      <div className="relative text-sm tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
+                      <div className="relative text-lg tracking-[0.04em] font-medium font-inter text-white text-left inline-block min-w-[52px] z-[1]">
                         Schedule Post
                       </div>
                     </button>
