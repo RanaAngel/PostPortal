@@ -344,7 +344,7 @@ export default function CreatePost() {
           gettingStarted="Getting Started"
           mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
-        <section className="self-stretch flex flex-row items-center justify-center py-[87.9px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
+        <section className="self-stretch flex flex-row items-center justify-center py-[18px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
 
           <div className="flex flex-col items-start justify-start gap-[50px] max-w-full mq750:gap-[25px] ">
 
@@ -397,7 +397,7 @@ export default function CreatePost() {
                 ))}
               </div>
             </div>
-            <div className="self-stretch flex flex-row items-end justify-between gap-[20px] text-base text-black-theme-texts mq450:flex-wrap ">
+            <div className="flex flex-row items-center justify-evenly gap-[20px] text-base text-black-theme-texts mq450:flex-wrap ">
               <input
                 className="relative font-medium inline-block min-w-[94px] p-1 text-sm"
                 type="file"
@@ -406,21 +406,21 @@ export default function CreatePost() {
                 onChange={handleImageUpload}
               />
 
-              <div className="flex justify-between">
+              <div className="flex items-end justify-between m-10">
+                <div></div>
                 {scheduleDate && (
-                  <DatePicker
+                  <DatePicker datepicker datepicker-orientation="bottom right" type="text" placeholder="Select date and time"
                     selected={scheduleDate}
                     onChange={(date) => setScheduleDate(date)}
                     showTimeSelect
                     timeFormat="HH:mm"
                     timeIntervals={15}
                     timeCaption="Time"
-                    className="block w-full pl-10 sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    className="bg-gray-50 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     dateFormat="MMMM d, yyyy h:mm aa"
-                    placeholderText="Select a date and time..."
                   />
                 )}
-                <div className="w-[180px] flex flex-row items-end justify-start gap-[5px] max-w-full mq750:gap-[25px]">
+                <div className="w-1/2 ml-4 flex flex-row items-end justify-start gap-[5px] max-w-full mq750:gap-[25px]">
                   {isScheduled ? (
                     <button
                       className="cursor-pointer [border:none] pt-[12px] pb-[10px] pr-5 pl-[10px] bg-button rounded-8xs flex flex-row items-start justify-start hover:bg-mediumslateblue-50"

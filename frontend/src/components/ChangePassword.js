@@ -129,21 +129,14 @@ const ChangePassword = () => {
               >
                 Change Password
               </button>
-              <div className='gap-5 items-start justify-between'>
-              <button
-            type="button"
-            onClick={handleCancelClick} 
-            className="cursor-pointer m-5 bg-transparent outline outline-offset-2 outline-red-500  text-black font-normal py-2 px-4 rounded focus:outline-none focus-shadow-outline"
-          >
-            Cancel
-          </button>
+           
+            
               <button
                 onClick={() => navigate('/profile')} // Navigate back to profile page
                 className="cursor-pointer px-4 py-2 border-purple bg-transparent text-gray-700 rounded outline outline-offset-2 outline-purple-500  focus:ring-gray-300"
               >
                 Go Back
               </button>
-              </div>
             </div>
           </form>
           <ToastContainer />

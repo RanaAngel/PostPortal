@@ -69,10 +69,10 @@ const getUserIdFromToken = (token) => {
       />
       <section className="self-stretch flex flex-row items-center justify-center py-[87.9px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
     <div
-      className={`flex-1 flex flex-col items-center justify-start gap-[40px] max-w-full text-left text-11xl text-gray-500 font-inter mq750:gap-[46px] mq450:gap-[23px]`}
+      className={`flex-1 flex flex-col items-center text-wrap w-1/2 justify-center font-extrabold  gap-[80px] text-left text-lg text-gray-500 font-inter mq750:gap-[46px] mq450:gap-[23px]`}
     >
       <div className="flex flex-col items-center justify-start gap-[1px] max-w-full">
-        <h2 className="m-0 w-2/3 h-full text-pretty relative font-extrabold font-inherit inline-block shrink-0 max-w-full mq450:text-lg mq1050:text-5xl">{`CHOOSE A PLAN. WE OFFER OUR SERVICE IN AFFORDABLE PRICE `}</h2>
+        <h2 className="m-0 w-2/3 h-1/2 relative text-center font-bold font-inherit inline-block shrink-0 max-w-full mq450:text-lg mq1050:text-sm">{`CHOOSE A PLAN. WE OFFER OUR SERVICE IN AFFORDABLE PRICE `}</h2>
       </div>
 
      <div className="w-[1608.4px] flex flex-row items-end justify-center py-0 px-5 box-border max-w-full text-41xl text-gray-300">
