@@ -1,87 +1,8 @@
 ---
-    # - name: Update and upgrade apt packages
-    #   apt:
-    #     update_cache: yes
-    #     upgrade: dist
-
-    # - name: Install required packages
-    #   apt:
-    #     name: "{{ item }}"
-    #     state: present
-    #   with_items:
-    #     - nodejs
-    #     - npm
-    #     - python3-pip
-    #     - awscli
-    #     - unzip
-
-    # - name: Install NVM
-    #   shell: |
-    #     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    #     source ~/.bashrc
-    #     nvm install --lts
-    #     nvm use --lts
-
-    # - name: Download deployment package from S3
-    #   aws_s3:
-        
-    #     bucket: krishna-s3-bucket9
-    #     object: artifact.zip
-    #     dest: /home/ubuntu/artifact.zip
-    #     mode: get
-    #   register: s3_download
-
-    # - name: Unzip deployment package
-    #   unarchive:
-    #     src: /home/ubuntu/artifact.zip
-    #     dest: /home/ubuntu/
-    #     remote_src: yes
-
-    # - name: Copy environment variables
-    #   copy:
-    #     src: /home/ubuntu/backend/.env
-    #     dest: /home/ubuntu/backend/.env
-
-    # - name: Install backend dependencies
-    #   shell: |
-    #     cd /home/ubuntu/backend
-    #     npm install
-
-    # - name: Start backend server
-    #   shell: |
-    #     cd /home/ubuntu/backend
-    #     pm2 start index.js --name backend
-
-    # - name: Install frontend dependencies
-    #   shell: |
-    #     cd /home/ubuntu/frontend
-    #     npm install
-
-    # - name: Build frontend
-    #   shell: |
-    #     cd /home/ubuntu/frontend
-    #     npm run build
-
-    # - name: Configure Nginx
-    #   copy:
-    #     src: /path/to/local/nginx.conf
-    #     dest: /etc/nginx/sites-available/default
-    #   notify:
-    #     - Restart Nginx
-
-
     - name: Update and upgrade apt packages
       apt:
         update_cache: yes
         upgrade: dist
-
-
-    - name: Install NVM
-      shell: |
-        cd ~
-        curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
-        nano /tmp/nodesource_setup.sh
-        sudo bash /tmp/nodesource_setup.sh
 
     - name: Install required packages
       apt:
@@ -90,59 +11,127 @@
       with_items:
         - nodejs
         - npm
+        - python3-pip
         - awscli
-        - unzip    
+        - unzip
 
+    - name: Install NVM
+      shell: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        source ~/.bashrc
+        nvm install --lts
+        nvm use --lts
+
+        
     - name: Install pm2
       npm:
         name: pm2
         global: yes
+         
+    - name: Install AWS CLI
+      shell: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
     - name: Download deployment package from S3
       shell: |
-          rm -f ~/artifact.zip
+          rm -rf ~/artifact.zip
           aws s3 cp s3://krishna-s3-bucket9/artifact/artifact.zip ~/.
-
+    
     - name: Unzip deployment package
-      unarchive:
-        src: /home/ubuntu/artifact.zip
-        dest: /home/ubuntu/
-        remote_src: yes
-
-    - name: Delete all pm2 processes
-      shell: pm2 delete all || true
+      shell: |
+          sudo apt install unzip -y
+          unzip /home/ubuntu/artifact.zip -d /home/ubuntu/
 
     - name: Install backend dependencies
       shell: |
         cd /home/ubuntu/backend
+        npm i
         npm install
+
+    - name: Install frontednndependencies
+      shell: |
+        cd /home/ubuntu/frontend
+        npm i
+        npm install
+    - name: Start backend server
+      shell: |
+        cd /home/ubuntu/backend
+        pm2 start "npm start" --name "backend_postportal"
+
+    - name: Start frontend server
+      shell: |
+        cd /home/ubuntu/backend
+        pm2 start "npm start" --name "frontend_postportal"
+   
+
+    # - name: Update and upgrade apt packages
+    #   apt:
+    #     update_cache: yes
+    #     upgrade: dist
+
+
     
+
+    # - name: Install required packages
+    #   apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #   with_items:
+    #     - nodejs
+    #     - npm
+    #     - awscli
+    #     - unzip    
+
+    # - name: Install pm2
+    #   npm:
+    #     name: pm2
+    #     global: yes
+
+    # - name: Download deployment package from S3
+    #   shell: |
+    #       rm -f ~/artifact.zip
+    #       aws s3 cp s3://krishna-s3-bucket9/artifact/artifact.zip ~/.
+
+    # - name: Unzip deployment package
+    #   unarchive:
+    #     src: /home/ubuntu/artifact.zip
+    #     dest: /home/ubuntu/
+    #     remote_src: yes
+
     # - name: Delete all pm2 processes
     #   shell: pm2 delete all || true
+
+    # - name: Install backend dependencies
+    #   shell: |
+    #     cd /home/ubuntu/backend
+    #     npm install
+    
+    # # - name: Delete all pm2 processes
+    # #   shell: pm2 delete all || true
     
    
 
  
 
-    - name: Start backend server
-      shell: |
-        cd /home/ubuntu/backend
-        pm2 start index.js --name backend 
+    # - name: Start backend server
+    #   shell: |
+    #     cd /home/ubuntu/backend
+    #     pm2 start index.js --name backend 
 
-    - name: Install frontend dependencies
-      shell: |
-        cd /home/ubuntu/frontend
-        npm install
+    # - name: Install frontend dependencies
+    #   shell: |
+    #     cd /home/ubuntu/frontend
+    #     npm install
 
-    - name: pm2 start
-      shell: |
-        cd /home/ubuntu/frontend
+    # - name: pm2 start
+    #   shell: |
+    #     cd /home/ubuntu/frontend
       
 
-    # - name: Configure Nginx
-    #   copy:
-    #     src: /path/to/local/nginx.conf
-    #     dest: /etc/nginx/sites-available/default
-    #   notify:
-    #     - Restart Ngi
+    # # - name: Configure Nginx
+    # #   copy:
+    # #     src: /path/to/local/nginx.conf
+    # #     dest: /etc/nginx/sites-available/default
+    # #   notify:
+    # #     - Restart Ngi
     
