@@ -172,21 +172,26 @@ router.post('/change_password', async (req, res) => {
   }
 });
 
-//postcount
-router.get('/post-counts', async (req, res) => {
+// Assuming `userID` is available in req.user.id
+router.get('/post-counts/:userId', async (req, res) => {
+  const { userId } = req.params; // Access userId from route parameters
+
   try {
+   
     const counts = {
-      facebook: await Posts.countDocuments({ platforms: 'facebook' }),
-      instagram: await Posts.countDocuments({ platforms: 'instagram' }),
-      linkedin: await Posts.countDocuments({ platforms: 'linkedin' }),
-      twitter: await Posts.countDocuments({ platforms: 'twitter' }),
+      facebook: await Posts.countDocuments({ platforms: 'facebook', userID: userId }),
+      instagram: await Posts.countDocuments({ platforms: 'instagram', userID: userId }),
+      linkedin: await Posts.countDocuments({ platforms: 'linkedin', userID: userId }),
+      twitter: await Posts.countDocuments({ platforms: 'twitter', userID: userId }),
     };
+
     res.json(counts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // Route to get the total number of non-admin users
 router.get('/total-users', async (req, res) => {
@@ -229,4 +234,19 @@ router.get('/premium-users', async (req, res) => {
   }
 
 });
+
+router.get('/posts/:userId', async (req, res) => {
+  const { userId } = req.params; // Extract userId from route parameters
+
+  try {
+    // Fetch posts based on userId and platform
+    const posts = await Posts.find({ userID: userId });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ message: 'Failed to fetch posts', error: error.message });
+  }
+});
+
 module.exports = router;

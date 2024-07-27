@@ -41,7 +41,7 @@ const App = () => {
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/admindashboard" element={<AdminDashboard />} />
-            <Route path="/post-analytics/:postId" element={<PostAnalytics />} />
+            <Route path="/post-analytics" element={<PostAnalytics />} />
             <Route path="*" element={<Navigate to="/login" />} />
             <Route path="/users" element={<UserTable />}/>
             <Route path="/userpost" element={<UserPost />}/>

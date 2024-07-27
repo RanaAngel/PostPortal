@@ -17,7 +17,8 @@ const stripeRoutes = require('./routes/stripeRoute');
 const openaiRoutes = require('./routes/openaiRoute');
 const path = require('path'); // Import path module
 const logout = require('./routes/logout');
- 
+const PostAnalytics = require('./routes/postRoute');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -56,6 +57,8 @@ app.use('/stripe', stripeRoutes);
 app.use('/openai',openaiRoutes);
 
 app.use('/logout',logout);
+
+app.use('/post_analytics',PostAnalytics);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,tlsAllowInvalidCertificates: true, })

@@ -5,6 +5,7 @@ import { DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import React, { useState, useEffect } from 'react';
 
 const Navbar = ({ className = "", mingcuteuser4Line }) => {
   const location = useLocation();
@@ -30,6 +31,8 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
         return "Profile";
         case "/getting-started":
         return "Get Started";
+        case "/post-analytics":
+        return "Analytics";
       default:
         return "";
     }
@@ -51,6 +54,36 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
   const handleProfile = () => {
     navigate('/profile'); // Change this to your profile route
   };
+
+  const [lastActivityTime, setLastActivityTime] = useState(new Date());
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login again.');
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const currentTime = new Date();
+        const timeDifference = currentTime - new Date(lastActivityTime);
+        const maxInactiveTime = 20 * 60 * 1000; // 10 minutes in milliseconds
+
+        if (timeDifference > maxInactiveTime) {
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      }
+    };
+    checkTokenExpiration();
+    const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [lastActivityTime, navigate]);
+
 
   return (
     <header

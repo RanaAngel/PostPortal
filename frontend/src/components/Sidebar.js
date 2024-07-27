@@ -24,7 +24,7 @@ const Sidebar = ({ className = "" }) => {
   }, [navigate]);
 
   const onGroupsClick3 = useCallback(() => {
-    navigate("/analytics");
+    navigate("/post-analytics");
   }, [navigate]);
 
   const onGroupsClick4 = useCallback(() => {
@@ -173,7 +173,7 @@ useEffect(() => {
               </div>
             </button>
             <button
-              className={`cursor-pointer [border:none] py-2.5 pr-[39px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/analytics') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              className={`cursor-pointer [border:none] py-2.5 pr-[39px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/post-analytics') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick3}
             >
               <div className="flex flex-row items-center justify-start gap-[20px]">

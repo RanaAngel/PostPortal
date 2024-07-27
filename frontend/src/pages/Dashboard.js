@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import axios from 'axios';
 import Calendar from 'react-calendar';
 
+import { jwtDecode } from 'jwt-decode';
 
 
 import Facebook from "../components/Facebook";
@@ -54,52 +55,52 @@ const Dashboard = () => {
     linkedin: 0,
     twitter: 0,
   });
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please login again.');
-      navigate('/login');
+  const getUserIdFromToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.userId; // Adjust based on your token structure
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
     }
-  }, [navigate]);
+  };
 
-  useEffect(() => {
-    const checkTokenExpiration = () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const currentTime = new Date();
-        const timeDifference = currentTime - new Date(lastActivityTime);
-        const maxInactiveTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+  
 
-        if (timeDifference > maxInactiveTime) {
-          localStorage.removeItem('token');
-          navigate('/login');
-        }
-      }
-    };
-    checkTokenExpiration();
-    const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
-
-    return () => clearInterval(intervalId);
-  }, [lastActivityTime, navigate]);
-
-  useEffect(() => {
+   // Fetch post counts when the component mounts
+   useEffect(() => {
     const fetchPostCounts = async () => {
+      const token = localStorage.getItem('token');
+      const userId = getUserIdFromToken(token);
+
       try {
-        const response = await axios.get('http://localhost:5000/dashboard/post-counts');
+        const response = await axios.get(`http://localhost:5000/dashboard/post-counts/${userId}`);
+        console.log(response.data);
         setPostCounts(response.data);
       } catch (error) {
         console.error('Error fetching post counts:', error);
+
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     fetchPostCounts();
   }, []);
-//BarChart
+
+// BarChart
 useEffect(() => {
   const fetchPosts = async () => {
+    const token = localStorage.getItem('token');
+    const userId = getUserIdFromToken(token); // Function to decode token and get userId
+
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/facebook/posts'); // Adjust the URL as needed
+      const response = await fetch(`http://localhost:5000/dashboard/posts/${userId}`); // Adjust the URL as needed
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
