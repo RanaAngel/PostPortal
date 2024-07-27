@@ -26,11 +26,16 @@ const PORT = process.env.PORT || 5000;
 // app.use(express.json());
 
 // Middleware
+// app.use(cors({
+//   origin: '*', // This allows requests from any origin
+//   credentials: true
+// }));
+// app.use(express.json());
+
 app.use(cors({
-  origin: '*', // This allows requests from any origin
+  origin: ['http://localhost:3000', 'http://44.207.233.50'], // Specify allowed origins
   credentials: true
 }));
-// app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
