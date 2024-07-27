@@ -1,28 +1,29 @@
 ---
+   
     - name: Update and upgrade apt packages
+      become: true
       apt:
         update_cache: yes
         upgrade: dist
 
+    - name: Install node dependencies
+      shell: |
+        cd ~
+        curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+        nano /tmp/nodesource_setup.sh
+        sudo bash /tmp/nodesource_setup.sh
+        
     - name: Install required packages
+      become: true
       apt:
         name: "{{ item }}"
         state: present
       with_items:
         - nodejs
         - npm
-        # - nodejs
-        - awscli
         - unzip
 
-    - name: Install NVM
-      shell: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-        source ~/.bashrc
-        nvm install --lts
-        nvm use --lts
-
-        
+   
     - name: Install pm2
       npm:
         name: pm2
@@ -39,20 +40,19 @@
     
     - name: Unzip deployment package
       shell: |
-          sudo apt install unzip -y
           unzip /home/ubuntu/artifact.zip -d /home/ubuntu/
 
     - name: Install backend dependencies
       shell: |
         cd /home/ubuntu/backend
         npm i
-        npm install
+  
 
     - name: Install frontednndependencies
       shell: |
         cd /home/ubuntu/frontend
         npm i
-        npm install
+  
     - name: Start backend server
       shell: |
         cd /home/ubuntu/backend
