@@ -6,9 +6,11 @@ import Navbar from "../components/Navbar";
 import ChangePassword from '../components/ChangePassword';
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [image, setImage] = useState(null);
+  const navigate=useNavigate();
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
@@ -19,7 +21,8 @@ const Profile = () => {
   });
   const [showChangePassword, setShowChangePassword] = useState(false); // State to control the visibility of the ChangePassword component
   const handleChangePassword = () => {
-    setShowChangePassword(true);
+    setShowChangePassword(false);
+    navigate('/change')
   };
 
   // Function to get user ID from JWT token
@@ -128,7 +131,7 @@ const Profile = () => {
                                 onConfirm();
                                 closeToast();
                             }}
-                            className="bg-green-500 text-white px-4 py-2 rounded"
+                            className="bg-green-500 font-normal text-lg text-white px-4 py-2 rounded"
                         >
                             Confirm
                         </button>
@@ -137,7 +140,7 @@ const Profile = () => {
                                 onCancel();
                                 closeToast();
                             }}
-                            className="bg-red-500 text-white px-4 py-2 rounded"
+                            className="bg-red-500 font-normal text-lg text-white px-4 py-2 rounded"
                         >
                             Cancel
                         </button>
@@ -239,9 +242,9 @@ const Profile = () => {
                         FirstName
                       </div>
                     </div>
-                    <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+                    <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-gray-600">
                       <input
-                        className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[194px] max-w-full"
+                        className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-normal text-sm text-black-sub-text min-w-[194px] max-w-full"
                         placeholder="First Name"
                         type="text"
                         name="firstName"
@@ -256,9 +259,9 @@ const Profile = () => {
                         LastName
                       </div>
                     </div>
-                    <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+                    <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-gray-600">
                       <input
-                        className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[194px] max-w-full"
+                        className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-normal text-sm text-black-sub-text min-w-[194px] max-w-full"
                         placeholder="Last Name"
                         type="text"
                         name="lastName"
@@ -272,9 +275,9 @@ const Profile = () => {
                   <div className="self-stretch flex flex-row items-center justify-start p-2.5">
                     <div className="relative font-semibold">Organization Name</div>
                   </div>
-                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-gray-600">
                     <input
-                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-normal text-sm text-black-sub-text min-w-[250px] max-w-full"
                       placeholder="Organization Name"
                       name="organizationName"
                       value={profile.organizationName}
@@ -287,9 +290,9 @@ const Profile = () => {
                   <div className="self-stretch flex flex-row items-center justify-start p-2.5">
                     <div className="relative font-semibold">Email</div>
                   </div>
-                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-gray-600">
                     <input
-                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-normal text-sm text-black-sub-text min-w-[250px] max-w-full"
                       placeholder="Email"
                       name="email"
                       value={profile.email}
@@ -302,9 +305,9 @@ const Profile = () => {
                   <div className="self-stretch flex flex-row items-center justify-start p-2.5">
                     <div className="relative font-semibold">Phone</div>
                   </div>
-                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-black-sub-text">
+                  <div className="self-stretch rounded-8xs box-border flex flex-row items-center justify-start py-[18px] px-[19px] max-w-full border-[2px] border-solid border-gray-600">
                     <input
-                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-semibold text-sm text-black-sub-text min-w-[250px] max-w-full"
+                      className="w-full [border:none] [outline:none] bg-[transparent] h-[17px] flex-1 flex flex-row items-center justify-start font-inter font-normal text-sm text-black-sub-text min-w-[250px] max-w-full"
                       placeholder="Phone"
                       name="phone"
                       value={profile.phone}
