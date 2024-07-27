@@ -112,8 +112,9 @@ jobs:
             aws s3 cp artifact.zip s3://krishna-s3-bucket9/artifact/
 
       - name: Run Ansible playbook
+        working-directory: ./ansible
         run: |
-            ansible-inventory -i aws_ec2.yml --graph    
+           ansible-playbook configure.yml -i aws_ec2.yml  
       
     
 

@@ -11,7 +11,7 @@
       with_items:
         - nodejs
         - npm
-        - python3-pip
+        # - nodejs
         - awscli
         - unzip
 
@@ -64,74 +64,4 @@
         pm2 start "npm start" --name "frontend_postportal"
    
 
-    # - name: Update and upgrade apt packages
-    #   apt:
-    #     update_cache: yes
-    #     upgrade: dist
-
-
-    
-
-    # - name: Install required packages
-    #   apt:
-    #     name: "{{ item }}"
-    #     state: present
-    #   with_items:
-    #     - nodejs
-    #     - npm
-    #     - awscli
-    #     - unzip    
-
-    # - name: Install pm2
-    #   npm:
-    #     name: pm2
-    #     global: yes
-
-    # - name: Download deployment package from S3
-    #   shell: |
-    #       rm -f ~/artifact.zip
-    #       aws s3 cp s3://krishna-s3-bucket9/artifact/artifact.zip ~/.
-
-    # - name: Unzip deployment package
-    #   unarchive:
-    #     src: /home/ubuntu/artifact.zip
-    #     dest: /home/ubuntu/
-    #     remote_src: yes
-
-    # - name: Delete all pm2 processes
-    #   shell: pm2 delete all || true
-
-    # - name: Install backend dependencies
-    #   shell: |
-    #     cd /home/ubuntu/backend
-    #     npm install
-    
-    # # - name: Delete all pm2 processes
-    # #   shell: pm2 delete all || true
-    
-   
-
- 
-
-    # - name: Start backend server
-    #   shell: |
-    #     cd /home/ubuntu/backend
-    #     pm2 start index.js --name backend 
-
-    # - name: Install frontend dependencies
-    #   shell: |
-    #     cd /home/ubuntu/frontend
-    #     npm install
-
-    # - name: pm2 start
-    #   shell: |
-    #     cd /home/ubuntu/frontend
-      
-
-    # # - name: Configure Nginx
-    # #   copy:
-    # #     src: /path/to/local/nginx.conf
-    # #     dest: /etc/nginx/sites-available/default
-    # #   notify:
-    # #     - Restart Ngi
     
