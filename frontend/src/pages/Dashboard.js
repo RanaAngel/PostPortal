@@ -179,23 +179,23 @@ const formattedDate = formatDate(today);
       <Facebook logosfacebook="/skilliconslinkedin.svg" facebook="LinkedIn" prop={postCounts.linkedin} />
       <Facebook logosfacebook="/logostwitter.svg" facebook="Twitter" prop={postCounts.twitter} />
                     <div className="flex-1 rounded-3xs bg-just-white box-border overflow-hidden flex flex-row items-end justify-end min-w-[260px] max-w-[265px] text-xl text-secondary-secondary900 border-[2px] border-solid border-low-opq-color">
-                        <div className="h-[306px] flex-1 flex flex-col items-center justify-start">
-                            <div className="self-stretch flex-1 flex flex-col items-start justify-between">
-                                <div className="self-stretch flex flex-col items-center justify-center py-5 px-[30px] gap-[30px] mq450:gap-[15px]">
-                                    <div className="self-stretch flex flex-row items-center justify-start py-0 px-0">
-                                        <h3 className="m-0 w-[222px] relative text-inherit tracking-[0.02em] leading-[28px] font-semibold font-inherit inline-block shrink-0 mq450:text-base mq450:leading-[22px]">
+                        <div className="h-[306px] flex-1 flex flex-col items-start justify-start">
+                            <div className="self-stretch flex-1 flex flex-col items-end justify-between">
+                                <div className="self-stretch flex flex-col items-center justify-center py-5 px-[3px] gap-[3px] mq450:gap-[15px]">
+                                    <div className="self-stretch flex flex-row items-center justify-center py-0 px-0">
+                                        <h3 className="m-0 w-full relative text-inherit tracking-[0.02em] leading-[28px] font-semibold font-inherit ml-5 inline-block shrink-0 mq450:text-base mq450:leading-[22px]">
                                             Connected Channels
                                         </h3>
                                     </div>
-                                    <div className="self-stretch flex flex-col items-center justify-start gap-[20px] text-sm text-text-colors">
+                                    <div className="flex flex-col mt-5 mb-5 items-center justify-center gap-[15px] text-sm text-text-colors">
                                         <div className="self-stretch flex flex-row items-start justify-start py-0 pr-3.5 pl-0 gap-[20px]">
-                                            <div className="flex flex-row items-center justify-start gap-[20px]">
+                                            <div className="flex flex-row items-center justify-center gap-[20px]">
                                                 <img className="h-6 w-[25.8px] relative overflow-hidden shrink-0" loading="lazy" alt="" src="/logosfacebook-1.svg" />
                                                 <div className="relative leading-[28px] font-medium inline-block min-w-[69px]">Facebook</div>
                                             </div>
                                             <a className="[text-decoration:none] relative text-3xs leading-[28px] font-medium text-success-success200 inline-block min-w-[56px]">Connected</a>
                                         </div>
-                                        <div className="self-stretch flex flex-row items-start justify-start py-0 pr-[11px] pl-0 gap-[20px]">
+                                        <div className="self-stretch flex flex-row items-center justify-start py-0 pr-[11px] pl-0 gap-[20px]">
                                             <div className="flex flex-row items-center justify-start gap-[20px]">
                                                 <img className="h-6 w-6 relative overflow-hidden shrink-0" loading="lazy" alt="" src="/skilliconsinstagram-1.svg" />
                                                 <div className="relative leading-[28px] font-medium inline-block min-w-[74px]">Instagram</div>
@@ -218,10 +218,10 @@ const formattedDate = formatDate(today);
                                         </div>
                                     </div>
                                 </div>
-                                <button className="cursor-pointer [border:none] py-[1.5px] px-[52px] bg-button self-stretch overflow-hidden flex flex-col items-start justify-between box-border min-h-[51px] mq450:pl-5 mq450:pr-5 mq450:box-border">
-                                    <button onClick={onGroupClick} className="cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-center justify-center gap-[10px]">
-                                        <div className="relative text-sm leading-[28px] font-medium font-title-medium text-just-white text-left">Add More Channels</div>
-                                        <img className="h-6 w-6 relative overflow-hidden shrink-0" alt="" src="/icroundadd.svg" />
+                                <button className="cursor-pointer [border:none] py-[1.5px] px-[52px] bg-button self-stretch overflow-hidden flex flex-col items-start justify-start box-border min-h-[51px] mq450:pl-5 mq450:pr-5 mq450:box-border">
+                                    <button onClick={onGroupClick} className="cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-start justify-start gap-[10px]">
+                                        <div className="relative text-sm leading-[28px] font-medium font-title-medium text-just-white text-white mb-10">Add More Channels</div>
+                                        <img className="h-6 w-6 mb-10 relative overflow-hidden shrink-0" alt="" src="/icroundadd.svg" />
                                     </button>
                                 </button>
                             </div>
@@ -279,7 +279,7 @@ const formattedDate = formatDate(today);
                     </div>
                     <div className="flex-1 flex flex-col items-start justify-start pt-[5.8px] px-0 pb-0 box-border min-w-[462px] max-w-full text-xs text-text-colors mq825:min-w-full">
                     <div className="flex-1 flex flex-col items-start justify-start pt-[5.8px] px-0 pb-0 box-border min-w-[462px] max-w-full text-xs text-text-colors mq825:min-w-full">
-      <div className="self-stretch rounded-3xs overflow-hidden flex flex-col items-end justify-start py-3 px-3.5 gap-[10px] border-[1px] border-solid border-outline">
+      <div className="self-stretch rounded-3xs overflow-hidden flex flex-col items-start justify-start py-3 px-3.5 gap-[10px] border-[1px] border-solid border-outline">
        
         {chartData && (
           <div className="w-full" style={{ position: 'relative', width: '600px' , height: '300px'}}>

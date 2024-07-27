@@ -186,7 +186,7 @@ return (
           </div>
           <div className="self-stretch flex flex-row items-start justify-start max-w-full z-[1]">
             <div className="flex-1 flex flex-row items-start justify-start p-2.5 box-border max-w-full">
-              <div className="flex-1 rounded-8xs bg-gainsboro box-border flex flex-row items-start justify-start pt-[17px] px-4 pb-2.5 max-w-full border-[1px] border-solid border-black-card">
+              <div className="flex-1 rounded-8xs bg-gainsboro box-border flex flex-row items-start justify-start pt-[17px] px-4 pb-2.5 max-w-full border-[1px] border-solid border-blackcard-">
                 <div className="h-[50px] flex-1 relative rounded-8xs bg-gainsboro box-border hidden max-w-full border-[1px] border-solid border-black-card" />
                 <input
                   className="w-full [border:none] [outline:none] font-medium font-inter text-base bg-[transparent] h-[19px] flex-1 relative text-black-card text-left inline-block min-w-[65px] p-0 z-[1]"
@@ -232,7 +232,7 @@ return (
         </div>
       </div>
       <div className="self-stretch flex flex-row items-start justify-start py-0 pr-[11px] pl-2.5 box-border max-w-full">
-        <button className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue">
+        <button type="submit" className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue">
           <div className="relative text-xl font-medium font-inter text-black-main-text text-left inline-block min-w-[78px] mq450:text-base">
             SUBMIT
           </div>

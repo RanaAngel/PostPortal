@@ -346,12 +346,12 @@ export default function CreatePost() {
         />
         <section className="self-stretch flex flex-row items-center justify-center py-[87.9px] px-5 box-border max-w-full shrink-0 mq450:pt-[29px] mq450:pb-[29px] mq450:box-border mq725:pt-[37px] mq725:pb-[37px] mq725:box-border mq1000:pt-11 mq1000:pb-11 mq1000:box-border">
 
-          <div className="flex-1 flex flex-col items-start justify-start gap-[50px] max-w-full mq750:gap-[25px] ">
+          <div className="flex flex-col items-start justify-start gap-[50px] max-w-full mq750:gap-[25px] ">
 
             <div className="self-stretch flex flex-col items-start justify-start gap-[10px] max-w-full">
               <div className="self-stretch relative font-semibold">Post Name</div>
               <input
-                className="[outline:none] bg-[transparent] self-stretch h-[37px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border min-w-[250px] border-[1px] border-solid border-black-card"
+                className="bg-[transparent] [outline:none] self-stretch h-[40px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border flex flex-row items-start justify-start py-[21px] px-[31px] font-inter text-smi-5 text-darkgray rounded-md border-[1px] border-solid border-gray-600 shadow-sm focus-within:border-purple-600 focus-within:ring-1 focus-within:ring-purple-600"
                 placeholder="Post Title"
                 type="text"
                 value={title}
@@ -363,7 +363,7 @@ export default function CreatePost() {
                 Content
               </div>
               <textarea
-                className="bg-[transparent] [outline:none] self-stretch h-[166.4px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border flex flex-row items-start justify-start py-[21px] px-[31px] font-inter text-smi-5 text-darkgray border-[1px] border-solid border-black-card"
+                className="bg-[transparent] [outline:none] self-stretch h-[166.4px] [background:linear-gradient(#fefefe,_#fefefe),_rgba(0,_0,_0,_0)] box-border flex flex-row items-start justify-start py-[21px] px-[31px] font-inter text-smi-5 text-darkgray rounded-md border-[1px] border-solid border-gray-600 shadow-sm focus-within:border-purple-600 focus-within:ring-1 focus-within:ring-purple-600"
                 placeholder="What's on your mind"
                 value={text}
                 onChange={(e) => setText(e.target.value)}

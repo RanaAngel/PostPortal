@@ -150,14 +150,14 @@ const PostAnalytics = () => {
           mingcuteuser4Line="/mingcuteuser4line-1.svg"
         />
         <section className="self-stretch flex flex-col items-center justify-center py-[87.9px] px-5 mq450:py-[29px] mq725:py-[37px] mq1000:py-11 w-full gap-[41px] mq450:gap-[20px]">
-          <div className="flex-1 flex flex-col items-start justify-start gap-[50px] mq750:gap-[25px] w-full">
-            <div className="flex flex-wrap gap-[2rem] justify-start w-full">
-              <div className="w-full lg:w-1/3">
+          <div className="flex flex-col items-center justify-center gap-[50px] mq750:gap-[25px] w-full">
+            <div className="flex flex-col gap-[2rem] justify-cen items-center w-full">
+              <div className="w-1/2 justify-center lg:w-1/3">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Media
                 </label>
                 <select
-                  className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+                  className="w-1/2 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
                   value={selectedOption1}
                   onChange={handleOption1Change}
                 >
@@ -168,7 +168,7 @@ const PostAnalytics = () => {
                 </select>
               </div>
               
-              <div className="w-full lg:w-1/3">
+              <div className="w-1/2 lg:w-1/3">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Connected Page
                 </label>
@@ -182,7 +182,7 @@ const PostAnalytics = () => {
               </div>
             </div>
 
-            <div className="w-full lg:w-1/3 mt-8">
+            <div className="w-1/2 lg:w-1/3 mt-8">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Select Post
               </label>

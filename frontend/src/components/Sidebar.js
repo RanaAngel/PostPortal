@@ -110,14 +110,14 @@ useEffect(() => {
       className={`self-stretch w-[233px] bg-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-0 px-0 pb-[70px] gap-[235px] text-left text-lg text-gray-100 font-inter border-r-[1px] border-solid border-gainsboro-200 border-b-[1px] mq1050:flex mq1050:pb-[45px] mq1050:box-border mq450:flex mq450:w-[233px] mq725:w-[233px] mq725:self-stretch mq725:h-auto mq725:pb-[29px] mq725:box-border ${className}`}
     >
       <div className="self-stretch flex flex-col items-end justify-start py-0 pr-0 pl-px gap-[43px]">
-        <div  onClick={onGroupsClick0} className="self-stretch bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
+        <div  onClick={onGroupsClick0} className="self-stretch text-white bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
           <img
             className="h-[58px] w-[87px] relative object-cover"
             loading="lazy"
             alt=""
             src="/logo@2x.png"
           />
-          <div className="flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
+          <div className=" flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
             <a className=" self-stretch relative text-[inherit]">
               Post Portal
             </a>
@@ -129,13 +129,13 @@ useEffect(() => {
               className={`cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/dashboard') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 active:bg-button lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick}
             >
-              <div className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
+              <div className=" flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
                 <img
-                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
+                  className=" h-[18px] w-[18px] relative overflow-hidden shrink-0"
                   alt=""
                   src="/magedashboard2.svg"
                 />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                <div className="h-6 relative hover:text-white text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
                   Dashboard
                 </div>
               </div>
@@ -151,7 +151,7 @@ useEffect(() => {
                   alt=""
                   src="/solarlibrarylinear-1.svg"
                 />
-                <div className="flex-1 relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
+                <div className="flex-1 hover:text-white relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
                   Library
                 </div>
               </div>
@@ -167,7 +167,7 @@ useEffect(() => {
                   alt=""
                   src="/ioncreatesharp.svg"
                 />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+                <div className="h-6 hover:text-white relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
                   Create Post
                 </div>
               </div>
@@ -182,7 +182,7 @@ useEffect(() => {
                   alt=""
                   src="/tdesignchartanalytics.svg"
                 />
-                <div className="h-[23px] relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[65px]">
+                <div className="hover:text-white h-[23px] relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[65px]">
                   Analytics
                 </div>
               </div>
@@ -197,7 +197,7 @@ useEffect(() => {
                   alt=""
                   src="/fluentchannelshare16filled.svg"
                 />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-slategray-300 text-left flex items-center min-w-[73px]">
+                <div className="hover:text-white h-6 relative text-mini-5 font-body-body1-regular text-slategray-300 text-left flex items-center min-w-[73px]">
                   Channels
                 </div>
               </div>
