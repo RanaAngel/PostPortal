@@ -33,7 +33,7 @@ const SignupForm = () => {
     }
 
     try {
-        const response = await fetch('http://localhost:5000/auth/signup', {
+        const response = await fetch('http://44.207.233.50:5000/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

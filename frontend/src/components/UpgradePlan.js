@@ -55,7 +55,7 @@ const getUserIdFromToken = (token) => {
 const createCheckoutSession = async () => {
   try {
       const userId = getUserIdFromToken(localStorage.getItem('token'));
-      const response = await fetch('http://localhost:5000/stripe/checkout', {
+      const response = await fetch('http://44.207.233.50:5000/stripe/checkout', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',

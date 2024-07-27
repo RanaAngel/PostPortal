@@ -16,7 +16,7 @@ const UserPost = () => {
 
   const fetchUserPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/admin/get_post');
+      const response = await axios.get('http://44.207.233.50:5000/admin/get_post');
       setUserPost(response.data);
     } catch (error) {
       console.error('Error fetching user posts:', error);
@@ -25,7 +25,7 @@ const UserPost = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/admin/get_users');
+      const response = await axios.get('http://44.207.233.50:5000/admin/get_users');
       const usersMap = response.data.reduce((acc, user) => {
         acc[user._id] = user;
         return acc;
@@ -38,7 +38,7 @@ const UserPost = () => {
 
   const handleDelete = async (postId) => {
     try {
-      await axios.delete(`http://localhost:5000/admin/delete_post/${postId}`);
+      await axios.delete(`http://44.207.233.50:5000/admin/delete_post/${postId}`);
       setUserPost(userpost.filter(post => post._id !== postId));
     } catch (error) {
       console.error('Error deleting post:', error);

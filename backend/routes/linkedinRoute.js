@@ -26,8 +26,8 @@ const state = Math.random(); // WARNING: using weak random value for testing ONL
 const scope = 'openid w_member_social r_basicprofile profile email';
 
 // const options = {
-//   key: fs.readFileSync('path/to/localhost.key'),
-//   cert: fs.readFileSync('path/to/localhost.crt')
+//   key: fs.readFileSync('path/to/44.207.233.50.key'),
+//   cert: fs.readFileSync('path/to/44.207.233.50.crt')
 // };
 
 
@@ -117,7 +117,7 @@ router.get('/callback', (req, res) => {
     console.log(`LinkedIn token saved for user ID: ${user._id}`);
 
         // Redirect the user to the frontend dashboard with the access token
-        res.redirect(`http://localhost:3000/dashboard?access_token=${access_token}&userId=${user._id}`);
+        res.redirect(`http://44.207.233.50:3000/dashboard?access_token=${access_token}&userId=${user._id}`);
         console.log("redirected....");
       } catch (error) {
         console.error('Error saving LinkedIn token:', error);

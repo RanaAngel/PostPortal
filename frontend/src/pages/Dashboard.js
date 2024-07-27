@@ -86,7 +86,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPostCounts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/dashboard/post-counts');
+        const response = await axios.get('http://44.207.233.50:5000/dashboard/post-counts');
         setPostCounts(response.data);
       } catch (error) {
         console.error('Error fetching post counts:', error);
@@ -99,7 +99,7 @@ const Dashboard = () => {
 useEffect(() => {
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/facebook/posts'); // Adjust the URL as needed
+      const response = await fetch('http://44.207.233.50:5000/api/facebook/posts'); // Adjust the URL as needed
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }

@@ -13,7 +13,7 @@ const SuccessPage = () => {
     if (sessionId && userId) {
       const completePayment = async () => {
         try {
-          const response = await axios.get('http://localhost:5000/stripe/complete', {
+          const response = await axios.get('http://44.207.233.50:5000/stripe/complete', {
             params: { session_id: sessionId, userId: userId },
           });
 

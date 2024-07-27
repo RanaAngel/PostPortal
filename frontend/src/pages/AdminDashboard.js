@@ -33,15 +33,15 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchTotalUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/dashboard/total-users');
+        const response = await fetch('http://44.207.233.50:5000/dashboard/total-users');
         const data = await response.json();
         setTotalUsers(data.totalUsers);
          // Fetch free users excluding admins
-         const freeResponse = await fetch('http://localhost:5000/dashboard/free-users');
+         const freeResponse = await fetch('http://44.207.233.50:5000/dashboard/free-users');
          const freeData = await freeResponse.json();
          setFreeUsersCount(freeData.freeUsersCount);
 
-         const premiumResponse = await fetch('http://localhost:5000/dashboard/premium-users');
+         const premiumResponse = await fetch('http://44.207.233.50:5000/dashboard/premium-users');
          const premiumData = await premiumResponse.json();
          setPremiumUsersCount(premiumData.premiumUsersCount);
       } catch (error) {

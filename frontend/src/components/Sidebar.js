@@ -73,7 +73,7 @@ useEffect(() => {
   const fetchUserType = async () => {
     const userId = getUserIdFromToken(localStorage.getItem('token'));
     try {
-      const response = await fetch(`http://localhost:5000/stripe/verify/${userId}`); // Update with your user endpoint
+      const response = await fetch(`http://44.207.233.50:5000/stripe/verify/${userId}`); // Update with your user endpoint
       if (!response.ok) {
         throw new Error('Failed to fetch user details');
       }
