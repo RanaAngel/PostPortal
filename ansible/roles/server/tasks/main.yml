@@ -1,5 +1,4 @@
 ---
-   
     - name: Update and upgrade apt packages
       become: true
       apt:
@@ -13,30 +12,39 @@
         nano /tmp/nodesource_setup.sh
         sudo bash /tmp/nodesource_setup.sh
         
-    - name: Install required packages
-      become: true
+    - name: Install NodeJS
       apt:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - nodejs
-        - npm
-        - unzip
+        name: nodejs
+        state: present   
 
+    - name: Install unzip
+      apt:
+        name: unzip
+        state: present 
    
     - name: Install pm2
       npm:
         name: pm2
         global: yes
-         
+
     - name: Install AWS CLI
+      become: true
+      shell: snap install aws-cli --classic
+
+    - name: Clean all pm2 processes
+      become: true
       shell: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        pm2 delete all || true
+
+    - name: Cleanup artifact.zip and directories
+      shell: |
+        rm -f /home/ubuntu/artifact.zip
+        rm -rf /home/ubuntu/frontend
+        rm -rf /home/ubuntu/backend  
 
     - name: Download deployment package from S3
       shell: |
-          rm -rf ~/artifact.zip
-          aws s3 cp s3://krishna-s3-bucket9/artifact/artifact.zip ~/.
+          aws s3 cp s3://krishna-s3-bucket9/artifact/artifact.zip /home/ubuntu/
     
     - name: Unzip deployment package
       shell: |
@@ -46,9 +54,8 @@
       shell: |
         cd /home/ubuntu/backend
         npm i
-  
 
-    - name: Install frontednndependencies
+    - name: Install fronted dependencies
       shell: |
         cd /home/ubuntu/frontend
         npm i
@@ -60,8 +67,6 @@
 
     - name: Start frontend server
       shell: |
-        cd /home/ubuntu/backend
+        cd /home/ubuntu/frontend
         pm2 start "npm start" --name "frontend_postportal"
    
-
-    
