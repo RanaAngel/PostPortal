@@ -269,5 +269,25 @@ router.get('/check/:userId', async (req, res) => {
   }
 });
 
+
+router.post('/filter', async (req, res) => {
+  const { platform, userId } = req.body;
+
+  try {
+    let posts;
+    if (platform === 'All') {
+      posts = await Post.find({ userID: userId });
+    } else {
+      posts = await Post.find({ userID: userId, platforms: platform });
+    }
+
+    res.json({ posts });
+  } catch (error) {
+    console.error('Error fetching filtered posts:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;
 

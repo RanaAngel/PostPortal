@@ -7,9 +7,9 @@ import FrameComponent from "./components/FrameComponent";
 
 const LandingPage = () => {
   return (
-    <div className="w-full relative bg-neutral-main-50 overflow-y-auto flex flex-col items-end justify-start pt-0 px-0 pb-[108.7px] box-border gap-[64px] tracking-[normal] leading-[normal] mq450:gap-[16px] mq900:gap-[16px] mq1300:gap-[32px]">
+    <div className="w-full absolute bg-neutral-main-50 overflow-y-auto flex flex-col items-center justify-start pt-0 px-0 pb-[108.7px] box-border gap-[64px] tracking-[normal] leading-[normal] mq450:gap-[16px] mq900:gap-[16px] mq1300:gap-[32px]">
       <NavTopBar />
-      <main className="w-[1785px] flex flex-col items-start justify-start py-0 pr-0 pl-5 box-border gap-[129px] max-w-full mq450:gap-[16px] mq900:gap-[32px] mq1300:gap-[64px]">
+      <main className="w-[1785px] flex flex-col items-center justify-start py-0 pr-0 pl-5 box-border gap-[129px] max-w-full mq450:gap-[16px] mq900:gap-[32px] mq1300:gap-[64px]">
         <section className="self-stretch flex flex-col items-start justify-start gap-[64px] max-w-full text-left text-lg text-gray-100 font-body-body1-regular mq450:gap-[16px] mq900:gap-[32px]">
           <FrameComponent3 />
           <div className="w-[1699px] flex flex-col items-start justify-start pt-0 pb-[17px] pr-5 pl-0 box-border gap-[20px] max-w-full">

@@ -98,13 +98,17 @@ const ResetPassword = () => {
                 />
               </div>
             </div>
-            <form onSubmit={handleSubmit} className="m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
+            <form onSubmit={handleSubmit} className={`m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-start justify-start pt-[132px] pb-[79px] pr-[45px] pl-[46px] box-border gap-[37px] shrink-0 max-w-full mt-[-75.1px] mq850:gap-[18px] mq850:pl-[23px] mq850:pr-[22px] mq850:pb-[51px] mq850:box-border `}>
             <h2 className="text-xl font-bold mb-4 items-start justify-start">Reset Password</h2>
               <input
                 className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[19px] px-4 pb-3 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
                 placeholder="Enter new password" type="password" name="password" value={formData.password} onChange={handleChange}
               />
-              <button type="submit">Reset</button>
+              <button type="submit" className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue">
+                <div className="relative text-xl font-medium font-inter text-black-main-text text-left inline-block min-w-[78px] mq450:text-base">
+                   Reset
+                </div>
+              </button>
             </form>
           </div>
         </div>

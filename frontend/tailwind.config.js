@@ -249,8 +249,22 @@ module.exports = {
         "spacing-s": "6px",
         "spacing-xs": "4px",
       },
+      extend: {
+        // Adding scrollbar hide utilities
+        scrollbar: {
+          hide: {
+            '-ms-overflow-style': 'none', /* IE and Edge */
+            'scrollbar-width': 'none', /* Firefox */
+          },
+          hideWebkit: {
+            '::-webkit-scrollbar': {
+              display: 'none', /* Safari and Chrome */
+            },
+          },
+        },
+      },
       fontFamily: {
-        "body-body1-regular": "Inter",
+        "body-body1-regular": "Roboto",
         "title-medium": "Poppins",
         "m3-label-large": "Roboto",
         "plus-jakarta-sans": "'Plus Jakarta Sans'",
@@ -312,6 +326,15 @@ module.exports = {
       "6xl": "25px",
       inherit: "inherit",
     },
+    animation: {
+      border: 'background ease infinite',
+    },
+    keyframes: {
+      background: {
+        '0%, 100%': { backgroundPosition: '0% 50%' },
+        '50%': { backgroundPosition: '100% 50%' },
+      },
+    },
     screens: {
       mq1650: {
         raw: "screen and (max-width: 1650px)",
@@ -363,4 +386,17 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-hide': {
+          '-ms-overflow-style': 'none', /* IE and Edge */
+          'scrollbar-width': 'none', /* Firefox */
+        },
+        '.scrollbar-hide::-webkit-scrollbar': {
+          display: 'none', /* Safari and Chrome */
+        },
+      });
+    },
+  ],
 };

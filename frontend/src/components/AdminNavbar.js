@@ -46,7 +46,7 @@ const AdminNavbar = ({ className = "", mingcuteuser4Line }) => {
     > <ToastContainer
     style={{ fontSize: '1rem' }} // Adjust the font size as needed
 />
-      <div className="w-[1632px] flex flex-row items-center justify-between py-0 pr-1.5 pl-5 box-border gap-[20px] max-w-full">
+      <div className="w-full flex flex-row items-center justify-between py-0 pr-20 pl-5 box-border gap-[2px] min-w-1/2">
         <div className="flex flex-row items-center justify-start py-2.5 px-0">
           <a className="[text-decoration:none] relative leading-[42px] font-medium text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] whitespace-nowrap">
             {getTitle()}
@@ -62,7 +62,7 @@ const AdminNavbar = ({ className = "", mingcuteuser4Line }) => {
   <Dropdown
     className="h-6 flex-1"
     overlay={
-      <Menu>
+      <Menu className="w-full">
         <Menu.Item key="logout">
           <a onClick={(e) => {
             e.preventDefault();

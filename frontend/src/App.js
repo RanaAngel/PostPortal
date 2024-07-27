@@ -20,6 +20,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/ResetPassword';
 import UserTable from './components/UserTable';
 import UserPost from './components/UserPost';
+import ChangePassword from './components/ChangePassword';
 
 const App = () => {
   
@@ -45,7 +46,7 @@ const App = () => {
             <Route path="*" element={<Navigate to="/login" />} />
             <Route path="/users" element={<UserTable />}/>
             <Route path="/userpost" element={<UserPost />}/>
-               
+            <Route path="/Change" element={<ChangePassword/>}/>
           </Routes>
           </Router>
   );

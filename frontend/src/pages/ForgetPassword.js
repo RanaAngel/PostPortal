@@ -30,7 +30,7 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="w-full relative bg-neutral-main-50 flex flex-col items-end justify-start pt-[52px] pb-[263px] pr-[110px] pl-[46px] box-border gap-[57px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
+    <div className="w-full relative bg-neutral-main-50 flex flex-col items-center justify-evenly pt-[57px] pr-[1rem] pl-[auto] box-border gap-[5px] tracking-[normal] leading-[normal] mq1225:pl-[23px] mq1225:pr-[55px] mq1225:box-border mq850:gap-[28px] mq850:pr-[27px] mq850:box-border">
       <header className="self-stretch flex flex-row items-start justify-end py-0 pr-[15px] pl-0 box-border max-w-full">
         <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px]">
           <img
@@ -50,17 +50,15 @@ const ForgetPassword = () => {
           </div>
         </div>
       </header>
-      <section className="w-[1702px] flex flex-row items-end justify-between max-w-full gap-[20px] text-left text-21xl text-gray-200 font-body-body1-regular mq1500:flex-wrap">
-        <div className="w-[654px] flex flex-col items-start justify-start gap-[147px] min-w-[654px] max-w-full mq1225:min-w-full mq450:gap-[37px] mq850:gap-[73px] mq1500:flex-1">
-          <div className="self-stretch flex flex-col items-start justify-start gap-[46px] max-w-full mq850:gap-[23px]">
+      <section className="w-[1700px] flex flex-row items-center justify-between max-w-full gap-[20px] text-left text-21xl text-gray-200 font-body-body1-regular mq1500:flex-wrap">
+        <div className="w-[654px] flex flex-col items-start justify-center gap-[147px] min-w-[654px] max-w-full mq1225:min-w-full mq450:gap-[37px] mq850:gap-[73px] mq1500:flex-1">
+          <div className="self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full mq850:gap-[23px]">
             <h1 className="m-0 self-stretch relative text-inherit tracking-[0.04em] font-extrabold font-inherit mq450:text-5xl mq850:text-13xl">
-              CARE TO EXPLORE OUR SERVICES? GET TO MANAGE POSTS IN SINGLE CLICK
+              Forgot Password?
             </h1>
             <div className="w-[596px] relative text-xl font-medium inline-block max-w-full mq450:text-base">
-              <p className="m-0">{`Already have an account? `}</p>
               <p className="m-0">
-                Simply enter your credentials below to access your dashboard and
-                get started.
+                Simply enter your email, and get it reset
               </p>
             </div>
           </div>
@@ -85,7 +83,7 @@ const ForgetPassword = () => {
             <div className="self-stretch h-[115.1px] flex flex-row items-start justify-center py-0 pr-5 pl-[21px] box-border">
               <div className="self-stretch w-[114.9px] flex flex-row items-start justify-center relative gap-[10px] shrink-0 z-[1]">
                 <div className="self-stretch flex-1 relative rounded-[50%] bg-neutral-main-50" />
-                <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray z-[1]" />
+                <div className="h-[91px] w-[calc(100%_-_24.1px)] absolute !m-[0] top-[12.8px] right-[12.8px] left-[11.3px] rounded-[50%] bg-lightslategray-200  z-[1]" />
                 <img
                   className="h-[37px] w-[42px] absolute !m-[0] top-[39px] left-[36px] overflow-hidden shrink-0 z-[2]"
                   loading="lazy"
@@ -94,13 +92,19 @@ const ForgetPassword = () => {
                 />
               </div>
             </div>
-            <form onSubmit={handleSubmit} className="m-0 self-stretch rounded-xl bg-lightslategray flex flex-col items-end justify-start pt-[123px] px-[45px] pb-[79px] box-border gap-[23px] shrink-0 max-w-full mt-[-76.1px] mq450:pb-[51px] mq450:box-border mq850:pl-[22px] mq850:pr-[22px] mq850:box-border">
+            <form onSubmit={handleSubmit} className={`m-0 self-stretch rounded-xl bg-lightslategray-200 flex flex-col items-start justify-start pt-[132px] pb-[79px] pr-[45px] pl-[46px] box-border gap-[37px] shrink-0 max-w-full mt-[-75.1px] mq850:gap-[18px] mq850:pl-[23px] mq850:pr-[22px] mq850:pb-[51px] mq850:box-border `}>
             <h2 className="text-xl font-bold mb-4 items-start justify-start">Forget Password?</h2> {/* Add this line */}
               <input
-                className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 rounded-8xs box-border flex flex-row items-start justify-start pt-[19px] px-4 pb-3 font-body-body1-regular font-medium text-base text-gray-200 min-w-[250px] max-w-full border-[1px] border-solid border-gray-200"
+                className="w-full [outline:none] bg-gainsboro h-[50px] flex-1 bg-[transparent] rounded-8xs box-border flex flex-row items-start justify-start pt-[15px] px-4 pb-4 font-inter font-medium text-base text-black-card min-w-[172px] z-[1] border-[1px] border-solid border-black-card"
                 placeholder="WORK EMAIL*" type="email" name="email" value={formData.email} onChange={handleChange}
               />
-              <button type="submit">SUBMIT</button>
+              <div className="self-stretch flex flex-row items-start justify-start py-0 pr-[11px] pl-2.5 box-border max-w-full">
+              <button type="submit" className="cursor-pointer [border:none] py-[11px] px-5 bg-button flex-1 rounded-8xs overflow-hidden flex flex-row items-start justify-center box-border max-w-full z-[1] hover:bg-mediumslateblue">
+                <div className="relative text-xl font-medium font-inter text-black-main-text text-left inline-block min-w-[78px] mq450:text-base">
+                   SUBMIT
+                </div>
+              </button>
+              </div>
             </form>
           </div>
         </div>

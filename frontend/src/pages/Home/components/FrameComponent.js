@@ -19,18 +19,29 @@ const FrameComponent = ({ className = "" }) => {
               MANAGEMENT
             </h2>
             <div className="flex flex-col items-start justify-start gap-[27.5px] text-lg text-gray-100">
-              <div className="flex flex-row items-start justify-start py-0 pr-0 pl-[5px]">
-                <div className="relative [text-decoration:underline] font-medium whitespace-nowrap">
+              <div className="flex flex-row items-start text-2xl justify-start py-0 pr-0 pl-[5px]">
+                <a
+                  className="relative [text-decoration:underline] font-normal text-black whitespace-nowrap"
+                  href="mailto:postportal@gmail.com"
+                >
                   postportal@gmail.com
-                </div>
+                </a>
               </div>
-              <div className="relative [text-decoration:underline] font-medium whitespace-nowrap">
+              <a
+                className="relative text-2xl [text-decoration:underline] font-medium text-black whitespace-nowrap"
+                href="tel:+977987654321"
+              >
                 +977-987654321
-              </div>
+              </a>
               <div className="flex flex-row items-start justify-start py-0 px-[5px]">
-                <div className="relative [text-decoration:underline] font-medium inline-block min-w-[107px]">
-                  01-5678923
-                </div>
+                <a
+                  className="relative text-black text-2xl [text-decoration:underline] font-medium inline-block min-w-[107px]"
+                  href="https://www.google.com/maps/search/?api=1&query=01-5678923"
+                  target="_blank"
+                  rel=""
+                >
+                  New Baneshwor, kathmandu
+                </a>
               </div>
             </div>
           </div>

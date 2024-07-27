@@ -1,6 +1,15 @@
 import PropTypes from "prop-types";
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SocialMediaHeading = ({ className = "" }) => {
+  
+  const navigate = useNavigate();
+
+  const onButtonContainerClick6 = useCallback(() => {
+    navigate("/login");
+  }, [navigate]);
+
   return (
     <section
       className={`w-[1699px] flex flex-row items-start justify-start pt-0 px-2.5 pb-[51px] box-border max-w-full text-left text-lg text-gray-100 font-body-body1-regular mq900:pb-[33px] mq900:box-border ${className}`}
@@ -179,7 +188,7 @@ const SocialMediaHeading = ({ className = "" }) => {
                     </div>
                   </div>
                 </div>
-                <button className="cursor-pointer [border:none] pt-[9px] pb-2 pr-8 pl-[35px] bg-slateblue rounded-11xl flex flex-row items-start justify-start z-[2] hover:bg-mediumslateblue-200">
+                <button onClick={onButtonContainerClick6} className="cursor-pointer [border:none] pt-[9px] pb-2 pr-8 pl-[35px] bg-slateblue rounded-11xl flex flex-row items-start justify-start z-[2] hover:bg-mediumslateblue-200">
                   <div className="h-[35px] w-[104.4px] relative rounded-11xl bg-slateblue hidden" />
                   <b className="relative text-base inline-block font-body-body1-regular text-black-main-text text-left min-w-[37px] z-[3]">
                     BUY

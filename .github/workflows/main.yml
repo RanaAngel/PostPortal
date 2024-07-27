@@ -105,6 +105,7 @@ jobs:
           EMAIL_USER=${{ secrets.EMAIL_USER }}
           EMAIL_PASS=${{ secrets.EMAIL_PASS }}
           CLIENT_URL=${{ secrets.CLIENT_URL }}
+          API_KEY=${{ secrets.API_KEY }}
           EOF
 
       - name: Generate Deployment Package and send to s3

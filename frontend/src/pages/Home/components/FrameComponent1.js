@@ -12,7 +12,7 @@ const FrameComponent1 = ({ className = "" }) => {
         </div>
         <div className="self-stretch h-px relative box-border border-t-[1px] border-solid border-black" />
         <div className="flex flex-row items-start justify-start py-0 pr-0 pl-[13px] box-border max-w-full text-gray-300">
-          <div className="w-[1666px] overflow-x-auto shrink-0 flex flex-row items-end justify-start gap-[18px] max-w-full">
+          <div className="w-[1666px] overflow-x-auto overflow-y-hidden scrollbar-hide shrink-0 flex flex-row items-end justify-start gap-[18px] max-w-full">
             <GroupComponent
               testimonialCardAvatarImag="/ellipse-13@2x.png"
               binaLawati="Bina Lawati"

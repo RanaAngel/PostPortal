@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import axios from 'axios';
 import Calendar from 'react-calendar';
 
+import { jwtDecode } from 'jwt-decode';
 
 
 import Facebook from "../components/Facebook";
@@ -54,52 +55,52 @@ const Dashboard = () => {
     linkedin: 0,
     twitter: 0,
   });
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please login again.');
-      navigate('/login');
+  const getUserIdFromToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.userId; // Adjust based on your token structure
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
     }
-  }, [navigate]);
+  };
 
-  useEffect(() => {
-    const checkTokenExpiration = () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const currentTime = new Date();
-        const timeDifference = currentTime - new Date(lastActivityTime);
-        const maxInactiveTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+  
 
-        if (timeDifference > maxInactiveTime) {
-          localStorage.removeItem('token');
-          navigate('/login');
-        }
-      }
-    };
-    checkTokenExpiration();
-    const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
-
-    return () => clearInterval(intervalId);
-  }, [lastActivityTime, navigate]);
-
-  useEffect(() => {
+   // Fetch post counts when the component mounts
+   useEffect(() => {
     const fetchPostCounts = async () => {
+      const token = localStorage.getItem('token');
+      const userId = getUserIdFromToken(token);
+
       try {
-        const response = await axios.get('http://52.20.87.194:5000/dashboard/post-counts');
+        const response = await axios.get(`http://52.20.87.194:5000/dashboard/post-counts/${userId}`);
+        console.log(response.data);
         setPostCounts(response.data);
       } catch (error) {
         console.error('Error fetching post counts:', error);
+
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     fetchPostCounts();
   }, []);
-//BarChart
+
+// BarChart
 useEffect(() => {
   const fetchPosts = async () => {
+    const token = localStorage.getItem('token');
+    const userId = getUserIdFromToken(token); // Function to decode token and get userId
+
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('http://52.20.87.194:5000/api/facebook/posts'); // Adjust the URL as needed
+      const response = await fetch(`http://52.20.87.194:5000/dashboard/posts/${userId}`); // Adjust the URL as needed
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
@@ -146,9 +147,9 @@ useEffect(() => {
   }
 }, [postData]);
 
-if (loading) {
-  return <div>Loading...</div>; // Add a loading indicator
-}
+// if (loading) {
+//   return <div>Loading...</div>; // Add a loading indicator
+// }
 const formatDate = (date) => {
   const options = { day: '2-digit', month: 'short', year: 'numeric' };
   return date.toLocaleDateString('en-GB', options); // 'en-GB' format: 13 Jan 2024
@@ -173,7 +174,7 @@ const formattedDate = formatDate(today);
                         Media Posts View
                     </a>
                 </div>
-                <div className="self-stretch flex flex-row items-center justify-center py-[3.5px] px-[27px] gap-[60px] text-lg text-text-colors mq825:gap-[30px] mq1400:flex-wrap">
+                <div className="self-stretch flex flex-row flex-wrap items-center justify-start py-[3.5px] px-[27px] gap-[6px] text-lg text-text-colors mq825:gap-[30px] mq1400:flex-wrap">
                 <Facebook logosfacebook="/logosfacebook.svg" facebook="Facebook" prop={postCounts.facebook} />
       <Facebook logosfacebook="/skilliconsinstagram.svg" facebook="Instagram" prop={postCounts.instagram} />
       <Facebook logosfacebook="/skilliconslinkedin.svg" facebook="LinkedIn" prop={postCounts.linkedin} />
@@ -218,9 +219,9 @@ const formattedDate = formatDate(today);
                                         </div>
                                     </div>
                                 </div>
-                                <button className="cursor-pointer [border:none] py-[1.5px] px-[52px] bg-button self-stretch overflow-hidden flex flex-col items-start justify-between box-border min-h-[51px] mq450:pl-5 mq450:pr-5 mq450:box-border">
-                                    <button onClick={onGroupClick} className="cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-center justify-center gap-[10px]">
-                                        <div className="relative text-sm leading-[28px] font-medium font-title-medium text-just-white text-left">Add More Channels</div>
+                                <button className="cursor-pointer [border:none] py-[1.5px] px-[52px] bg-button self-stretch overflow-hidden flex flex-col items-end justify-between box-border min-h-[51px] mq450:pl-5 mq450:pr-5 mq450:box-border">
+                                    <button onClick={onGroupClick} className="justify-center cursor-pointer [border:none] py-2.5 px-0 bg-[transparent] self-stretch flex flex-row items-center justify-center gap-[10px]">
+                                        <div className="relative text-sm leading-[28px] font-medium font-title-medium text-white text-left">Add More Channels</div>
                                         <img className="h-6 w-6 relative overflow-hidden shrink-0" alt="" src="/icroundadd.svg" />
                                     </button>
                                 </button>
@@ -243,7 +244,7 @@ const formattedDate = formatDate(today);
       <div className="self-stretch flex flex-col items-start justify-start gap-[6px] text-primary-subtitle-color">
         <div className="self-stretch flex flex-row items-center justify-between gap-[20px] z-[1] mq450:flex-wrap">
           <div className="w-[200px] relative leading-[28px] font-medium text-transparent !bg-clip-text [background:linear-gradient(rgba(0,_0,_0,_0.2),_rgba(0,_0,_0,_0.2)),_#161e54] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block shrink-0">
-            Upcoming Posts
+            Posts Available
           </div>
           <div className="rounded bg-just-white flex flex-row items-center justify-center py-0 px-[17px] text-xs font-roboto border-[1px] border-solid border-whitesmoke">
             <div className="h-[27px] flex flex-row items-center justify-center py-0 px-0.5 box-border">

@@ -14,36 +14,27 @@ const facebookRoute = require('./routes/facebookRoute');
 const instaRoute = require('./routes/instaRoute');
 // const analyticsRoute=require('./routes/analyticsRoute');
 const stripeRoutes = require('./routes/stripeRoute');
+const openaiRoutes = require('./routes/openaiRoute');
 const path = require('path'); // Import path module
+const logout = require('./routes/logout');
+const PostAnalytics = require('./routes/postRoute');
 
- 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 
-// // Middleware
-// app.use(cors());
-// app.use(express.json());
-
 // Middleware
-app.use(cors({
-  origin: '*', // This allows requests from any origin
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
+// Middleware
 // app.use(cors({
-//   origin: ['http://localhost:3000', 'http://52.20.87.194'], // Specify allowed origins
+//   origin: process.env.FRONTEND_URL, // Set your frontend URL here
 //   credentials: true
 // }));
+// app.use(express.json());
 
 // Routes
-
-app.get('/health', (req, res) => {
-  res.status(200).json({ message: "Server is healthy"});
-});
-
-
 app.use('/auth', authRoutes);
 //Twitter Routes:
 app.use('/twitter', twitterRoutes);
@@ -62,6 +53,12 @@ app.use('/api/instagram', instaRoute);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 //stripe Route
 app.use('/stripe', stripeRoutes);
+//AI
+app.use('/openai',openaiRoutes);
+
+app.use('/logout',logout);
+
+app.use('/post_analytics',PostAnalytics);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,tlsAllowInvalidCertificates: true, })

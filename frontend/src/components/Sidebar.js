@@ -2,6 +2,7 @@ import { useCallback,useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "antd/dist/reset.css";
 import { Dropdown, Menu, Button } from "antd";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 
@@ -9,6 +10,7 @@ import PropTypes from "prop-types";
 const Sidebar = ({ className = "" }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  
   const [buttonState, setButtonState] = useState('Upgrade to PRO');
   
   const onGroupsClick = useCallback(() => {
@@ -24,7 +26,7 @@ const Sidebar = ({ className = "" }) => {
   }, [navigate]);
 
   const onGroupsClick3 = useCallback(() => {
-    navigate("/analytics");
+    navigate("/post-analytics/:postId");
   }, [navigate]);
 
   const onGroupsClick4 = useCallback(() => {
@@ -110,94 +112,72 @@ useEffect(() => {
       className={`self-stretch w-[233px] bg-white box-border overflow-hidden shrink-0 flex flex-col items-end justify-start pt-0 px-0 pb-[70px] gap-[235px] text-left text-lg text-gray-100 font-inter border-r-[1px] border-solid border-gainsboro-200 border-b-[1px] mq1050:flex mq1050:pb-[45px] mq1050:box-border mq450:flex mq450:w-[233px] mq725:w-[233px] mq725:self-stretch mq725:h-auto mq725:pb-[29px] mq725:box-border ${className}`}
     >
       <div className="self-stretch flex flex-col items-end justify-start py-0 pr-0 pl-px gap-[43px]">
-        <div  onClick={onGroupsClick0} className="self-stretch bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
+        <a  onClick={onGroupsClick0} className="self-stretch text-white bg-white flex flex-row items-start justify-start py-12 px-2.5 cursor-pointer">
           <img
             className="h-[58px] w-[87px] relative object-cover"
             loading="lazy"
             alt=""
             src="/logo@2x.png"
           />
-          <div className="flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
-            <a className=" self-stretch relative text-[inherit]">
+          <div className=" flex-1 flex flex-col items-start justify-start pt-[18px] px-0 pb-0 text-black">
+            <div className="self-stretch relative text-[inherit]">
               Post Portal
-            </a>
+            </div>
           </div>
-        </div>
+        </a>
         <div className="self-stretch flex flex-row items-start justify-end py-0 pr-1 pl-[9px] mq450:items-start mq450:justify-start mq450:pl-px mq450:box-border">
           <div className="flex-1 flex flex-col items-start justify-start pt-0 px-2.5 pb-[23px] gap-[48px] mq450:w-20 mq450:items-start mq450:justify-start">
-            <button
-              className={`cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/dashboard') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 active:bg-button lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+            <button 
+              className={`group cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/dashboard') ? 'bg-mediumslateblue-300' : 'bg-gray-1300 '} hover:bg-mediumslateblue-300 active:bg-button lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick}
             >
-              <div className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
-                <img
-                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
-                  alt=""
-                  src="/magedashboard2.svg"
-                />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+              <a className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
+              <i className={`fa-solid fa-house text-black group-hover:text-white ${isActive('/dashboard') ? 'text-white' : 'text-black'}`}></i>
+                <div className={`text-black group-hover:text-white h-6 relative  text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px] ${isActive('/dashboard') ? 'text-white' : 'text-black'} `}>
                   Dashboard
                 </div>
-              </div>
+              </a>
             </button>
             <button
-              className={`cursor-pointer [border:none] py-[11px] px-[37px] bg-[transparent] self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/library') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              className={`group cursor-pointer [border:none] py-[11px] px-[37px] bg-[transparent] self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/library') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick1}
             >
-              <div className="w-[108px] flex flex-row items-center justify-start py-0 pr-[15px] pl-0 box-border gap-[20px]">
-                <img
-                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
-                  loading="lazy"
-                  alt=""
-                  src="/solarlibrarylinear-1.svg"
-                />
-                <div className="flex-1 relative text-mini-5 font-body-body1-regular text-dimgray-400 text-left">
+              <div className=" w-[108px] flex flex-row items-center justify-start py-0 pr-[15px] pl-0 box-border gap-[20px]">
+              <i className={`fa-solid fa-book text-black group-hover:text-white ${isActive('/library') ? 'text-white' : 'text-black'}`}></i>
+                <div className={`text-black group-hover:text-white h-6 relative  text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px] ${isActive('/library') ? 'text-white' : 'text-black'} `}>
                   Library
                 </div>
               </div>
             </button>
             <button
-              className={`cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/create-post') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              className={`group cursor-pointer [border:none] py-2.5 px-[39px] bg-[transparent] rounded-mid flex flex-col items-start justify-start ${isActive('/create-post') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:self-stretch mq450:w-auto mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick2}
             >
               <div className="flex flex-row items-center justify-start py-0 px-0 gap-[20px]">
-                <img
-                  className="h-5 w-5 relative overflow-hidden shrink-0"
-                  loading="lazy"
-                  alt=""
-                  src="/ioncreatesharp.svg"
-                />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px]">
+              <i className={`fa-solid fa-circle-plus text-black group-hover:text-white ${isActive('/create-post') ? 'text-white' : 'text-black'}`}></i>
+                <div className={`text-black group-hover:text-white h-6 relative  text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px] ${isActive('/create-post') ? 'text-white' : 'text-black'} `}>
                   Create Post
                 </div>
               </div>
             </button>
             <button
-              className={`cursor-pointer [border:none] py-2.5 pr-[39px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/analytics') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              className={`group cursor-pointer [border:none] py-2.5 pr-[39px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/post-analytics/:postId') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick3}
             >
               <div className="flex flex-row items-center justify-start gap-[20px]">
-                <img
-                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
-                  alt=""
-                  src="/tdesignchartanalytics.svg"
-                />
-                <div className="h-[23px] relative text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[65px]">
+              <i className={`fa-solid fa-chart-line text-black group-hover:text-white ${isActive('/post-analytics/:postId') ? 'text-white' : 'text-black'}`}></i>
+                <div className={`text-black group-hover:text-white h-6 relative  text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px] ${isActive('/post-analytics/:postId') ? 'text-white' : 'text-black'} `}>
                   Analytics
                 </div>
               </div>
             </button>
             <button
-              className={`cursor-pointer [border:none] py-2.5 pr-[27px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/channels') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:items-start mq450:justify-start mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
+              className={`group cursor-pointer [border:none] py-2.5 pr-[27px] bg-[transparent] pl-10 self-stretch rounded-mid flex flex-col items-start justify-start ${isActive('/channels') ? 'bg-mediumslateblue-300' : 'bg-gray-1300'} hover:bg-mediumslateblue-300 lg:hover:bg-mediumslateblue-300 mq450:items-start mq450:justify-start mq450:pl-7 mq450:box-border mq1050:hover:bg-mediumslateblue-300 mq1000:hover:bg-mediumslateblue-300`}
               onClick={onGroupsClick4}
             >
               <div className="flex flex-row items-center justify-start gap-[20px]">
-                <img
-                  className="h-[18px] w-[18px] relative overflow-hidden shrink-0"
-                  alt=""
-                  src="/fluentchannelshare16filled.svg"
-                />
-                <div className="h-6 relative text-mini-5 font-body-body1-regular text-slategray-300 text-left flex items-center min-w-[73px]">
+              <i className={`fa-solid fa-photo-film text-black group-hover:text-white ${isActive('/channels') ? 'text-white' : 'text-black'}`}></i>
+                <div className={`text-black group-hover:text-white h-6 relative  text-mini-5 font-body-body1-regular text-dimgray-200 text-left flex items-center min-w-[84px] ${isActive('/channels') ? 'text-white' : 'text-black'} `}>
                   Channels
                 </div>
               </div>
