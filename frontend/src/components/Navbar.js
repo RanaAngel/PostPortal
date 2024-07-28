@@ -7,6 +7,9 @@ import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
 
 const Navbar = ({ className = "", mingcuteuser4Line }) => {
   const location = useLocation();
@@ -96,11 +99,10 @@ const Navbar = ({ className = "", mingcuteuser4Line }) => {
           </a>
         </div>
         <div className="flex space-x-4">
-          <img
-            className="h-full w-full rounded-full"
-            alt=""
-            src="/mingcuteuser4Line.svg"
-          />
+        <FontAwesomeIcon 
+      icon={faUser} 
+      className="pt-2"
+    />
           <Dropdown
             overlay={
               <Menu className="w-full">

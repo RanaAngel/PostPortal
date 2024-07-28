@@ -5,7 +5,8 @@ import { Dropdown, Menu, Button } from "antd";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({ className = "" }) => {
   const navigate = useNavigate();
@@ -201,11 +202,10 @@ const [userName, setUserName] = useState('');
             <div className="self-stretch rounded-mid bg-gray-1300 hidden flex-col items-start justify-start py-2.5 px-[35px] mq450:flex mq450:pl-7 mq450:box-border mq725:flex mq1000:hidden">
               
               <div className="flex flex-row items-center justify-start py-1 pr-1.5 pl-0 gap-[12px]">
-              <img
-              className="h-10 w-10 relative overflow-hidden shrink-0"
-              alt=""
-              src="/mingcuteuser4Line.svg"
-            />
+              <FontAwesomeIcon 
+      icon={faUser} 
+      className="pt-2"
+    />
                 
                 <Dropdown
                   className="h-[18px]"
