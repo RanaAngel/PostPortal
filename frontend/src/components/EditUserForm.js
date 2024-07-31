@@ -3,20 +3,63 @@ import axios from 'axios';
 
 const EditUserForm = ({ user, onSave, onCancel }) => {
   const [formData, setFormData] = useState(user);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleValidation = () => {
+    let formIsValid = true;
+    let errors = {};
+
+    if (!formData.firstName) {
+      formIsValid = false;
+      errors.firstName = 'First Name is required';
+    }
+
+    if (!formData.lastName) {
+      formIsValid = false;
+      errors.lastName = 'Last Name is required';
+    }
+
+    if (!formData.organizationName) {
+      formIsValid = false;
+      errors.organizationName = 'Organization Name is required';
+    }
+
+    if (!formData.email) {
+      formIsValid = false;
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      formIsValid = false;
+      errors.email = 'Email is not valid';
+    }
+
+    if (!formData.phone) {
+      formIsValid = false;
+      errors.phone = 'Phone number is required';
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      formIsValid = false;
+      errors.phone = 'Phone number should be 10 digits';
+    }
+
+    if (!formData.usertype) {
+      formIsValid = false;
+      errors.usertype = 'User Type is required';
+    }
+
+    setErrors(errors);
+    return formIsValid;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.put(`http://localhost:5000/admin/update_user/${user._id}`, formData);
-      onSave(response.data);
-      alert('User edited successfully');
-    } catch (error) {
-      console.error('Error:', error);
+    if (handleValidation()) {
+      onSave(formData);
+    } else {
+      console.log('Form has errors.');
     }
   };
 
@@ -75,13 +118,15 @@ const EditUserForm = ({ user, onSave, onCancel }) => {
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">User Type</label>
-        <input
-          type="text"
-          name="usertype"
-          value={formData.usertype}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
+        <select
+                  name="usertype"
+                  value={formData.usertype}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                >
+                  <option value="free">Free</option>
+                  <option value="premium">Premium</option>
+                </select>
       </div>
       <div className="flex items-center justify-between">
         <button

@@ -25,10 +25,11 @@ const ChangePassword = () => {
       const token = localStorage.getItem('token');
       const userId = jwtDecode(token).userId;
 
-      await axios.patch('http://localhost:5000/dashboard/changePassword', {
+      await axios.post('http://localhost:5000/dashboard/change_password', {
         userId,
-        currentPassword,
-        newPassword
+        oldPassword:currentPassword,
+        newPassword:newPassword,
+        confirmPassword:confirmNewPassword
       });
 
       toast.success('Password changed successfully');
